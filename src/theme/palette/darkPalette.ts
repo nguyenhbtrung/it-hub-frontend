@@ -46,4 +46,10 @@ export const darkPalette: PaletteOptions = {
     primary: '#ffffff',
     secondary: '#b0bec5',
   },
+  hero: {
+    main: '#121212',
+    light: '#1e1e1e',
+    dark: '#333333',
+    contrastText: '#ffffff',
+  },
 };

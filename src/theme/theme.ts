@@ -33,19 +33,21 @@ export const createAppTheme = (mode: 'light' | 'dark') =>
     })
   );
 
-export const theme = createTheme({
-  cssVariables: {
-    colorSchemeSelector: 'class',
-  },
-  colorSchemes: {
-    light: {
-      palette: lightPalette,
+export const theme = responsiveFontSizes(
+  createTheme({
+    cssVariables: {
+      colorSchemeSelector: 'class',
     },
-    dark: {
-      palette: darkPalette,
+    colorSchemes: {
+      light: {
+        palette: lightPalette,
+      },
+      dark: {
+        palette: darkPalette,
+      },
     },
-  },
-  typography,
-  shape,
-  components,
-});
+    typography,
+    shape,
+    components,
+  })
+);
