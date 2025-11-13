@@ -1,8 +1,8 @@
 import HeroSection from '@/components/user/home/HeroSection';
 import FeaturedCourses from '@/components/user/home/FeaturedCourses';
-import OngoingCompetitions from '@/components/user/home/OngoingCompetitions';
 import LearningAssistant from '@/components/user/home/LearningAssistant';
 import { Container } from '@mui/material';
+import UpcomingContests from '@/components/user/home/upcomingContests';
 
 export default function HomePage() {
   return (
@@ -10,7 +10,7 @@ export default function HomePage() {
       <HeroSection />
       <Container maxWidth='xl'>
         <FeaturedCourses />
-        <OngoingCompetitions />
+        <UpcomingContests />
         <LearningAssistant />
       </Container>
     </>
