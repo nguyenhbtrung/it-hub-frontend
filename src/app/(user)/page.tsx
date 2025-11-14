@@ -11,8 +11,8 @@ export default function HomePage() {
       <Container maxWidth='xl'>
         <FeaturedCourses />
         <UpcomingContests />
-        <LearningAssistant />
       </Container>
+      <LearningAssistant />
     </>
   );
 }
