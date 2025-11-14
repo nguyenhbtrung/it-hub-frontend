@@ -31,7 +31,7 @@ export default function RootLayout({
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
             <CssBaseline />
-            <ModeSwitch />
+            {/* <ModeSwitch /> */}
             {children}
           </ThemeProvider>
         </AppRouterCacheProvider>
