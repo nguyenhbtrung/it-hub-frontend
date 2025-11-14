@@ -47,9 +47,12 @@ export const darkPalette: PaletteOptions = {
     secondary: '#b0bec5',
   },
   hero: {
-    main: '#121212',
+    main: '#171717',
     light: '#1e1e1e',
     dark: '#333333',
     contrastText: '#ffffff',
+  },
+  gradient: {
+    learningAssistant: 'linear-gradient(to bottom right, #2c3e50, #34495e)',
   },
 };

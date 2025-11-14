@@ -40,8 +40,11 @@ export const lightPalette: PaletteOptions = {
   },
   hero: {
     main: '#E3F2FD',
-    light: '#E8F0FE',
+    light: '#edf7ff',
     dark: '#BBDEFB',
     contrastText: '#111111',
+  },
+  gradient: {
+    learningAssistant: 'linear-gradient(135deg, #e0cffc 0%, #b2e6ff 100%)',
   },
 };
