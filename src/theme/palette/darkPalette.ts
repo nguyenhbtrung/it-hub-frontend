@@ -60,4 +60,7 @@ export const darkPalette: PaletteOptions = {
     // linear-gradient(135deg, #3f2f63 0%, #0f5f6a 100%)
     // linear-gradient(135deg, #564a7b 0%, #2a5970 100%);
   },
+  footer: {
+    background: '#1e1e1e',
+  },
 };

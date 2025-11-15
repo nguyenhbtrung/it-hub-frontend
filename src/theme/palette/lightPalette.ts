@@ -47,4 +47,7 @@ export const lightPalette: PaletteOptions = {
   gradient: {
     learningAssistant: 'linear-gradient(135deg, #e0cffc 0%, #b2e6ff 100%)',
   },
+  footer: {
+    background: '#f7f7f7',
+  },
 };
