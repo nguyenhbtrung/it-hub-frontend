@@ -11,6 +11,7 @@ export default function UpcomingContests() {
         py: { xs: 4, md: 4 },
         px: { xs: 0, md: 4 },
         mx: { xs: -2, sm: -3, md: 8 },
+        mb: { xs: 8, md: 12 },
         borderRadius: { xs: 0, md: 2 },
         // background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)',
         background: 'linear-gradient(135deg, #0056d2 3.56%, #3587fc 40.71%, #66dab7 96.44%)',

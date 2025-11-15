@@ -53,6 +53,11 @@ export const darkPalette: PaletteOptions = {
     contrastText: '#ffffff',
   },
   gradient: {
-    learningAssistant: 'linear-gradient(to bottom right, #2c3e50, #34495e)',
+    learningAssistant: 'linear-gradient(135deg, #4b3b72 0%, #245b74 100%)',
+    // linear-gradient(to bottom right, #2c3e50, #34495e)
+    // linear-gradient(135deg, #4b3b72 0%, #245b74 100%)
+    // linear-gradient(135deg, #5a4b8a 0%, #1f6f8b 100%)
+    // linear-gradient(135deg, #3f2f63 0%, #0f5f6a 100%)
+    // linear-gradient(135deg, #564a7b 0%, #2a5970 100%);
   },
 };
