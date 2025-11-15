@@ -10,7 +10,6 @@ const navButtonSx = {
 };
 
 export default function NavbarContent() {
-  console.log('nav content');
   return (
     <Toolbar sx={{ justifyContent: 'space-between' }}>
       <Typography variant='h6' color='primary'>
