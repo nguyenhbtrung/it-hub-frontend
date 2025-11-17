@@ -11,7 +11,7 @@ const courses = [
     rating: 4.8,
     duration: '12 tuần',
     price: 'Miễn phí',
-    image: '🌐',
+    image: 'https://img-c.udemycdn.com/course/480x270/6704021_a06b.jpg',
   },
   {
     id: 2,
@@ -22,7 +22,7 @@ const courses = [
     rating: 4.9,
     duration: '10 tuần',
     price: 'Miễn phí',
-    image: '📊',
+    image: 'https://img-c.udemycdn.com/course/480x270/1917546_682b_3.jpg',
   },
   {
     id: 3,
@@ -33,7 +33,7 @@ const courses = [
     rating: 4.7,
     duration: '16 tuần',
     price: 'Miễn phí',
-    image: '🤖',
+    image: 'https://img-c.udemycdn.com/course/480x270/950390_270f_3.jpg',
   },
   {
     id: 4,
@@ -44,7 +44,7 @@ const courses = [
     rating: 4.8,
     duration: '14 tuần',
     price: 'Miễn phí',
-    image: '🐍',
+    image: 'https://img-c.udemycdn.com/course/480x270/903744_8eb2.jpg',
   },
 ];
 

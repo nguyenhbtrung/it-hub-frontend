@@ -10,7 +10,7 @@ const contests = [
     participants: 245,
     startTime: new Date('2025-11-20T09:00:00'),
     endTime: new Date('2025-11-20T17:00:00'),
-    image: '',
+    image: 'https://img-c.udemycdn.com/course/480x270/4015622_2fee_4.jpg',
   },
   {
     id: 2,
@@ -20,7 +20,7 @@ const contests = [
     participants: 189,
     startTime: new Date('2025-11-25T08:00:00'),
     endTime: new Date('2025-11-25T18:00:00'),
-    image: '',
+    image: 'https://img-c.udemycdn.com/course/480x270/6271693_8b53_3.jpg',
   },
   {
     id: 3,
@@ -30,7 +30,7 @@ const contests = [
     participants: 156,
     startTime: new Date('2025-12-01T09:00:00'),
     endTime: new Date('2025-12-01T17:00:00'),
-    image: '',
+    image: 'https://img-c.udemycdn.com/course/480x270/1533864_a443.jpg',
   },
 ];
 

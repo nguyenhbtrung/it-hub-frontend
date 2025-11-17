@@ -5,6 +5,7 @@ import EventIcon from '@mui/icons-material/Event';
 import Link from '@/components/common/Link';
 import { ContestCardProps } from '@/types/contest';
 import { getDiffTime, toLocaleDateString } from '@/lib/utils/formatDatetime';
+import Image from 'next/image';
 
 export function ContestCard({ contest }: ContestCardProps) {
   return (
@@ -27,19 +28,17 @@ export function ContestCard({ contest }: ContestCardProps) {
       }}
     >
       {/* Header / Image */}
-      <CardHeader
-        sx={{
-          p: 0,
-          bgcolor: 'warning.light',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
+      <div
+        style={{
+          position: 'relative',
+          width: '100%',
           height: 180,
-          fontSize: '3.5rem',
-          borderRadius: 0.5,
+          borderRadius: 4,
+          overflow: 'hidden',
         }}
-        title={contest.image}
-      />
+      >
+        <Image src={contest.image} alt={contest.title} fill style={{ objectFit: 'cover' }} />
+      </div>
 
       <CardContent sx={{ py: 3, px: 1, flexGrow: 1 }}>
         <Stack direction='row' gap={1} justifyContent='space-between' mb={2} sx={{ flexWrap: 'wrap' }}>
