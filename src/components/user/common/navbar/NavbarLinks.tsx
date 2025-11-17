@@ -71,10 +71,10 @@ export default function NavbarLinks() {
             )}
           </Box>
         ))}
-        <Button component={Link} href='/login' variant='contained'>
+        <Button component={Link} href='/auth/login' variant='contained'>
           Đăng nhập
         </Button>
-        <Button component={Link} href='/signup' variant='outlined' sx={{ display: { xs: 'none', lg: 'block' } }}>
+        <Button component={Link} href='/auth/signup' variant='outlined' sx={{ display: { xs: 'none', lg: 'block' } }}>
           Đăng ký
         </Button>
       </Box>

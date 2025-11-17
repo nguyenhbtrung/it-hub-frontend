@@ -6,7 +6,7 @@ export default async function Footer() {
     <Box
       component='footer'
       sx={{
-        mt: 10,
+        // mt: 10,
         pt: 8,
         pb: 4,
         backgroundColor: 'footer.background',

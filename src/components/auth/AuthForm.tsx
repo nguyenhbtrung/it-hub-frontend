@@ -1,0 +1,80 @@
+'use client';
+
+import { AuthFormProps } from '@/types/auth';
+import { Box, TextField, Button, Link, Stack } from '@mui/material';
+import { useState } from 'react';
+
+export default function AuthForm({ type }: AuthFormProps) {
+  const [form, setForm] = useState({
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = () => {
+    // TODO: Gọi API của bạn
+    console.log('Submitted:', form);
+  };
+
+  return (
+    <Box>
+      <Stack spacing={3}>
+        {/* EMAIL */}
+        <TextField label='Email' name='email' fullWidth value={form.email} onChange={handleChange} />
+
+        {/* PASSWORD: login + register */}
+        {(type === 'login' || type === 'signup') && (
+          <TextField
+            label='Mật khẩu'
+            name='password'
+            type='password'
+            fullWidth
+            value={form.password}
+            onChange={handleChange}
+          />
+        )}
+
+        {/* CONFIRM PASSWORD: register */}
+        {type === 'signup' && (
+          <TextField
+            label='Xác nhận mật khẩu'
+            name='confirmPassword'
+            type='password'
+            fullWidth
+            value={form.confirmPassword}
+            onChange={handleChange}
+          />
+        )}
+
+        {/* BUTTON */}
+        <Button variant='contained' size='large' fullWidth onClick={handleSubmit}>
+          {type === 'login' ? 'Đăng nhập' : type === 'signup' ? 'Đăng ký' : 'Gửi yêu cầu đặt lại mật khẩu'}
+        </Button>
+
+        {/* EXTRA LINKS */}
+        {type === 'login' && (
+          <Stack direction='row' justifyContent='space-between'>
+            <Link href='/auth/forgot-password'>Quên mật khẩu?</Link>
+            <Link href='/auth/signup'>Tạo tài khoản</Link>
+          </Stack>
+        )}
+
+        {type === 'signup' && (
+          <Stack direction='row' justifyContent='space-between'>
+            <Link href='/auth/login'>Đã có tài khoản? Đăng nhập</Link>
+          </Stack>
+        )}
+
+        {type === 'forgot' && (
+          <Stack direction='row' justifyContent='center'>
+            <Link href='/auth/login'>Quay lại đăng nhập</Link>
+          </Stack>
+        )}
+      </Stack>
+    </Box>
+  );
+}

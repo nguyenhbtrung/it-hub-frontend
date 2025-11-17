@@ -127,10 +127,10 @@ export default function MobileMenu() {
           }}
         >
           <Stack spacing={2} sx={{ p: 2 }}>
-            <Button component={Link} href='/login' variant='contained'>
+            <Button component={Link} href='/auth/login' variant='contained'>
               Đăng nhập
             </Button>
-            <Button component={Link} href='/signup' variant='outlined'>
+            <Button component={Link} href='/auth/signup' variant='outlined'>
               Đăng Ký
             </Button>
           </Stack>
