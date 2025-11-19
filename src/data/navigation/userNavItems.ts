@@ -1,4 +1,4 @@
-import { NavItem } from '@/types/navigation';
+import { NavItem } from '@/types/navigation.user';
 
 export const navItems: NavItem[] = [
   { label: 'Trang chủ', href: '/' },

@@ -5,6 +5,7 @@ import { MuiPaper } from './paper';
 import { MuiDialog } from './dialog';
 import { MuiChip } from './chip';
 import { MuiTextField } from './textField';
+import { MuiSvgIcon } from './svgIcon';
 
 export const components: Components<Theme> = {
   MuiButton,
@@ -13,4 +14,5 @@ export const components: Components<Theme> = {
   MuiDialog,
   MuiChip,
   MuiTextField,
+  MuiSvgIcon,
 };

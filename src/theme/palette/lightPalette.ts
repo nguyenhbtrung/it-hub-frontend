@@ -44,6 +44,12 @@ export const lightPalette: PaletteOptions = {
     dark: '#BBDEFB',
     contrastText: '#111111',
   },
+  search: {
+    main: '#F5F7FD',
+    light: '#ffffff',
+    dark: '#c2c5cc',
+    contrastText: '#000',
+  },
   gradient: {
     learningAssistant: 'linear-gradient(135deg, #e0cffc 0%, #b2e6ff 100%)',
   },

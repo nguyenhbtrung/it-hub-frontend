@@ -16,7 +16,6 @@ export default function AuthForm({ type }: AuthFormProps) {
   };
 
   const handleSubmit = () => {
-    // TODO: Gọi API của bạn
     console.log('Submitted:', form);
   };
 

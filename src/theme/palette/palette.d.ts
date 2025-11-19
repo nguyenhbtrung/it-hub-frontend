@@ -3,6 +3,7 @@ import { PaletteColorOptions, PaletteColor } from '@mui/material/styles';
 declare module '@mui/material/styles' {
   interface Palette {
     hero: PaletteColor;
+    search: PaletteColor;
     gradient: {
       [key: string]: string;
     };
@@ -12,6 +13,7 @@ declare module '@mui/material/styles' {
   }
   interface PaletteOptions {
     hero?: PaletteColorOptions;
+    search?: PaletteColorOptions;
     gradient?: {
       [key: string]: string;
     };

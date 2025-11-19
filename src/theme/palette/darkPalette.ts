@@ -52,6 +52,13 @@ export const darkPalette: PaletteOptions = {
     dark: '#333333',
     contrastText: '#ffffff',
   },
+  search: {
+    main: '#333333',
+    light: '#4F4F4F',
+    dark: '#1A1A1A',
+    contrastText: '#FFFFFF',
+  },
+
   gradient: {
     learningAssistant: 'linear-gradient(135deg, #4b3b72 0%, #245b74 100%)',
     // linear-gradient(to bottom right, #2c3e50, #34495e)

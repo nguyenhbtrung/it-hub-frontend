@@ -18,7 +18,7 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import Link from '@/components/common/Link';
 import { navItems } from '@/data/navigation/userNavItems';
-import { NavItem } from '@/types/navigation';
+import { NavItem } from '@/types/navigation.user';
 import useLockBodyScroll from '@/hooks/useLockBodyScroll';
 import Logo from '@/components/common/Logo';
 
