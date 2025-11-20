@@ -1,6 +1,7 @@
 'use client';
 import { createTheme, responsiveFontSizes } from '@mui/material/styles';
 import { lightPalette, darkPalette, typography, shape, components } from '@/theme';
+import { viVN } from '@mui/x-data-grid/locales';
 
 export const lightTheme = responsiveFontSizes(
   createTheme({
@@ -34,20 +35,23 @@ export const createAppTheme = (mode: 'light' | 'dark') =>
   );
 
 export const theme = responsiveFontSizes(
-  createTheme({
-    cssVariables: {
-      colorSchemeSelector: 'class',
-    },
-    colorSchemes: {
-      light: {
-        palette: lightPalette,
+  createTheme(
+    {
+      cssVariables: {
+        colorSchemeSelector: 'class',
       },
-      dark: {
-        palette: darkPalette,
+      colorSchemes: {
+        light: {
+          palette: lightPalette,
+        },
+        dark: {
+          palette: darkPalette,
+        },
       },
+      typography,
+      shape,
+      components,
     },
-    typography,
-    shape,
-    components,
-  })
+    viVN
+  )
 );
