@@ -83,7 +83,7 @@ export default function TopBar({ onMenuClick }: TopBarProps) {
           borderRadius='3px'
           sx={{ display: { xs: 'none', md: 'flex' }, ml: { xs: 4, md: 6, lg: 12 } }}
         >
-          <InputBase placeholder='Search' sx={{ ml: 2, flex: 1 }} />
+          <InputBase placeholder='Tìm kiếm...' sx={{ ml: 2, flex: 1 }} />
           <IconButton type='button' sx={{ p: 1 }}>
             <SearchOutlined />
           </IconButton>
