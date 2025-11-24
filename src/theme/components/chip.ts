@@ -4,7 +4,7 @@ import { shape } from '@/theme';
 export const MuiChip: Components<Theme>['MuiChip'] = {
   styleOverrides: {
     root: {
-      borderRadius: shape.borderRadiusSm,
+      borderRadius: shape.borderRadiusMd,
       fontWeight: 500,
     },
   },
