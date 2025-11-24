@@ -29,9 +29,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         sx={{
           flexGrow: 1,
           p: 3,
-          width: '100%',
+          // width: '100%',
           minHeight: '100vh',
           backgroundColor: theme.palette.background.default,
+          width: `calc(100% - ${open ? '240px' : `calc(${theme.spacing(7)} + 1px)`})`,
+          // transition: theme.transitions.create('width', {
+          //   easing: theme.transitions.easing.sharp,
+          //   duration: theme.transitions.duration.leavingScreen,
+          // }),
         }}
       >
         <Toolbar />
