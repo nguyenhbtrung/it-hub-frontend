@@ -19,7 +19,7 @@ const eslintConfig = defineConfig([
     },
     rules: {
       'prettier/prettier': ['warn', {}, { usePrettierrc: true }],
-      // hoặc ["error", {}, { usePrettierrc: true }] nếu bạn muốn coi đó là lỗi
+      '@typescript-eslint/no-explicit-any': 'warn',
     },
   },
   // Override default ignores of eslint-config-next.
