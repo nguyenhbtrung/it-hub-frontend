@@ -1,9 +1,8 @@
 import { NavItem } from '@/types/navigation.user';
 
-export const navItems: NavItem[] = [
-  { label: 'Trang chủ', href: '/' },
+export const userNavItems: NavItem[] = [
   {
-    label: 'Khoá học',
+    label: 'Khám phá',
     submenu: [
       {
         label: 'Web Development',
@@ -27,3 +26,7 @@ export const navItems: NavItem[] = [
   { label: 'Cuộc thi', href: '/courses' },
   { label: 'Diễn đàn', href: '/forum' },
 ];
+
+export const instructorNavItems: NavItem[] = [{ label: 'Giảng dạy', href: '/instructor' }];
+
+export const studentNavItems: NavItem[] = [{ label: 'Việc học của tôi', href: '/my-learning' }];

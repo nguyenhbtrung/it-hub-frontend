@@ -17,7 +17,6 @@ import CloseIcon from '@mui/icons-material/Close';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import Link from '@/components/common/Link';
-import { navItems } from '@/data/navigation/userNavItems';
 import { NavItem } from '@/types/navigation.user';
 import useLockBodyScroll from '@/hooks/useLockBodyScroll';
 import Logo from '@/components/common/Logo';
@@ -65,7 +64,11 @@ function MobileNavList({ items, onNavigate, level = 0 }: { items: NavItem[]; onN
   );
 }
 
-export default function MobileMenu() {
+interface MobileMenuProps {
+  navItems: NavItem[];
+}
+
+export default function MobileMenu({ navItems }: MobileMenuProps) {
   const [open, setOpen] = useState(false);
 
   useLockBodyScroll(open);
