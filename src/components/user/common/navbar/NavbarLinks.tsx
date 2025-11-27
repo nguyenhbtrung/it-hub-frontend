@@ -29,7 +29,6 @@ const megaMenuSx = {
   boxShadow: '0px 8px 24px rgba(0,0,0,0.15)',
 };
 
-// Gom các item không có submenu thành một nhóm
 function mergeNavItems(navItems: NavItem[], mergedLabel: string = 'Hoạt động'): NavItem[] {
   const withSubmenu: NavItem[] = [];
   const withoutSubmenu: NavItem[] = [];
@@ -46,14 +45,13 @@ function mergeNavItems(navItems: NavItem[], mergedLabel: string = 'Hoạt độn
     withSubmenu.push({
       label: mergedLabel,
       submenu: withoutSubmenu,
-      menuType: 'small', // nhóm này sẽ hiển thị dạng dropdown nhỏ
+      menuType: 'small',
     });
   }
 
   return withSubmenu;
 }
 
-// Component SmallMenu riêng
 function SmallMenu({
   anchorEl,
   open,
@@ -152,12 +150,10 @@ export default function NavbarLinks({ navItems }: NavbarLinksProps) {
         </Button>
       </Box>
 
-      {/* Nếu menuType là small → render SmallMenu */}
       {currentItem?.menuType === 'small' && currentItem.submenu && (
         <SmallMenu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose} items={currentItem.submenu} />
       )}
 
-      {/* Nếu menuType khác small → render mega menu */}
       {currentItem?.menuType !== 'small' && currentItem?.submenu && (
         <Paper
           onMouseEnter={() => openMenu && openWithDelay(openMenu)}

@@ -38,6 +38,9 @@ export const lightPalette: PaletteOptions = {
     dark: '#00701a',
     contrastText: '#ffffff',
   },
+  customBackground: {
+    1: '#e0e0e0',
+  },
   hero: {
     main: '#E3F2FD',
     light: '#edf7ff',

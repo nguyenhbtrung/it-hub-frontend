@@ -11,8 +11,6 @@ export default function HeroSection() {
         pt: { xs: 16, md: 22 },
         pb: { xs: 8, md: 14 },
         positon: 'relative',
-        // background: 'linear-gradient(to bottom right, #E3F2FD, #E8EAF6)',
-        // backgroundColor: 'hero.light',
         background:
           'linear-gradient(80deg, var(--mui-palette-hero-main) 0%, var(--mui-palette-hero-main) 55%, var(--mui-palette-hero-light) 55%, var(--mui-palette-hero-light) 100%)',
       }}

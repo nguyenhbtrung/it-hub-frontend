@@ -5,6 +5,7 @@ import MenuBookIcon from '@mui/icons-material/MenuBook';
 import PsychologyIcon from '@mui/icons-material/Psychology';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Link from '@/components/common/Link';
+import { verifySession } from '@/lib/utils/dal';
 
 const features = [
   {
@@ -24,7 +25,10 @@ const features = [
   },
 ];
 
-export default function LearningAssistant() {
+export default async function LearningAssistant() {
+  const session = await verifySession();
+  if (session) return;
+
   return (
     <Box sx={{ py: 8, background: 'var(--mui-palette-gradient-learningAssistant)' }}>
       <Box maxWidth='lg' mx='auto' px={2}>

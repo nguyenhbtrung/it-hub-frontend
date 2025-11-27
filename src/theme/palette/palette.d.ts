@@ -1,3 +1,4 @@
+import { TypeBackground } from '@mui/material/styles';
 import { PaletteColorOptions, PaletteColor } from '@mui/material/styles';
 
 declare module '@mui/material/styles' {
@@ -10,6 +11,9 @@ declare module '@mui/material/styles' {
     footer: {
       [key: string]: string;
     };
+    customBackground: {
+      [key: string]: string;
+    };
   }
   interface PaletteOptions {
     hero?: PaletteColorOptions;
@@ -18,6 +22,9 @@ declare module '@mui/material/styles' {
       [key: string]: string;
     };
     footer?: {
+      [key: string]: string;
+    };
+    customBackground?: {
       [key: string]: string;
     };
   }
