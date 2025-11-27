@@ -92,7 +92,7 @@ export function CourseCard({ course }: CourseCardProps) {
                 </Typography> */}
         <Button
           component={Link}
-          href={`/course/${course.id}`}
+          href={`/courses/${course.id}`}
           variant='contained'
           size='small'
           sx={{ whiteSpace: 'nowrap' }}
