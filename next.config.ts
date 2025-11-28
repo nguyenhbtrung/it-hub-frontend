@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
   cacheComponents: true,
   images: {
-    remotePatterns: [new URL('https://img-c.udemycdn.com/**')],
+    remotePatterns: [new URL('https://img-c.udemycdn.com/**'), new URL('https://picsum.photos/**')],
   },
 };
 
