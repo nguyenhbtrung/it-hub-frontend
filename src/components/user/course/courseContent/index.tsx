@@ -41,7 +41,7 @@ export default function CourseContent({ sections }: { sections: Section[] }) {
         spacing={2}
         sx={{ mb: 3 }}
       >
-        <Typography variant='h5' fontWeight={700}>
+        <Typography variant='h5' fontWeight={600}>
           Nội dung khóa học
         </Typography>
         <Stack direction='row' spacing={3}>

@@ -60,6 +60,8 @@ export interface CourseStats {
   lastUpdated: string; // ISO date
   level: 'Cơ bản' | 'Trung cấp' | 'Nâng cao' | string;
   totalDurationMinutes: number;
+  lessons: number;
+  materials: number;
 }
 
 export interface Review {

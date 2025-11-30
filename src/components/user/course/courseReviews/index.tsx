@@ -24,7 +24,10 @@ export interface CourseReviewsProps {
   courseStats: CourseStats;
 }
 
-export type ReviewStats = Omit<CourseStats, 'students' | 'lastUpdated' | 'level' | 'totalDurationMinutes'>;
+export interface ReviewStats {
+  rating: number;
+  ratingCount: number;
+}
 
 const fetchCourseReviews = async () => {
   const reviews: Review[] = [
