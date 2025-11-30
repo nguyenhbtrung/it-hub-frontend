@@ -3,6 +3,7 @@ import { CourseDetail } from '@/types/course';
 import CourseHeader from '@/components/user/course/courseHeader';
 import CourseContent from '@/components/user/course/courseContent';
 import InstructorCard from '@/components/user/course/instructorCard';
+import CourseReviews from '@/components/user/course/courseReviews';
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -195,6 +196,8 @@ export default async function CoursePage({ params }: Props) {
 
               {/* Instructor Section */}
               <InstructorCard instructor={course.instructor} />
+
+              <CourseReviews />
             </Stack>
           </Grid>
         </Grid>

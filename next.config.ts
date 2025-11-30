@@ -7,6 +7,11 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [new URL('https://img-c.udemycdn.com/**'), new URL('https://picsum.photos/**')],
   },
+  logging: {
+    fetches: {
+      fullUrl: true,
+    },
+  },
 };
 
 export default nextConfig;
