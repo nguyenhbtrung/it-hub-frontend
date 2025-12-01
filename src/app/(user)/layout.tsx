@@ -6,7 +6,7 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
   return (
     <Box display='flex' flexDirection='column' minHeight='100vh'>
       <Navbar />
-      <Box component='main' sx={{ flex: 1, mb: 6 }}>
+      <Box component='main' sx={{ flex: 1 }}>
         {children}
       </Box>
       <Footer />
