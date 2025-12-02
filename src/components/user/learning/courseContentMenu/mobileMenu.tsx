@@ -5,8 +5,13 @@ import { Drawer, Box, IconButton } from '@mui/material';
 import ArrowForwardIos from '@mui/icons-material/ArrowForwardIos';
 
 import MenuContent from './menuContent';
+import { LearningCourse } from '@/types/course';
 
-export default function MobileMenu() {
+interface MobileMenuProps {
+  course: LearningCourse;
+}
+
+export default function MobileMenu({ course }: MobileMenuProps) {
   const [openMenu, setOpenMenu] = useState(false);
 
   const handleToggleMenu = () => {
@@ -39,7 +44,7 @@ export default function MobileMenu() {
         }}
       />
       <Drawer open={openMenu} onClose={() => setOpenMenu(false)}>
-        <MenuContent />
+        <MenuContent course={course} />
       </Drawer>
     </Box>
   );

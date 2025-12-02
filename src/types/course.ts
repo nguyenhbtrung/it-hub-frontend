@@ -25,19 +25,36 @@ export interface CourseCardProps {
   course: CourseSummary;
 }
 
-export interface Lesson {
+interface LessonBase {
   id: string;
   title: string;
+}
+
+export interface CourseDetailLesson extends LessonBase {
   durationMinutes: number;
   isPreview?: boolean;
   resourceUrl?: string | null;
 }
 
-export interface Section {
+export interface LearningLesson extends LessonBase {
+  sectionId: string;
+  order: number;
+  status: CompletionStatus;
+  steps?: Step[];
+}
+
+interface SectionBase {
   id: string;
   title: string;
   order: number;
-  lessons: Lesson[];
+}
+
+export interface CourseDetailSection extends SectionBase {
+  lessons: CourseDetailLesson[];
+}
+
+export interface LearningSection extends SectionBase {
+  lessons: LearningLesson[];
 }
 
 export interface Instructor {
@@ -88,10 +105,28 @@ export interface CourseDetail {
   tags: string[];
   stats: CourseStats;
   instructor: Instructor;
-  sections: Section[];
+  sections: CourseDetailSection[];
   keyTakeaways: string[];
   requirements?: string[];
   language?: string;
   price?: string;
   promoVideoUrl?: string | null;
+}
+
+// types/course.types.ts
+export type CompletionStatus = 'completed' | 'in-progress' | 'not-started';
+
+export interface Step {
+  id: string;
+  title: string;
+  status: CompletionStatus;
+  order: number;
+}
+
+export interface LearningCourse {
+  id: string;
+  title: string;
+  description?: string;
+  progress: number;
+  sections: LearningSection[];
 }

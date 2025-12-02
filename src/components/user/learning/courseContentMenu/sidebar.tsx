@@ -5,8 +5,13 @@ import { Paper, IconButton } from '@mui/material';
 import { ChevronLeft } from '@mui/icons-material';
 import { SidebarToggle } from './sidebarToggle';
 import MenuContent from './menuContent';
+import { LearningCourse } from '@/types/course';
 
-export default function Sidebar() {
+interface SidebarProps {
+  course: LearningCourse;
+}
+
+export default function Sidebar({ course }: SidebarProps) {
   const [openSidebar, setOpenSidebar] = useState(true);
 
   const handleToggleSidebar = () => {
@@ -29,7 +34,7 @@ export default function Sidebar() {
           maxHeight: 'calc(100vh - 64px)',
         }}
       >
-        <MenuContent />
+        <MenuContent course={course} />
         {/* Collapse Button */}
         <IconButton
           onClick={handleToggleSidebar}

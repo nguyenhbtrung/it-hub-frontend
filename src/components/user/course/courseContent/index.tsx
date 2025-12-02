@@ -17,9 +17,9 @@ import {
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
-import { Section } from '@/types/course';
+import { CourseDetailSection } from '@/types/course';
 
-export default function CourseContent({ sections }: { sections: Section[] }) {
+export default function CourseContent({ sections }: { sections: CourseDetailSection[] }) {
   const [expanded, setExpanded] = useState<string | false>(false);
 
   const handleChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
