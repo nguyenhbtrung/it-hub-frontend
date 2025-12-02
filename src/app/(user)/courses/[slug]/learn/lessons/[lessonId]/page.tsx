@@ -5,6 +5,7 @@ import ElevationScrollConfig from '@/components/user/learning/elevationScrollCon
 import { Suspense } from 'react';
 
 export default function LearningPage() {
+  const currentStepId = 'step-2-1-2';
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
       <Box sx={{ height: { xs: 56, sm: 64 }, borderBottom: 1, borderColor: 'divider' }} />
@@ -15,7 +16,9 @@ export default function LearningPage() {
         <Suspense>
           <CourseContentMenu />
         </Suspense>
-        <MainContent />
+        <Suspense>
+          <MainContent stepId={currentStepId} />
+        </Suspense>
       </Box>
     </Box>
   );

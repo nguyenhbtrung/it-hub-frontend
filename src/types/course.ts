@@ -1,3 +1,5 @@
+import { StepContent, StepProgress } from './content';
+
 export interface CourseSummary {
   id: number;
   image: string;
@@ -41,6 +43,7 @@ export interface LearningLesson extends LessonBase {
   order: number;
   status: CompletionStatus;
   steps?: Step[];
+  lessonType?: 'theory' | 'practice' | 'project' | 'review';
 }
 
 interface SectionBase {
@@ -55,6 +58,7 @@ export interface CourseDetailSection extends SectionBase {
 
 export interface LearningSection extends SectionBase {
   lessons: LearningLesson[];
+  description?: string;
 }
 
 export interface Instructor {
@@ -121,12 +125,28 @@ export interface Step {
   title: string;
   status: CompletionStatus;
   order: number;
+  contentId?: string; // Reference to content
+  contentType?: 'standard' | 'exercise' | 'quiz' | 'project';
+  content?: StepContent; // Embedded content (for simplicity)
+  progress?: StepProgress;
 }
 
 export interface LearningCourse {
   id: string;
   title: string;
   description?: string;
+  category?: string;
+  level?: 'beginner' | 'intermediate' | 'advanced';
+  tags?: string[];
   progress: number;
   sections: LearningSection[];
+  instructor?: {
+    id: string;
+    name: string;
+    bio?: string;
+    avatar?: string;
+  };
+  thumbnail?: string;
+  createdAt: string;
+  updatedAt: string;
 }
