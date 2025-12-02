@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Drawer, Button, Box, Paper, IconButton } from '@mui/material';
+import { Drawer, Box, IconButton } from '@mui/material';
 import ArrowForwardIos from '@mui/icons-material/ArrowForwardIos';
 
 import MenuContent from './menuContent';

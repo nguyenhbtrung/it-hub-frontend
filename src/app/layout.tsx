@@ -5,7 +5,7 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v16-appRouter';
 import { CssBaseline, InitColorSchemeScript } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import { theme } from '@/theme';
-import ModeSwitch from '@/components/ModeSwitch';
+import { ThemeConfigProvider } from '@/contexts/uiConfigContext';
 
 const roboto = Roboto({
   weight: ['300', '400', '500', '600', '700'],
@@ -30,9 +30,10 @@ export default function RootLayout({
         <InitColorSchemeScript attribute='class' />
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
-            <CssBaseline />
-            {/* <ModeSwitch /> */}
-            {children}
+            <ThemeConfigProvider>
+              <CssBaseline />
+              {children}
+            </ThemeConfigProvider>
           </ThemeProvider>
         </AppRouterCacheProvider>
       </body>
