@@ -27,7 +27,7 @@ export default function Sidebar({ course }: SidebarProps) {
           display: { xs: 'none', md: openSidebar ? 'flex' : 'none' },
           flexDirection: 'column',
           borderRight: '1px solid',
-          borderColor: 'grey.200',
+          borderColor: 'divider',
           borderRadius: 0,
           position: 'sticky',
           top: 64,

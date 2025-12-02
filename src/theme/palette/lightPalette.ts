@@ -40,6 +40,8 @@ export const lightPalette: PaletteOptions = {
   },
   customBackground: {
     1: '#e0e0e0',
+    2: '#82adfb',
+    3: '#fafafa',
   },
   hero: {
     main: '#E3F2FD',

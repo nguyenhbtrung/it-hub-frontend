@@ -215,12 +215,12 @@ const BlockRenderer = ({ block }: { block: ContentBlock }) => {
           }}
         >
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-            <Note fontSize='small' />
-            <Typography variant='h6' sx={{ fontWeight: 600 }}>
+            <Note fontSize='small' sx={{ color: '#000000' }} />
+            <Typography color='#000000' variant='h6' sx={{ fontWeight: 600 }}>
               {block.title || 'Lưu ý'}
             </Typography>
           </Box>
-          <Typography>{block.content}</Typography>
+          <Typography color='#000000'>{block.content}</Typography>
         </Paper>
       );
 
@@ -523,7 +523,9 @@ export default async function MainContent({ stepId }: { stepId: string }) {
                 {content.estimatedTime && (
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                     <AccessTime fontSize='small' />
-                    <Typography variant='caption'>~{content.estimatedTime} phút</Typography>
+                    <Typography color='text.primary' variant='caption'>
+                      ~{content.estimatedTime} phút
+                    </Typography>
                   </Box>
                 )}
               </Box>
@@ -531,7 +533,7 @@ export default async function MainContent({ stepId }: { stepId: string }) {
 
             {/* Mục tiêu học tập */}
             {content.objectives && content.objectives.length > 0 && (
-              <Paper sx={{ p: 2, bgcolor: 'primary.light', mb: 3 }}>
+              <Paper sx={{ p: 2, bgcolor: 'customBackground.2', mb: 3 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
                   <School fontSize='small' />
                   <Typography variant='subtitle1' fontWeight={500}>
@@ -558,7 +560,7 @@ export default async function MainContent({ stepId }: { stepId: string }) {
 
           {/* Thông tin tác giả */}
           {content.author && (
-            <Paper sx={{ p: 3, mt: 6, bgcolor: 'grey.50' }}>
+            <Paper sx={{ p: 3, mt: 6, bgcolor: 'customBackground.3' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                 {content.author.avatar && (
                   <Box

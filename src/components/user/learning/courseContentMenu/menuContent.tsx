@@ -1,4 +1,3 @@
-// components/course/MenuContent.tsx
 import { useState } from 'react';
 import {
   Box,
@@ -72,7 +71,7 @@ export default function MenuContent({ course }: MenuContentProps) {
   return (
     <>
       {/* Course Header */}
-      <Box sx={{ p: 2, borderBottom: '1px solid', borderColor: 'grey.200' }}>
+      <Box sx={{ p: 2, borderBottom: '1px solid', borderColor: 'divider' }}>
         <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
           <Avatar sx={{ width: 40, height: 40, bgcolor: 'hero.main' }}>
             <Book sx={{ color: 'primary.main' }} />
@@ -106,10 +105,13 @@ export default function MenuContent({ course }: MenuContentProps) {
             <Box key={section.id} sx={{ mb: 1 }}>
               <ListItemButton
                 onClick={() => handleSectionClick(section.id)}
-                sx={{
-                  borderRadius: 1,
-                  '&:hover': { backgroundColor: 'grey.100' },
-                }}
+                sx={[
+                  {
+                    borderRadius: 1,
+                    '&:hover': { backgroundColor: 'grey.100' },
+                  },
+                  (theme) => theme.applyStyles('dark', { '&:hover': { backgroundColor: 'grey.800' } }),
+                ]}
               >
                 <Typography variant='body2' sx={{ fontWeight: 500, flex: 1 }}>
                   Phần {section.order}: {section.title}
@@ -131,14 +133,23 @@ export default function MenuContent({ course }: MenuContentProps) {
                         <Box sx={{ width: '100%' }}>
                           <ListItemButton
                             onClick={() => handleLessonClick(lesson.id)}
-                            sx={{
-                              borderRadius: 1,
-                              py: 1,
-                              backgroundColor: isLessonActive(lesson.id) ? 'primary.light' : 'transparent',
-                              '&:hover': {
-                                backgroundColor: isLessonActive(lesson.id) ? 'primary.light' : 'grey.100',
+                            sx={[
+                              {
+                                borderRadius: 1,
+                                py: 1,
+                                backgroundColor: isLessonActive(lesson.id) ? 'hero.light' : 'transparent',
+                                '&:hover': {
+                                  backgroundColor: isLessonActive(lesson.id) ? 'primary.light' : 'grey.100',
+                                },
                               },
-                            }}
+                              (theme) =>
+                                theme.applyStyles('dark', {
+                                  backgroundColor: isLessonActive(lesson.id) ? '#223843' : 'transparent',
+                                  '&:hover': {
+                                    backgroundColor: isLessonActive(lesson.id) ? '#223843' : 'grey.800',
+                                  },
+                                }),
+                            ]}
                           >
                             <ListItemIcon sx={{ minWidth: 32 }}>{getStatusIcon(lesson.status)}</ListItemIcon>
                             <ListItemText
@@ -164,12 +175,19 @@ export default function MenuContent({ course }: MenuContentProps) {
                               {lesson.steps.map((step) => (
                                 <ListItemButton
                                   key={step.id}
-                                  sx={{
-                                    borderRadius: 1,
-                                    py: 0.75,
-                                    backgroundColor: step.status === 'in-progress' ? 'grey.200' : 'transparent',
-                                    '&:hover': { backgroundColor: 'grey.100' },
-                                  }}
+                                  sx={[
+                                    {
+                                      borderRadius: 1,
+                                      py: 0.75,
+                                      backgroundColor: step.status === 'in-progress' ? 'grey.200' : 'transparent',
+                                      '&:hover': { backgroundColor: 'grey.100' },
+                                    },
+                                    (theme) =>
+                                      theme.applyStyles('dark', {
+                                        backgroundColor: step.status === 'in-progress' ? 'grey.700' : 'transparent',
+                                        '&:hover': { backgroundColor: 'grey.800' },
+                                      }),
+                                  ]}
                                 >
                                   <ListItemIcon sx={{ minWidth: 32 }}>{getStatusIcon(step.status)}</ListItemIcon>
                                   <ListItemText
@@ -187,11 +205,14 @@ export default function MenuContent({ course }: MenuContentProps) {
                         </Box>
                       ) : (
                         <ListItemButton
-                          sx={{
-                            borderRadius: 1,
-                            py: 1,
-                            '&:hover': { backgroundColor: 'grey.100' },
-                          }}
+                          sx={[
+                            {
+                              borderRadius: 1,
+                              py: 1,
+                              '&:hover': { backgroundColor: 'grey.100' },
+                            },
+                            (theme) => theme.applyStyles('dark', { '&:hover': { backgroundColor: 'grey.800' } }),
+                          ]}
                         >
                           <ListItemIcon sx={{ minWidth: 32 }}>{getStatusIcon(lesson.status)}</ListItemIcon>
                           <ListItemText
@@ -213,7 +234,7 @@ export default function MenuContent({ course }: MenuContentProps) {
       </Box>
 
       {/* Progress */}
-      <Box sx={{ p: 2, borderTop: '1px solid', borderColor: 'grey.200' }}>
+      <Box sx={{ p: 2, borderTop: '1px solid', borderColor: 'divider' }}>
         <Paper
           elevation={0}
           sx={{
