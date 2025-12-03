@@ -93,8 +93,11 @@ export default function CourseHeader({ course }: { course: CourseDetail }) {
             </Box>
 
             <Stack direction='row' display={{ xs: 'flex', lg: 'none' }} spacing={1} sx={{ my: 2 }}>
-              <Button variant='contained' sx={{ width: { xs: '100%', sm: 200 } }}>
+              {/* <Button variant='contained' sx={{ width: { xs: '100%', sm: 200 } }}>
                 Đăng ký
+              </Button> */}
+              <Button variant='contained' sx={{ width: { xs: '100%', sm: 200 } }}>
+                Tiếp tục học
               </Button>
               <Button variant='outlined' sx={{ width: 42, height: 42, minWidth: 42, p: 0 }}>
                 <ShareIcon />

@@ -48,8 +48,10 @@ export default function CourseHeader() {
 
         <Box sx={{ ml: 'auto', display: 'flex', gap: 2 }}>
           <Button
-            LinkComponent={Link}
+            component='a'
             href={`/courses/${id}`}
+            target='_blank'
+            rel='noopener noreferrer'
             variant='outlined'
             endIcon={<VisibilityIcon />}
             sx={{

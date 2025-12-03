@@ -80,7 +80,7 @@ export default function MenuContent({ course }: MenuContentProps) {
             <Typography variant='body2' color='text.secondary'>
               Khoá học
             </Typography>
-            <Link href='#' passHref>
+            <Link href='/courses/1' passHref>
               <Typography
                 variant='subtitle1'
                 sx={{
