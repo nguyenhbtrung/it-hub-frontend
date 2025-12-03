@@ -27,7 +27,7 @@ const initialChapters: Chapter[] = [
     objectives: '',
     order: 1,
     isExpanded: true,
-    isEditing: true,
+    isEditing: false,
     lessons: [
       {
         id: '1-1',
@@ -35,7 +35,7 @@ const initialChapters: Chapter[] = [
         title: 'Tổng quan về ReactJS',
         description: '',
         order: 1,
-        isEditing: true,
+        isEditing: false,
         steps: [
           {
             id: '1-1-1',
