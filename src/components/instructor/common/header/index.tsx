@@ -96,11 +96,7 @@ export default function Header() {
             <ChatBubble sx={{ color: 'text.secondary', fontSize: 20 }} />
           </IconButton>
 
-          <Avatar
-            alt='John Doe'
-            // src='https://lh3.googleusercontent.com/aida-public/AB6AXuAcpKObBX9MmO5HCxOOmwfonrtISJcndXI4Dvj_BUqXF_PUUSHKIn0jqMgm2_6baEWi5GIceJNZyC2csc9MzlJfa06m-_CBZRezw94N1MUBcx_Z2KR8Amr4VPvFjEmFMqDigx8aZG7oSm1RgnGdFyc8INk--CZecEQTBmfogPnQ-3m0_NZMzpnXx6i1G54OBjT9t61olHdjF_10i9tuj5UdgywF0jDMc3xWsguWR4KmS0dC2ytGMpWxcsTlHTBTJ5E3LU1nC3Fxiyo'
-            sx={{ width: 40, height: 40 }}
-          />
+          <Avatar alt='John Doe' src='https://picsum.photos/seed/picsum/200' sx={{ width: 40, height: 40 }} />
         </Box>
       </Toolbar>
     </AppBar>

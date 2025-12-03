@@ -135,11 +135,7 @@ export default function Sidebar() {
 
         {/* User Profile */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, p: 2, borderRadius: 2 }}>
-          <Avatar
-            alt='John Doe'
-            // src='https://lh3.googleusercontent.com/aida-public/AB6AXuA404JRHd2GrZvUmSRrr1uD0k0LkqU9eNd0Pl1aQpIB_QItizVoje2TaH0RrZzjHli-CM11-3YjYDurPWBNdRD5SRe6x1eZj5SiiFnh5df0dI_ly4PA2eJsHz8fnSttRWtWa33BeY6ahUu53y9lwKjmu7tHWBRy8PUaFgwasqEimx-xNHdUlurYw5hDaOgaxiHnnuAx8bE5RRobA4JyhrzVg644_iBmxLMR8FckqgVYE89i1YFb-vdQW52ePmqnX3jIbuQ_FiWw6QY'
-            sx={{ width: 40, height: 40 }}
-          />
+          <Avatar alt='John Doe' src='https://picsum.photos/seed/picsum/200' sx={{ width: 40, height: 40 }} />
           <Box sx={{ flex: 1 }}>
             <Typography variant='body2' sx={{ fontWeight: 500 }}>
               John Doe

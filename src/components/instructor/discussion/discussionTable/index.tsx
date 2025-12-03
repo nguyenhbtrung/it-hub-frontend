@@ -5,6 +5,7 @@ import { Paper, Avatar, Chip, IconButton, Box, Typography } from '@mui/material'
 import { Visibility, Reply, Delete } from '@mui/icons-material';
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import { Discussion, DiscussionStatus } from '../types';
+import { useMounted } from '@/hooks/useMounted';
 
 const discussions: Discussion[] = [
   {
@@ -13,8 +14,7 @@ const discussions: Discussion[] = [
     course: 'Lập trình Web Frontend Nâng cao',
     sender: {
       name: 'Nguyễn Văn An',
-      avatar:
-        'https://lh3.googleusercontent.com/aida-public/AB6AXuAcpKObBX9MmO5HCxOOmwfonrtISJcndXI4Dvj_BUqXF_PUUSHKIn0jqMgm2_6baEWi5GIceJNZyC2csc9MzlJfa06m-_CBZRezw94N1MUBcx_Z2KR8Amr4VPvFjEmFMqDigx8aZG7oSm1RgnGdFyc8INk--CZecEQTBmfogPnQ-3m0_NZMzpnXx6i1G54OBjT9t61olHdjF_10i9tuj5UdgywF0jDMc3xWsguWR4KmS0dC2ytGMpWxcsTlHTBTJ5E3LU1nC3Fxiyo',
+      avatar: 'https://picsum.photos/200?random=5',
     },
     time: '2 giờ trước',
     status: 'unanswered',
@@ -26,8 +26,7 @@ const discussions: Discussion[] = [
     course: 'Python cho Khoa học Dữ liệu',
     sender: {
       name: 'Trần Thị Bích',
-      avatar:
-        'https://lh3.googleusercontent.com/aida-public/AB6AXuDNhF2Qs5J-NTY_OoDBq0VvvuDVgjMZqYDO4RK1KtzNq3np6M4kx8auktG5pNncK7c04sD5inPvVqmZV083iyFfWa-C_Ujd1EXPp_J7SRDqiONChTsEOQ7Zlww0yHt8F9euaM4gG7P7MkaKYgM1XMztjG07N9SecOKMdPcgW3RDL2Rwb2iYESO5C1JG-RTUO2wWxyY8aOnUUjkXc8KWt7yQmmDXpa-qEN5K2EfL1prih64b1l7rCn9dBwGEa9Fc0WMW9Ra8uk7rBSI',
+      avatar: 'https://picsum.photos/200?random=4',
     },
     time: 'Hôm qua',
     status: 'answered',
@@ -39,8 +38,7 @@ const discussions: Discussion[] = [
     course: 'Thiết kế Giao diện UI/UX Cơ bản',
     sender: {
       name: 'Lê Minh Cường',
-      avatar:
-        'https://lh3.googleusercontent.com/aida-public/AB6AXuDNhF2Qs5J-NTY_OoDBq0VvvuDVgjMZqYDO4RK1KtzNq3np6M4kx8auktG5pNncK7c04sD5inPvVqmZV083iyFfWa-C_Ujd1EXPp_J7SRDqiONChTsEOQ7Zlww0yHt8F9euaM4gG7P7MkaKYgM1XMztjG07N9SecOKMdPcgW3RDL2Rwb2iYESO5C1JG-RTUO2wWxyY8aOnUUjkXc8KWt7yQmmDXpa-qEN5K2EfL1prih64b1l7rCn9dBwGEa9Fc0WMW9Ra8uk7rBSI',
+      avatar: 'https://picsum.photos/200?random=1',
     },
     time: '3 ngày trước',
     status: 'answered',
@@ -52,8 +50,7 @@ const discussions: Discussion[] = [
     course: 'Quản lý Dự án Phần mềm',
     sender: {
       name: 'Phạm Thị Dung',
-      avatar:
-        'https://lh3.googleusercontent.com/aida-public/AB6AXuDNhF2Qs5J-NTY_OoDBq0VvvuDVgjMZqYDO4RK1KtzNq3np6M4kx8auktG5pNncK7c04sD5inPvVqmZV083iyFfWa-C_Ujd1EXPp_J7SRDqiONChTsEOQ7Zlww0yHt8F9euaM4gG7P7MkaKYgM1XMztjG07N9SecOKMdPcgW3RDL2Rwb2iYESO5C1JG-RTUO2wWxyY8aOnUUjkXc8KWt7yQmmDXpa-qEN5K2EfL1prih64b1l7rCn9dBwGEa9Fc0WMW9Ra8uk7rBSI',
+      avatar: 'https://picsum.photos/200?random=2',
     },
     time: '5 ngày trước',
     status: 'unanswered',
@@ -65,8 +62,7 @@ const discussions: Discussion[] = [
     course: 'Lập trình Web Frontend Nâng cao',
     sender: {
       name: 'Hoàng Văn Giang',
-      avatar:
-        'https://lh3.googleusercontent.com/aida-public/AB6AXuDNhF2Qs5J-NTY_OoDBq0VvvuDVgjMZqYDO4RK1KtzNq3np6M4kx8auktG5pNncK7c04sD5inPvVqmZV083iyFfWa-C_Ujd1EXPp_J7SRDqiONChTsEOQ7Zlww0yHt8F9euaM4gG7P7MkaKYgM1XMztjG07N9SecOKMdPcgW3RDL2Rwb2iYESO5C1JG-RTUO2wWxyY8aOnUUjkXc8KWt7yQmmDXpa-qEN5K2EfL1prih64b1l7rCn9dBwGEa9Fc0WMW9Ra8uk7rBSI',
+      avatar: 'https://picsum.photos/200?random=3',
     },
     time: '1 tuần trước',
     status: 'answered',
@@ -95,8 +91,7 @@ const getStatusColor = (status: DiscussionStatus) => {
 };
 
 export default function DiscussionDataGrid() {
-  const [selectedRow, setSelectedRow] = useState<number | null>(null);
-  const [selectionModel, setSelectionModel] = useState<number[]>([]);
+  const mounted = useMounted();
 
   const handleView = (id: number) => {
     console.log('View discussion:', id);
@@ -288,6 +283,8 @@ export default function DiscussionDataGrid() {
     },
   ];
 
+  if (!mounted) return;
+
   return (
     <Paper
       elevation={0}
@@ -312,9 +309,6 @@ export default function DiscussionDataGrid() {
         pageSizeOptions={[5, 10, 25]}
         checkboxSelection
         disableRowSelectionOnClick
-        onRowClick={(params) => {
-          setSelectedRow(params.id as number);
-        }}
         sx={{
           border: 'none',
           '& .MuiDataGrid-columnHeaders': {
