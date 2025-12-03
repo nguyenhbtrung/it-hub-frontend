@@ -4,11 +4,11 @@ import { AppBar, Toolbar, IconButton, Typography, Box, Divider, Button } from '@
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import SaveIcon from '@mui/icons-material/Save';
-import { useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
+import Link from 'next/link';
 
 export default function CourseHeader() {
-  const router = useRouter();
-
+  const { id } = useParams();
   return (
     <AppBar
       position='static'
@@ -25,7 +25,8 @@ export default function CourseHeader() {
       <Toolbar sx={{ gap: 2 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <IconButton
-            onClick={() => router.back()}
+            LinkComponent={Link}
+            href='/instructor/courses'
             title='Quay lại Quản lý Khóa học'
             sx={{
               color: 'text.secondary',
@@ -47,6 +48,8 @@ export default function CourseHeader() {
 
         <Box sx={{ ml: 'auto', display: 'flex', gap: 2 }}>
           <Button
+            LinkComponent={Link}
+            href={`/courses/${id}`}
             variant='outlined'
             endIcon={<VisibilityIcon />}
             sx={{
