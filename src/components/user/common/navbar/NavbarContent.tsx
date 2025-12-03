@@ -24,7 +24,7 @@ export default async function NavbarContent() {
         <Box sx={{ display: { xs: 'block', md: 'none' } }}>
           <MobileMenu navItems={navItems} />
         </Box>
-        <Logo />
+        <Logo href='/' />
         <Box sx={{ width: { xs: 0, lg: 40 } }} />
         <SearchBar />
       </Box>

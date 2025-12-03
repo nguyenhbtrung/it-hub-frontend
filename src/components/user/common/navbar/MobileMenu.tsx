@@ -109,7 +109,7 @@ export default function MobileMenu({ navItems }: MobileMenuProps) {
           }}
         >
           <Box onClick={() => setOpen(false)} display='flex' justifyContent='center' alignItems='center'>
-            <Logo />
+            <Logo href='/' />
           </Box>
           <IconButton onClick={() => setOpen(false)}>
             <CloseIcon />
