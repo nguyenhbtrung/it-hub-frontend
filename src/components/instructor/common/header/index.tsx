@@ -40,7 +40,7 @@ export default function Header() {
           >
             <Search sx={{ color: 'text.secondary', mr: 1, fontSize: 20 }} />
             <InputBase
-              placeholder='Tìm kiếm khóa học, học viên...'
+              placeholder='Tìm kiếm...'
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               sx={{

@@ -40,9 +40,9 @@ export default function Sidebar() {
   const menuItems = [
     { icon: <Dashboard />, text: 'Bảng điều khiển', href: '', active: true },
     { icon: <MenuBook />, text: 'Quản lý Khóa học', href: '/courses' },
-    { icon: <Group />, text: 'Quản lý Học viên', href: '/students' },
-    { icon: <Forum />, text: 'Thảo luận & Hỏi đáp', href: '/discussion' },
-    { icon: <BarChart />, text: 'Thống kê & Báo cáo', href: '/statistical' },
+    // { icon: <Group />, text: 'Quản lý Học viên', href: '/students' },
+    { icon: <Forum />, text: 'Thảo luận & Hỏi đáp', href: '/discussions' },
+    // { icon: <BarChart />, text: 'Thống kê & Báo cáo', href: '/statistical' },
   ];
 
   //   const bottomMenuItems = [{ icon: <Settings />, text: 'Cài đặt' }];
