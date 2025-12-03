@@ -2,8 +2,8 @@
 
 import { Box, Typography, IconButton } from '@mui/material';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-import DescriptionIcon from '@mui/icons-material/Description';
-import QuizIcon from '@mui/icons-material/Quiz';
+import DescriptionIcon from '@mui/icons-material/DescriptionOutlined';
+import QuizIcon from '@mui/icons-material/QuizOutlined';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import SettingsIcon from '@mui/icons-material/Settings';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -43,7 +43,8 @@ export default function ContentStep({ step, onEditContent }: ContentStepProps) {
         display: 'flex',
         alignItems: 'center',
         borderRadius: 1,
-        bgcolor: getStepColor(),
+        // bgcolor: getStepColor(),
+        bgcolor: 'customBackground.5',
         py: 1.5,
         pl: 2,
         pr: 1,

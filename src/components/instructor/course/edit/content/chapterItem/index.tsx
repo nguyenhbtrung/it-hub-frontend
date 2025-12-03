@@ -68,8 +68,8 @@ export default function ChapterItem({
       sx={{
         border: 1,
         borderColor: 'divider',
-        borderRadius: 2,
-        bgcolor: 'action.hover',
+        borderRadius: 1,
+        bgcolor: 'customBackground.5',
       }}
     >
       {/* Chapter Header */}

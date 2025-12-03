@@ -43,6 +43,7 @@ export const lightPalette: PaletteOptions = {
     2: '#82adfb',
     3: '#fafafa',
     4: '#f5f7fa',
+    5: '#f8fafc',
   },
   hero: {
     main: '#E3F2FD',

@@ -49,7 +49,7 @@ export default function LessonItem({
       sx={{
         border: 1,
         borderColor: 'divider',
-        borderRadius: 2,
+        borderRadius: 1,
         bgcolor: 'background.paper',
       }}
     >
@@ -140,7 +140,7 @@ export default function LessonItem({
                   border: 2,
                   borderStyle: 'dashed',
                   borderColor: 'divider',
-                  bgcolor: 'action.hover',
+                  bgcolor: 'customBackground.5',
                   p: 4,
                 }}
               >
