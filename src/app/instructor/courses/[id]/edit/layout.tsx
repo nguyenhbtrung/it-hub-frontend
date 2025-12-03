@@ -1,4 +1,3 @@
-import EditCourseForm from '@/components/instructor/course/edit/editCourseForm';
 import CourseHeader from '@/components/instructor/course/edit/header';
 import CourseSidebar from '@/components/instructor/course/edit/sidebar';
 import { Container, Grid, Box, Paper } from '@mui/material';

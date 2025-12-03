@@ -9,7 +9,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useState } from 'react';
 import RichTextEditor from '@/components/admin/common/richTextEditor';
 
-export default function EditCourseForm() {
+export default function EditCourseDetailForm() {
   const [requirements, setRequirements] = useState([
     'Kiến thức HTML, CSS, Javascript cơ bản',
     'Máy tính cá nhân có kết nối internet',

@@ -1,0 +1,254 @@
+'use client';
+
+import { useState } from 'react';
+import { Box, Typography, Button, Paper, IconButton, Collapse, TextField, TextareaAutosize } from '@mui/material';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowRightIcon from '@mui/icons-material/ArrowRight';
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
+import ArticleIcon from '@mui/icons-material/Article';
+import QuizIcon from '@mui/icons-material/Quiz';
+import DescriptionIcon from '@mui/icons-material/Description';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
+import ChapterList from '../chapterList';
+import EditContentModal from '../editContentModal';
+import { Chapter, Lesson } from '../../types';
+
+// Mock data - trong thực tế sẽ lấy từ API
+const initialChapters: Chapter[] = [
+  {
+    id: '1',
+    courseId: 'course-1',
+    title: 'Giới thiệu về React và Môi trường',
+    description: '',
+    objectives: '',
+    order: 1,
+    isExpanded: true,
+    isEditing: true,
+    lessons: [
+      {
+        id: '1-1',
+        chapterId: '1',
+        title: 'Tổng quan về ReactJS',
+        description: '',
+        order: 1,
+        isEditing: true,
+        steps: [
+          {
+            id: '1-1-1',
+            type: 'lecture',
+            title: 'Bài giảng: React là gì?',
+            content: '',
+            order: 1,
+            blocks: [
+              {
+                id: '1',
+                type: 'text',
+                title: 'Khối văn bản',
+                content: 'Đây là nơi để soạn thảo nội dung văn bản cho bài giảng...',
+                order: 1,
+              },
+              { id: '2', type: 'image', title: 'Khối hình ảnh', content: 'image-url.jpg', order: 2 },
+            ],
+          },
+          {
+            id: '1-1-2',
+            type: 'quiz',
+            title: 'Bài tập: Quiz kiểm tra kiến thức',
+            content: '',
+            order: 2,
+          },
+        ],
+      },
+      {
+        id: '1-2',
+        chapterId: '1',
+        title: 'Cài đặt môi trường phát triển',
+        description: '',
+        order: 2,
+        isEditing: false,
+        steps: [],
+      },
+    ],
+  },
+  {
+    id: '2',
+    courseId: 'course-1',
+    title: 'Components và Props',
+    description: '',
+    objectives: '',
+    order: 2,
+    isExpanded: false,
+    isEditing: false,
+    lessons: [],
+  },
+];
+
+export default function CourseContentPage() {
+  const [chapters, setChapters] = useState<Chapter[]>(initialChapters);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedLessonId, setSelectedLessonId] = useState<string | null>(null);
+
+  const toggleChapter = (chapterId: string) => {
+    setChapters(
+      chapters.map((chapter) => (chapter.id === chapterId ? { ...chapter, isExpanded: !chapter.isExpanded } : chapter))
+    );
+  };
+
+  const toggleChapterEdit = (chapterId: string) => {
+    setChapters(
+      chapters.map((chapter) =>
+        chapter.id === chapterId ? { ...chapter, isEditing: !chapter.isEditing } : { ...chapter, isEditing: false }
+      )
+    );
+  };
+
+  const toggleLessonEdit = (chapterId: string, lessonId: string) => {
+    setChapters(
+      chapters.map((chapter) => {
+        if (chapter.id === chapterId) {
+          return {
+            ...chapter,
+            lessons: chapter.lessons.map((lesson) =>
+              lesson.id === lessonId ? { ...lesson, isEditing: !lesson.isEditing } : { ...lesson, isEditing: false }
+            ),
+          };
+        }
+        return chapter;
+      })
+    );
+  };
+
+  const updateChapter = (chapterId: string, updates: Partial<Chapter>) => {
+    setChapters(chapters.map((chapter) => (chapter.id === chapterId ? { ...chapter, ...updates } : chapter)));
+  };
+
+  const updateLesson = (chapterId: string, lessonId: string, updates: Partial<Lesson>) => {
+    setChapters(
+      chapters.map((chapter) => {
+        if (chapter.id === chapterId) {
+          return {
+            ...chapter,
+            lessons: chapter.lessons.map((lesson) => (lesson.id === lessonId ? { ...lesson, ...updates } : lesson)),
+          };
+        }
+        return chapter;
+      })
+    );
+  };
+
+  const addNewChapter = () => {
+    const newChapter: Chapter = {
+      id: `chapter-${Date.now()}`,
+      courseId: 'course-1',
+      title: 'Chương mới',
+      description: '',
+      objectives: '',
+      order: chapters.length + 1,
+      isExpanded: true,
+      isEditing: true,
+      lessons: [],
+    };
+    setChapters([...chapters, newChapter]);
+  };
+
+  const addNewLesson = (chapterId: string) => {
+    setChapters(
+      chapters.map((chapter) => {
+        if (chapter.id === chapterId) {
+          const newLesson: Lesson = {
+            id: `lesson-${Date.now()}`,
+            chapterId,
+            title: 'Bài học mới',
+            description: '',
+            order: chapter.lessons.length + 1,
+            isEditing: true,
+            steps: [],
+          };
+          return {
+            ...chapter,
+            lessons: [...chapter.lessons, newLesson],
+            isExpanded: true,
+          };
+        }
+        return chapter;
+      })
+    );
+  };
+
+  const deleteChapter = (chapterId: string) => {
+    setChapters(chapters.filter((chapter) => chapter.id !== chapterId));
+  };
+
+  const deleteLesson = (chapterId: string, lessonId: string) => {
+    setChapters(
+      chapters.map((chapter) => {
+        if (chapter.id === chapterId) {
+          return {
+            ...chapter,
+            lessons: chapter.lessons.filter((lesson) => lesson.id !== lessonId),
+          };
+        }
+        return chapter;
+      })
+    );
+  };
+
+  const openContentEditor = (lessonId: string) => {
+    setSelectedLessonId(lessonId);
+    setIsModalOpen(true);
+  };
+
+  return (
+    <Box>
+      {/* Header Section */}
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 4 }}>
+        <Box>
+          <Typography variant='h5' fontWeight='bold' gutterBottom>
+            Nội dung khóa học
+          </Typography>
+          <Typography variant='body2' color='text.secondary'>
+            Sắp xếp, thêm, sửa, xóa các chương, bài học và nội dung chi tiết.
+          </Typography>
+        </Box>
+        <Button
+          variant='contained'
+          startIcon={<AddCircleIcon />}
+          onClick={addNewChapter}
+          sx={{
+            bgcolor: 'primary.main',
+            color: 'white',
+            '&:hover': { bgcolor: 'primary.dark' },
+          }}
+        >
+          Thêm chương mới
+        </Button>
+      </Box>
+
+      {/* Chapters List */}
+      <ChapterList
+        chapters={chapters}
+        onToggleChapter={toggleChapter}
+        onToggleChapterEdit={toggleChapterEdit}
+        onToggleLessonEdit={toggleLessonEdit}
+        onUpdateChapter={updateChapter}
+        onUpdateLesson={updateLesson}
+        onAddLesson={addNewLesson}
+        onDeleteChapter={deleteChapter}
+        onDeleteLesson={deleteLesson}
+        onOpenContentEditor={openContentEditor}
+      />
+
+      {/* Edit Content Modal */}
+      <EditContentModal
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        lessonId={selectedLessonId}
+        chapters={chapters}
+      />
+    </Box>
+  );
+}
