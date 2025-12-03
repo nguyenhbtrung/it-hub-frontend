@@ -15,6 +15,8 @@ import {
 } from '@mui/material';
 import { Dashboard, MenuBook, Group, Forum, BarChart, Settings, Logout, School } from '@mui/icons-material';
 import Logo from '@/components/common/Logo';
+import Link from '@/components/common/Link';
+import { usePathname } from 'next/navigation';
 
 const LogoIcon = () => (
   <svg
@@ -33,12 +35,14 @@ const LogoIcon = () => (
 );
 
 export default function Sidebar() {
+  const instructorPath = '/instructor';
+  const pathname = usePathname();
   const menuItems = [
-    { icon: <Dashboard />, text: 'Bảng điều khiển', active: true },
-    { icon: <MenuBook />, text: 'Quản lý Khóa học' },
-    { icon: <Group />, text: 'Quản lý Học viên' },
-    { icon: <Forum />, text: 'Thảo luận & Hỏi đáp' },
-    { icon: <BarChart />, text: 'Thống kê & Báo cáo' },
+    { icon: <Dashboard />, text: 'Bảng điều khiển', href: '', active: true },
+    { icon: <MenuBook />, text: 'Quản lý Khóa học', href: '/courses' },
+    { icon: <Group />, text: 'Quản lý Học viên', href: '/students' },
+    { icon: <Forum />, text: 'Thảo luận & Hỏi đáp', href: '/discussion' },
+    { icon: <BarChart />, text: 'Thống kê & Báo cáo', href: '/statistical' },
   ];
 
   //   const bottomMenuItems = [{ icon: <Settings />, text: 'Cài đặt' }];
@@ -61,35 +65,41 @@ export default function Sidebar() {
     >
       <Box>
         {/* Logo */}
-        <Logo href='/instructor' sx={{ mb: 3 }} />
+        <Logo href={instructorPath} sx={{ mb: 3 }} />
 
         {/* Main Menu */}
         <List sx={{ p: 0 }}>
-          {menuItems.map((item, index) => (
-            <ListItem key={index} sx={{ p: 0, mb: 0.5 }}>
-              <ListItemButton
-                sx={{
-                  borderRadius: 0.7,
-                  backgroundColor: item.active ? 'hero.light' : 'transparent',
-                  color: item.active ? 'primary.main' : 'text.secondary',
-                  '&:hover': {
-                    backgroundColor: item.active ? 'hero.light' : 'action.hover',
-                  },
-                  px: 2,
-                  py: 0.7,
-                }}
-              >
-                <ListItemIcon sx={{ minWidth: 40, color: 'inherit' }}>{item.icon}</ListItemIcon>
-                <ListItemText
-                  primary={item.text}
-                  primaryTypographyProps={{
-                    fontSize: '0.875rem',
-                    fontWeight: 500,
+          {menuItems.map((item, index) => {
+            const fullHref = instructorPath + item.href;
+            const isActive = pathname === fullHref;
+            return (
+              <ListItem key={index} sx={{ p: 0, mb: 0.5 }}>
+                <ListItemButton
+                  LinkComponent={Link}
+                  href={fullHref}
+                  sx={{
+                    borderRadius: 0.7,
+                    backgroundColor: isActive ? 'hero.light' : 'transparent',
+                    color: isActive ? 'primary.main' : 'text.secondary',
+                    '&:hover': {
+                      backgroundColor: isActive ? 'hero.light' : 'action.hover',
+                    },
+                    px: 2,
+                    py: 0.7,
                   }}
-                />
-              </ListItemButton>
-            </ListItem>
-          ))}
+                >
+                  <ListItemIcon sx={{ minWidth: 40, color: 'inherit' }}>{item.icon}</ListItemIcon>
+                  <ListItemText
+                    primary={item.text}
+                    primaryTypographyProps={{
+                      fontSize: '0.875rem',
+                      fontWeight: 500,
+                    }}
+                  />
+                </ListItemButton>
+              </ListItem>
+            );
+          })}
         </List>
       </Box>
 
