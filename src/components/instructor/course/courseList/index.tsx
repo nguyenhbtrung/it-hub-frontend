@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Box, Typography, Button, IconButton, Card, CardContent, Avatar, Chip } from '@mui/material';
 import { Group, Edit, Visibility, Delete } from '@mui/icons-material';
+import Link from '@/components/common/Link';
 
 interface Course {
   id: number;
@@ -92,10 +93,10 @@ const statusConfig: Record<StatusKey, StatusConfigItem> = {
 export default function CourseList() {
   const [selectedCourse, setSelectedCourse] = useState(null);
 
-  const handleEdit = (courseId: number) => {
-    console.log('Edit course:', courseId);
-    // Add edit logic here
-  };
+  // const handleEdit = (courseId: number) => {
+  //   console.log('Edit course:', courseId);
+  //   // Add edit logic here
+  // };
 
   const handleView = (courseId: number) => {
     console.log('View course:', courseId);
@@ -198,8 +199,10 @@ export default function CourseList() {
           {/* Action Buttons */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, ml: 2 }}>
             <IconButton
+              LinkComponent={Link}
+              href={`/instructor/courses/${course.id}/edit`}
               size='small'
-              onClick={() => handleEdit(course.id)}
+              // onClick={() => handleEdit(course.id)}
               sx={{
                 color: 'text.secondary',
                 '&:hover': {

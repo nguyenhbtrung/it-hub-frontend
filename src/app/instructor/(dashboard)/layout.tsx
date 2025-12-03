@@ -6,7 +6,9 @@ export default function InstructorDashboardLayout({ children }: { children: Reac
   return (
     <Box sx={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
       <Sidebar />
-      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      <Box
+        sx={{ bgcolor: 'customBackground.4', flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}
+      >
         <Header />
         {children}
       </Box>

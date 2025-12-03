@@ -46,6 +46,7 @@ export const darkPalette: PaletteOptions = {
     1: '#232323ff',
     2: '#264d73',
     3: '#212121',
+    4: '#121212',
   },
   text: {
     primary: '#ffffff',

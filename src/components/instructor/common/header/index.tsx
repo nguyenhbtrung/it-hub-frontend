@@ -13,7 +13,7 @@ export default function Header() {
       position='sticky'
       elevation={0}
       sx={{
-        backgroundColor: 'background.default',
+        backgroundColor: 'customBackground.4',
         borderBottom: '1px solid',
         borderColor: 'divider',
         backdropFilter: 'blur(8px)',
