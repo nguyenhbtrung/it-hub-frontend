@@ -7,6 +7,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import { ContentBlock } from '../../types';
+import RichTextEditor from '@/components/common/richTextEditor';
+import RteViewer from '@/components/common/richTextEditor/rteViewer';
 
 interface ContentBlockEditorProps {
   block: ContentBlock;
@@ -76,18 +78,10 @@ export default function ContentBlockEditor({ block, onUpdate, onDelete }: Conten
 
       {block.type === 'text' ? (
         isEditing ? (
-          <TextField
-            fullWidth
-            multiline
-            rows={4}
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            variant='outlined'
-            size='small'
-          />
+          <RichTextEditor value={content} onChange={setContent} />
         ) : (
           <Typography variant='body2' color='text.primary'>
-            {content || 'Đây là nơi để soạn thảo nội dung văn bản cho bài giảng...'}
+            {content ? <RteViewer content={content} /> : 'Đây là nơi để soạn thảo nội dung văn bản cho bài giảng...'}
           </Typography>
         )
       ) : block.type === 'image' ? (

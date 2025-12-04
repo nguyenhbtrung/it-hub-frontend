@@ -7,7 +7,7 @@ import UploadFileIcon from '@mui/icons-material/UploadFile';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import CloseIcon from '@mui/icons-material/Close';
 import { useState } from 'react';
-import RichTextEditor from '@/components/admin/common/richTextEditor';
+import RichTextEditor from '@/components/common/richTextEditor';
 
 export default function EditCourseDetailForm() {
   const [requirements, setRequirements] = useState([
