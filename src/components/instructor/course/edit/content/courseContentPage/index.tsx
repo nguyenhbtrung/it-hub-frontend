@@ -48,10 +48,39 @@ const initialChapters: Chapter[] = [
                 id: '1',
                 type: 'text',
                 title: 'Khối văn bản',
-                content: 'Đây là nơi để soạn thảo nội dung văn bản cho bài giảng...',
+                content:
+                  '<h1>Hướng dẫn cài đặt trên Windows</h1><p>Trong bài học này, chúng ta sẽ đi qua từng bước để cài đặt và cấu hình phần mềm cần thiết trên hệ điều hành Windows. Hãy đảm bảo bạn đã xem video hướng dẫn và làm theo các bước bên dưới.</p>',
                 order: 1,
               },
-              { id: '2', type: 'image', title: 'Khối hình ảnh', content: 'image-url.jpg', order: 2 },
+              { id: '2', type: 'image', title: 'Khối hình ảnh', content: 'https://picsum.photos/600/300', order: 2 },
+              {
+                id: '3',
+                type: 'text',
+                title: 'Khối văn bản',
+                content:
+                  '<h2>Các bước thực hiện</h2><ol><li><p>Tải xuống tệp cài đặt từ trang web chính thức. Chúng tôi đã cung cấp liên kết trực tiếp để bạn tiện theo dõi.</p></li><li><p>Chạy tệp .exe vừa tải về và làm theo các hướng dẫn trên màn hình. Lưu ý chọn đúng đường dẫn cài đặt.</p></li><li><p>Sau khi cài đặt xong, mở ứng dụng lên và tiến hành cấu hình ban đầu như thiết lập ngôn ngữ, giao diện.</p></li><li><p>Kiểm tra lại phiên bản đã cài đặt để chắc chắn rằng mọi thứ đã hoạt động chính xác.</p></li></ol>',
+                order: 3,
+              },
+              {
+                id: '4',
+                type: 'markdown',
+                title: 'Khối văn bản',
+                content: `
+# Markdown 
+
+Inline code: \`console.log("Hello " + name);\`
+
+Block code:
+
+\`\`\`javascript
+function greet(name) {
+  console.log("Hello " + name);
+}
+greet("Next.js");
+\`\`\`
+        `,
+                order: 3,
+              },
             ],
           },
           {
