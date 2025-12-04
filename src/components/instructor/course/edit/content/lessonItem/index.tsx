@@ -10,8 +10,9 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DescriptionIcon from '@mui/icons-material/Description';
 import QuizIcon from '@mui/icons-material/Quiz';
+import CloseIcon from '@mui/icons-material/Close';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
-import { Chapter, Lesson } from '../../types';
+import { Chapter, Lesson, LessonStep } from '../../types';
 import ContentStep from '../contentStep';
 
 interface LessonItemProps {
@@ -32,6 +33,7 @@ export default function LessonItem({
   onOpenContentEditor,
 }: LessonItemProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isAddingStep, setIsAddingStep] = useState(false);
   const [localTitle, setLocalTitle] = useState(lesson.title);
   const [localDescription, setLocalDescription] = useState(lesson.description);
 
@@ -41,6 +43,29 @@ export default function LessonItem({
       description: localDescription,
     });
     onToggleLessonEdit(chapter.id, lesson.id);
+  };
+
+  const handleAddStep = (type: 'lecture' | 'assignment' | 'quiz' | 'resource', title: string) => {
+    const steps = lesson.steps;
+    const lecture: LessonStep = {
+      id: crypto.randomUUID(),
+      type,
+      title,
+      order: Math.max(...steps.map((step) => step.order)) + 1,
+      blocks: type === 'lecture' ? [] : undefined,
+    };
+    onUpdateLesson(chapter.id, lesson.id, {
+      steps: [...steps, lecture],
+    });
+  };
+
+  const handleDeleteStep = (stepId: string) => {
+    const steps = lesson.steps;
+    const updatedSteps = steps.filter((step) => step.id !== stepId);
+
+    onUpdateLesson(chapter.id, lesson.id, {
+      steps: updatedSteps,
+    });
   };
 
   return (
@@ -91,7 +116,7 @@ export default function LessonItem({
         </Box>
 
         <Box sx={{ display: 'flex', gap: 0.5 }}>
-          <IconButton size='small' onClick={() => onOpenContentEditor(lesson.id)} title='Thêm bước'>
+          <IconButton size='small' onClick={() => setIsAddingStep(true)} title='Thêm bước'>
             <AddIcon fontSize='small' />
           </IconButton>
           <IconButton size='small' onClick={() => onToggleLessonEdit(chapter.id, lesson.id)} title='Chỉnh sửa bài học'>
@@ -102,6 +127,20 @@ export default function LessonItem({
           </IconButton>
         </Box>
       </Box>
+
+      <Collapse in={isAddingStep}>
+        <Box display='flex' gap={1} sx={{ borderTop: 1, borderColor: 'divider', p: 3 }}>
+          <IconButton onClick={() => setIsAddingStep(false)}>
+            <CloseIcon />
+          </IconButton>
+          <Button variant='contained' onClick={() => handleAddStep('lecture', 'Bài giảng không tiêu đề')}>
+            Bài giảng
+          </Button>
+          <Button variant='contained' onClick={() => handleAddStep('quiz', 'Bài tập không tiêu đề')} color='warning'>
+            Bài tập
+          </Button>
+        </Box>
+      </Collapse>
 
       {/* Lesson Edit Form */}
       <Collapse in={lesson.isEditing}>
@@ -175,7 +214,7 @@ export default function LessonItem({
       <Collapse in={isExpanded}>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, p: 2, pt: 0 }}>
           {lesson.steps.map((step) => (
-            <ContentStep key={step.id} step={step} onEditContent={() => onOpenContentEditor(lesson.id)} />
+            <ContentStep key={step.id} step={step} onEditContent={onOpenContentEditor} onDelete={handleDeleteStep} />
           ))}
         </Box>
       </Collapse>

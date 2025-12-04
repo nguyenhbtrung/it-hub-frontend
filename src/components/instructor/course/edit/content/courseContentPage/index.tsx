@@ -15,9 +15,9 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import ChapterList from '../chapterList';
 import EditContentModal from '../editContentModal';
-import { Chapter, Lesson } from '../../types';
+import { Chapter, Lesson, LessonStep } from '../../types';
 
-// Mock data - trong thực tế sẽ lấy từ API
+// Mock data
 const initialChapters: Chapter[] = [
   {
     id: '1',
@@ -90,7 +90,7 @@ const initialChapters: Chapter[] = [
 export default function CourseContentPage() {
   const [chapters, setChapters] = useState<Chapter[]>(initialChapters);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedLessonId, setSelectedLessonId] = useState<string | null>(null);
+  const [selectedStep, setSelectedStep] = useState<LessonStep | null>(null);
 
   const toggleChapter = (chapterId: string) => {
     setChapters(
@@ -197,9 +197,30 @@ export default function CourseContentPage() {
     );
   };
 
-  const openContentEditor = (lessonId: string) => {
-    setSelectedLessonId(lessonId);
-    setIsModalOpen(true);
+  const updateStep = (stepId: string, updatedStep: Partial<LessonStep>) => {
+    setChapters(
+      chapters.map((chapter) => ({
+        ...chapter,
+        lessons: chapter.lessons.map((lesson) => ({
+          ...lesson,
+          steps: lesson.steps.map((step) => (step.id === stepId ? { ...step, ...updatedStep } : step)),
+        })),
+      }))
+    );
+    setIsModalOpen(false);
+  };
+
+  const openContentEditor = (stepId: string) => {
+    for (const chapter of chapters) {
+      for (const lesson of chapter.lessons) {
+        const step = lesson.steps.find((s) => s.id === stepId);
+        if (step) {
+          setSelectedStep(step);
+          setIsModalOpen(true);
+          return;
+        }
+      }
+    }
   };
 
   return (
@@ -243,12 +264,7 @@ export default function CourseContentPage() {
       />
 
       {/* Edit Content Modal */}
-      <EditContentModal
-        open={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        lessonId={selectedLessonId}
-        chapters={chapters}
-      />
+      <EditContentModal open={isModalOpen} onClose={() => {}} onUpdate={updateStep} step={selectedStep} />
     </Box>
   );
 }

@@ -11,10 +11,11 @@ import { LessonStep } from '../../types';
 
 interface ContentStepProps {
   step: LessonStep;
-  onEditContent: () => void;
+  onEditContent: (stepId: string) => void;
+  onDelete: (stepId: string) => void;
 }
 
-export default function ContentStep({ step, onEditContent }: ContentStepProps) {
+export default function ContentStep({ step, onEditContent, onDelete }: ContentStepProps) {
   const getStepIcon = () => {
     switch (step.type) {
       case 'lecture':
@@ -62,7 +63,7 @@ export default function ContentStep({ step, onEditContent }: ContentStepProps) {
 
       <Box sx={{ display: 'flex', gap: 0.5 }}>
         {step.type === 'lecture' ? (
-          <IconButton size='small' onClick={onEditContent} title='Chỉnh sửa nội dung'>
+          <IconButton size='small' onClick={() => onEditContent(step.id)} title='Chỉnh sửa nội dung'>
             <EditNoteIcon fontSize='small' />
           </IconButton>
         ) : (
@@ -70,7 +71,7 @@ export default function ContentStep({ step, onEditContent }: ContentStepProps) {
             <SettingsIcon fontSize='small' />
           </IconButton>
         )}
-        <IconButton size='small' title='Xóa bước'>
+        <IconButton size='small' title='Xóa bước' onClick={() => onDelete(step.id)}>
           <DeleteIcon fontSize='small' />
         </IconButton>
       </Box>

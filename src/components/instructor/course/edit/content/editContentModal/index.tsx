@@ -8,14 +8,14 @@ import SmartDisplayIcon from '@mui/icons-material/SmartDisplay';
 import QuizIcon from '@mui/icons-material/Quiz';
 import CodeIcon from '@mui/icons-material/Code';
 import ContentBlockEditor from '../contentBlockEditor';
-import { useState } from 'react';
-import { Chapter, ContentBlockType } from '../../types';
+import { useEffect, useState } from 'react';
+import { Chapter, ContentBlock, ContentBlockType, LessonStep } from '../../types';
 
 interface EditContentModalProps {
   open: boolean;
   onClose: () => void;
-  lessonId: string | null;
-  chapters: Chapter[];
+  onUpdate: (stepId: string, updatedStep: Partial<LessonStep>) => void;
+  step: LessonStep | null;
 }
 
 const contentBlocks = [
@@ -27,10 +27,26 @@ const contentBlocks = [
   { type: 'code' as ContentBlockType, icon: <CodeIcon />, label: 'Mã nguồn' },
 ];
 
-export default function EditContentModal({ open, onClose, lessonId, chapters }: EditContentModalProps) {
-  const lesson = chapters.flatMap((chapter) => chapter.lessons).find((lesson) => lesson.id === lessonId);
+export default function EditContentModal({ open, onClose, onUpdate, step }: EditContentModalProps) {
+  const [blocks, setBlocks] = useState<ContentBlock[]>(
+    step?.blocks ||
+      // lesson?.steps.find((s) => s.type === 'lecture')?.blocks ||
+      [
+        // {
+        //   id: '1',
+        //   type: 'text',
+        //   title: 'Khối văn bản',
+        //   content: '<h2>Tiêu đề</h2><h3>Tiêu đề</h3><p>Nội dung</p>',
+        //   order: 1,
+        // },
+        // { id: '2', type: 'image', title: 'Khối hình ảnh', content: 'https://picsum.photos/200/300', order: 2 },
+      ]
+  );
 
-  const [blocks, setBlocks] = useState(lesson?.steps.find((s) => s.type === 'lecture')?.blocks || []);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setBlocks(step?.blocks || []);
+  }, [step]);
 
   const addBlock = (type: ContentBlockType) => {
     const newBlock = {
@@ -49,6 +65,12 @@ export default function EditContentModal({ open, onClose, lessonId, chapters }: 
 
   const deleteBlock = (blockId: string) => {
     setBlocks(blocks.filter((block) => block.id !== blockId));
+  };
+
+  const handleUpdateStep = () => {
+    if (step === null) return;
+    const updatedStep = { ...step, blocks: blocks };
+    onUpdate(step.id, updatedStep);
   };
 
   return (
@@ -81,9 +103,9 @@ export default function EditContentModal({ open, onClose, lessonId, chapters }: 
           }}
         >
           <Typography variant='h6' fontWeight='semibold'>
-            Chỉnh sửa nội dung bài giảng: {lesson?.title}
+            Chỉnh sửa nội dung bài giảng: {step?.title}
           </Typography>
-          <IconButton onClick={onClose}>
+          <IconButton onClick={handleUpdateStep}>
             <CloseIcon />
           </IconButton>
         </Box>
@@ -149,10 +171,12 @@ export default function EditContentModal({ open, onClose, lessonId, chapters }: 
             borderColor: 'divider',
           }}
         >
-          <Button variant='outlined' onClick={onClose}>
+          <Button variant='outlined' onClick={handleUpdateStep}>
             Hủy
           </Button>
-          <Button variant='contained'>Lưu nội dung</Button>
+          <Button variant='contained' onClick={handleUpdateStep}>
+            Lưu nội dung
+          </Button>
         </Box>
       </Box>
     </Modal>
