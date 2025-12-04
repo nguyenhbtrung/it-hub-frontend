@@ -6,6 +6,7 @@ import TitleIcon from '@mui/icons-material/Title';
 import ImageIcon from '@mui/icons-material/Image';
 import SmartDisplayIcon from '@mui/icons-material/SmartDisplay';
 import QuizIcon from '@mui/icons-material/Quiz';
+import CodeIcon from '@mui/icons-material/Code';
 import ContentBlockEditor from '../contentBlockEditor';
 import { useState } from 'react';
 import { Chapter, ContentBlockType } from '../../types';
@@ -22,6 +23,8 @@ const contentBlocks = [
   { type: 'image' as ContentBlockType, icon: <ImageIcon />, label: 'Hình ảnh' },
   { type: 'video' as ContentBlockType, icon: <SmartDisplayIcon />, label: 'Video' },
   { type: 'quiz' as ContentBlockType, icon: <QuizIcon />, label: 'Quiz' },
+  { type: 'markdown' as ContentBlockType, icon: <CodeIcon />, label: 'Markdown' },
+  { type: 'code' as ContentBlockType, icon: <CodeIcon />, label: 'Mã nguồn' },
 ];
 
 export default function EditContentModal({ open, onClose, lessonId, chapters }: EditContentModalProps) {

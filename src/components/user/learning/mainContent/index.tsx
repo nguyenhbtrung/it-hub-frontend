@@ -29,10 +29,19 @@ import {
 import { ContentBlock } from '@/types/content';
 import { JSX } from 'react';
 import { stepApi } from '@/lib/mockApi/leanring';
+import RteViewer from '@/components/common/richTextEditor/rteViewer';
+import MarkdownViewer from '@/components/common/markdownViewer';
+import CodeViewer from '@/components/common/codeViewer';
 
 // Helper component để render các loại block khác nhau
 const BlockRenderer = ({ block }: { block: ContentBlock }) => {
   switch (block.type) {
+    case 'text':
+      return <RteViewer content={block.content} />;
+    case 'markdown':
+      return <MarkdownViewer content={block.content} />;
+    case 'code':
+      return <CodeViewer code={block.code} />;
     case 'heading':
       const HeadingComponent = `h${block.level}` as keyof JSX.IntrinsicElements;
       return (
@@ -140,55 +149,6 @@ const BlockRenderer = ({ block }: { block: ContentBlock }) => {
               </Typography>
             </Box>
           )}
-        </Paper>
-      );
-
-    case 'code':
-      return (
-        <Paper
-          sx={{
-            borderRadius: 2,
-            overflow: 'hidden',
-            border: '1px solid',
-            borderColor: 'grey.800',
-            bgcolor: 'grey.900',
-            color: 'grey.100',
-            mb: 4,
-            mt: 2,
-          }}
-        >
-          <Box
-            sx={{
-              p: 2,
-              bgcolor: 'grey.800',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}
-          >
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Code fontSize='small' />
-              <Typography variant='subtitle2'>{block.filename || `code.${block.language}`}</Typography>
-              <Chip label={block.language} size='small' sx={{ height: 20, fontSize: '0.75rem' }} />
-            </Box>
-            {block.executable && (
-              <Button size='small' variant='contained' sx={{ bgcolor: 'primary.main' }}>
-                Run Code
-              </Button>
-            )}
-          </Box>
-          <Box sx={{ p: 2, overflowX: 'auto' }}>
-            <pre
-              style={{
-                margin: 0,
-                fontFamily: 'monospace',
-                fontSize: '0.875rem',
-                lineHeight: 1.5,
-              }}
-            >
-              <code>{block.code}</code>
-            </pre>
-          </Box>
         </Paper>
       );
 

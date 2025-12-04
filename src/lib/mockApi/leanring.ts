@@ -118,23 +118,15 @@ const mockStepContents: StepContent[] = [
     blocks: [
       {
         id: 'block-1',
-        type: 'heading',
+        type: 'text',
         order: 1,
-        text: 'Hướng dẫn cài đặt trên Windows',
-        level: 1,
+        content:
+          '<h1>Hướng dẫn cài đặt trên Windows</h1><p>Trong bài học này, chúng ta sẽ đi qua từng bước để cài đặt và cấu hình phần mềm cần thiết trên hệ điều hành Windows. Hãy đảm bảo bạn đã xem video hướng dẫn và làm theo các bước bên dưới.</p>',
       },
       {
         id: 'block-2',
-        type: 'paragraph',
-        order: 2,
-        content:
-          'Trong bài học này, chúng ta sẽ đi qua từng bước để cài đặt và cấu hình phần mềm cần thiết trên hệ điều hành Windows. Hãy đảm bảo bạn đã xem video hướng dẫn và làm theo các bước bên dưới.',
-        format: 'markdown',
-      },
-      {
-        id: 'block-3',
         type: 'video',
-        order: 3,
+        order: 2,
         url: 'https://www.youtube.com/embed/u7JMhVI7taQ',
         title: 'Video hướng dẫn cài đặt',
         description: 'Xem video để hiểu rõ quy trình cài đặt',
@@ -144,45 +136,55 @@ const mockStepContents: StepContent[] = [
           'https://lh3.googleusercontent.com/aida-public/AB6AXuC3NJ6pve7O3xXBNfXZ02aeoyjtRqK19THpoO-saTRYN1auXqJ6ubfXl-xf5Y7cAfFVYYCpooKFW43fsLJRi_U8JBAe931VVn_HRZsJZbVtN4ahHm6DFwwk1mPa_po9bEEFd8MVIhEiNtWbM5EJtaJ4G6Dsthly0bZ2NPwhj3kxuQviL7yPGcvz13082mKzIswRHQ0p1dIGbehwAK2WXPqwhR2gL3kSvc94jdWWvbe6QiFJJc8k5ss3TIMCsbgsiAmHF_OPIHYS0W8',
       },
       {
+        id: 'block-3',
+        type: 'text',
+        order: 3,
+        content:
+          '<h2>Các bước thực hiện</h2><ol><li><p>Tải xuống tệp cài đặt từ trang web chính thức. Chúng tôi đã cung cấp liên kết trực tiếp để bạn tiện theo dõi.</p></li><li><p>Chạy tệp .exe vừa tải về và làm theo các hướng dẫn trên màn hình. Lưu ý chọn đúng đường dẫn cài đặt.</p></li><li><p>Sau khi cài đặt xong, mở ứng dụng lên và tiến hành cấu hình ban đầu như thiết lập ngôn ngữ, giao diện.</p></li><li><p>Kiểm tra lại phiên bản đã cài đặt để chắc chắn rằng mọi thứ đã hoạt động chính xác.</p></li></ol>',
+      },
+      {
         id: 'block-4',
-        type: 'heading',
-        order: 4,
-        text: 'Các bước thực hiện',
-        level: 2,
-      },
-      {
-        id: 'block-5',
-        type: 'list',
-        order: 5,
-        items: [
-          'Tải xuống tệp cài đặt từ trang web chính thức. Chúng tôi đã cung cấp liên kết trực tiếp để bạn tiện theo dõi.',
-          'Chạy tệp .exe vừa tải về và làm theo các hướng dẫn trên màn hình. Lưu ý chọn đúng đường dẫn cài đặt.',
-          'Sau khi cài đặt xong, mở ứng dụng lên và tiến hành cấu hình ban đầu như thiết lập ngôn ngữ, giao diện.',
-          'Kiểm tra lại phiên bản đã cài đặt để chắc chắn rằng mọi thứ đã hoạt động chính xác.',
-        ],
-        ordered: true,
-      },
-      {
-        id: 'block-6',
         type: 'note',
-        order: 6,
+        order: 4,
         title: 'Lưu ý quan trọng',
         content:
           'Hãy chắc chắn rằng bạn đã khởi động lại máy tính sau khi quá trình cài đặt hoàn tất để áp dụng tất cả các thay đổi về biến môi trường.',
         variant: 'warning',
       },
-      // {
-      //   id: 'block-7',
-      //   type: 'code',
-      //   order: 7,
-      //   code: 'node --version\nnpm --version\ngit --version',
-      //   language: 'bash',
-      //   filename: 'Kiểm tra phiên bản',
-      //   highlightLines: [1, 3],
-      //   showLineNumbers: true,
-      //   executable: true,
-      //   expectedOutput: 'v18.17.0\n9.6.7\ngit version 2.41.0.windows.3',
-      // },
+      {
+        id: 'block-5',
+        type: 'text',
+        order: 5,
+        content: `<h2>Code</h2>`,
+      },
+      {
+        id: 'block-6',
+        type: 'code',
+        order: 6,
+        code: `function greet(name) {
+  console.log("Hello " + name);
+}
+greet("Next.js");`,
+      },
+      {
+        id: 'block-7',
+        type: 'markdown',
+        order: 7,
+        content: `
+# Markdown 
+
+Inline code: \`console.log("Hello " + name);\`
+
+Block code:
+
+\`\`\`javascript
+function greet(name) {
+  console.log("Hello " + name);
+}
+greet("Next.js");
+\`\`\`
+        `,
+      },
       {
         id: 'block-8',
         type: 'image',
@@ -234,24 +236,6 @@ const mockStepContents: StepContent[] = [
         explanation: 'Việc khởi động lại máy tính là bắt buộc để hệ thống nhận diện đường dẫn và biến môi trường mới.',
         points: 5,
       },
-      // {
-      //   id: 'block-11',
-      //   type: 'terminal',
-      //   order: 11,
-      //   commands: [
-      //     {
-      //       command: 'npm init -y',
-      //       output: 'Wrote to /path/to/project/package.json',
-      //       description: 'Khởi tạo project Node.js mới',
-      //     },
-      //     {
-      //       command: 'npm install express',
-      //       output: 'added 57 packages in 3s',
-      //       description: 'Cài đặt Express framework',
-      //     },
-      //   ],
-      //   interactive: true,
-      // },
     ],
     updatedAt: '2024-01-15T10:30:00Z',
     author: {
@@ -261,6 +245,167 @@ const mockStepContents: StepContent[] = [
     },
   },
 ];
+
+// const mockStepContents: StepContent[] = [
+//   {
+//     id: 'content-2-1-2',
+//     stepId: 'step-2-1-2',
+//     title: 'Hướng dẫn cài đặt trên Windows',
+//     description: 'Cùng nhau thiết lập môi trường phát triển để sẵn sàng cho khóa học.',
+//     estimatedTime: 15,
+//     difficulty: 'beginner',
+//     objectives: [
+//       'Hiểu cách cài đặt công cụ lập trình trên Windows',
+//       'Biết cách cấu hình biến môi trường',
+//       'Kiểm tra phiên bản đã cài đặt',
+//     ],
+//     prerequisites: ['Có máy tính Windows', 'Kết nối internet'],
+//     blocks: [
+//       {
+//         id: 'block-1',
+//         type: 'heading',
+//         order: 1,
+//         text: 'Hướng dẫn cài đặt trên Windows',
+//         level: 1,
+//       },
+//       {
+//         id: 'block-2',
+//         type: 'paragraph',
+//         order: 2,
+//         content:
+//           'Trong bài học này, chúng ta sẽ đi qua từng bước để cài đặt và cấu hình phần mềm cần thiết trên hệ điều hành Windows. Hãy đảm bảo bạn đã xem video hướng dẫn và làm theo các bước bên dưới.',
+//         format: 'markdown',
+//       },
+//       {
+//         id: 'block-3',
+//         type: 'video',
+//         order: 3,
+//         url: 'https://www.youtube.com/embed/u7JMhVI7taQ',
+//         title: 'Video hướng dẫn cài đặt',
+//         description: 'Xem video để hiểu rõ quy trình cài đặt',
+//         duration: 300,
+//         provider: 'youtube',
+//         thumbnail:
+//           'https://lh3.googleusercontent.com/aida-public/AB6AXuC3NJ6pve7O3xXBNfXZ02aeoyjtRqK19THpoO-saTRYN1auXqJ6ubfXl-xf5Y7cAfFVYYCpooKFW43fsLJRi_U8JBAe931VVn_HRZsJZbVtN4ahHm6DFwwk1mPa_po9bEEFd8MVIhEiNtWbM5EJtaJ4G6Dsthly0bZ2NPwhj3kxuQviL7yPGcvz13082mKzIswRHQ0p1dIGbehwAK2WXPqwhR2gL3kSvc94jdWWvbe6QiFJJc8k5ss3TIMCsbgsiAmHF_OPIHYS0W8',
+//       },
+//       {
+//         id: 'block-4',
+//         type: 'heading',
+//         order: 4,
+//         text: 'Các bước thực hiện',
+//         level: 2,
+//       },
+//       {
+//         id: 'block-5',
+//         type: 'list',
+//         order: 5,
+//         items: [
+//           'Tải xuống tệp cài đặt từ trang web chính thức. Chúng tôi đã cung cấp liên kết trực tiếp để bạn tiện theo dõi.',
+//           'Chạy tệp .exe vừa tải về và làm theo các hướng dẫn trên màn hình. Lưu ý chọn đúng đường dẫn cài đặt.',
+//           'Sau khi cài đặt xong, mở ứng dụng lên và tiến hành cấu hình ban đầu như thiết lập ngôn ngữ, giao diện.',
+//           'Kiểm tra lại phiên bản đã cài đặt để chắc chắn rằng mọi thứ đã hoạt động chính xác.',
+//         ],
+//         ordered: true,
+//       },
+//       {
+//         id: 'block-6',
+//         type: 'note',
+//         order: 6,
+//         title: 'Lưu ý quan trọng',
+//         content:
+//           'Hãy chắc chắn rằng bạn đã khởi động lại máy tính sau khi quá trình cài đặt hoàn tất để áp dụng tất cả các thay đổi về biến môi trường.',
+//         variant: 'warning',
+//       },
+//       // {
+//       //   id: 'block-7',
+//       //   type: 'code',
+//       //   order: 7,
+//       //   code: 'node --version\nnpm --version\ngit --version',
+//       //   language: 'bash',
+//       //   filename: 'Kiểm tra phiên bản',
+//       //   highlightLines: [1, 3],
+//       //   showLineNumbers: true,
+//       //   executable: true,
+//       //   expectedOutput: 'v18.17.0\n9.6.7\ngit version 2.41.0.windows.3',
+//       // },
+//       {
+//         id: 'block-8',
+//         type: 'image',
+//         order: 8,
+//         url: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCqOvXrmog41hF3X4IrNUV3OGtSBcA4XDzGt56vwKk9DnvJ1iWCrQJH0LgNtyo2BM6OFr05rN1ay8JKQj1dTHbe-QhOHj47a4jt_BLoTJedFMcaBMjVVbKoxXhp-xo_92mzAmdpt2F26hadPD9XNE7KMGDnEEKOqsBk8GIyU5_FkRTZCkXLjEm1_0Is3Rz521jN6mVK75qsbYpxyABkquLMQeod1z4KUkHPygsYTRz-VLvW4DBbzj0pefQs9GQ-tVRZuVyO1vyyNH4',
+//         alt: 'Screenshot của phần mềm sau khi cài đặt',
+//         caption: 'Giao diện phần mềm sau khi cài đặt thành công',
+//         width: 800,
+//         height: 450,
+//       },
+//       {
+//         id: 'block-9',
+//         type: 'file',
+//         order: 9,
+//         filename: 'install_guide.pdf',
+//         url: '/downloads/install_guide.pdf',
+//         size: 2048000,
+//         fileType: 'pdf',
+//         description: 'Hướng dẫn cài đặt chi tiết (PDF)',
+//       },
+//       {
+//         id: 'block-10',
+//         type: 'quiz',
+//         order: 10,
+//         question: 'Sau khi cài đặt xong, bước nào là QUAN TRỌNG nhất để đảm bảo phần mềm hoạt động đúng?',
+//         options: [
+//           {
+//             id: 'opt-1',
+//             text: 'Khởi động lại máy tính',
+//             isCorrect: true,
+//             explanation: 'Khởi động lại máy giúp áp dụng tất cả thay đổi biến môi trường',
+//           },
+//           {
+//             id: 'opt-2',
+//             text: 'Xóa file cài đặt',
+//             isCorrect: false,
+//           },
+//           {
+//             id: 'opt-3',
+//             text: 'Cài đặt thêm phần mềm khác',
+//             isCorrect: false,
+//           },
+//           {
+//             id: 'opt-4',
+//             text: 'Tắt Windows Defender',
+//             isCorrect: false,
+//           },
+//         ],
+//         explanation: 'Việc khởi động lại máy tính là bắt buộc để hệ thống nhận diện đường dẫn và biến môi trường mới.',
+//         points: 5,
+//       },
+//       // {
+//       //   id: 'block-11',
+//       //   type: 'terminal',
+//       //   order: 11,
+//       //   commands: [
+//       //     {
+//       //       command: 'npm init -y',
+//       //       output: 'Wrote to /path/to/project/package.json',
+//       //       description: 'Khởi tạo project Node.js mới',
+//       //     },
+//       //     {
+//       //       command: 'npm install express',
+//       //       output: 'added 57 packages in 3s',
+//       //       description: 'Cài đặt Express framework',
+//       //     },
+//       //   ],
+//       //   interactive: true,
+//       // },
+//     ],
+//     updatedAt: '2024-01-15T10:30:00Z',
+//     author: {
+//       id: 'author-1',
+//       name: 'Nguyễn Văn A',
+//       avatar: 'https://i.pravatar.cc/150?img=1',
+//     },
+//   },
+// ];
 
 export const stepApi = {
   // Lấy nội dung step theo ID

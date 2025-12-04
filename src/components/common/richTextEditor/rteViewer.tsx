@@ -1,3 +1,4 @@
+'use client';
 import Box from '@mui/material/Box';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';

@@ -132,6 +132,7 @@ export default function RichTextEditor({ value, onChange }: RichTextEditorProps)
     ],
     content: value,
     onUpdate: ({ editor }) => {
+      console.log(editor.getHTML());
       onChange(editor.getHTML());
     },
     editorProps: {

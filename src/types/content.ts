@@ -1,4 +1,6 @@
 export type ContentBlockType =
+  | 'text'
+  | 'markdown'
   | 'heading'
   | 'paragraph'
   | 'video'
@@ -16,6 +18,21 @@ export interface BaseContentBlock {
   type: ContentBlockType;
   order: number;
   metadata?: Record<string, any>;
+}
+
+export interface TextBlock extends BaseContentBlock {
+  type: 'text';
+  content: string;
+}
+
+export interface MarkdownBlock extends BaseContentBlock {
+  type: 'markdown';
+  content: string;
+}
+
+export interface CodeBlock extends BaseContentBlock {
+  type: 'code';
+  code: string;
 }
 
 export interface HeadingBlock extends BaseContentBlock {
@@ -49,16 +66,16 @@ export interface ImageBlock extends BaseContentBlock {
   height?: number;
 }
 
-export interface CodeBlock extends BaseContentBlock {
-  type: 'code';
-  code: string;
-  language: string;
-  filename?: string;
-  highlightLines?: number[];
-  showLineNumbers?: boolean;
-  executable?: boolean;
-  expectedOutput?: string;
-}
+// export interface CodeBlock extends BaseContentBlock {
+//   type: 'code';
+//   code: string;
+//   language: string;
+//   filename?: string;
+//   highlightLines?: number[];
+//   showLineNumbers?: boolean;
+//   executable?: boolean;
+//   expectedOutput?: string;
+// }
 
 export interface NoteBlock extends BaseContentBlock {
   type: 'note';
@@ -116,11 +133,13 @@ export interface TerminalBlock extends BaseContentBlock {
 }
 
 export type ContentBlock =
+  | TextBlock
+  | MarkdownBlock
+  | CodeBlock
   | HeadingBlock
   | ParagraphBlock
   | VideoBlock
   | ImageBlock
-  | CodeBlock
   | NoteBlock
   | ListBlock
   | QuizBlock

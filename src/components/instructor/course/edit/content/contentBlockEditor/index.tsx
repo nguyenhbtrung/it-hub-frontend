@@ -9,6 +9,8 @@ import UploadFileIcon from '@mui/icons-material/UploadFile';
 import { ContentBlock } from '../../types';
 import RichTextEditor from '@/components/common/richTextEditor';
 import RteViewer from '@/components/common/richTextEditor/rteViewer';
+import MarkdownViewer from '@/components/common/markdownViewer';
+import CodeViewer from '@/components/common/codeViewer';
 
 interface ContentBlockEditorProps {
   block: ContentBlock;
@@ -31,6 +33,10 @@ export default function ContentBlockEditor({ block, onUpdate, onDelete }: Conten
         return 'Khối video';
       case 'quiz':
         return 'Khối quiz';
+      case 'markdown':
+        return 'Khối markdown';
+      case 'code':
+        return 'Khối mã';
       default:
         return 'Khối nội dung';
     }
@@ -109,6 +115,42 @@ export default function ContentBlockEditor({ block, onUpdate, onDelete }: Conten
             <UploadFileIcon sx={{ fontSize: 48, color: 'text.disabled' }} />
           )}
         </Box>
+      ) : block.type === 'markdown' ? (
+        isEditing ? (
+          <TextField
+            fullWidth
+            multiline
+            rows={4}
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            variant='outlined'
+            size='small'
+          />
+        ) : (
+          <Typography variant='body2' color='text.primary'>
+            {content ? (
+              <MarkdownViewer content={content} />
+            ) : (
+              'Đây là nơi để soạn thảo nội dung văn bản cho bài giảng...'
+            )}
+          </Typography>
+        )
+      ) : block.type === 'code' ? (
+        isEditing ? (
+          <TextField
+            fullWidth
+            multiline
+            rows={4}
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            variant='outlined'
+            size='small'
+          />
+        ) : (
+          <Typography variant='body2' color='text.primary'>
+            {content ? <CodeViewer code={content} /> : 'Đây là nơi để soạn thảo nội dung văn bản cho bài giảng...'}
+          </Typography>
+        )
       ) : null}
 
       {isHovered && (
@@ -130,7 +172,7 @@ export default function ContentBlockEditor({ block, onUpdate, onDelete }: Conten
           <IconButton
             size='small'
             onClick={() => {
-              if (block.type === 'text') {
+              if (block.type === 'text' || block.type === 'markdown' || block.type === 'code') {
                 setIsEditing(!isEditing);
                 if (isEditing) handleSave();
               }

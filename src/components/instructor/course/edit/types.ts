@@ -1,4 +1,4 @@
-export type ContentBlockType = 'text' | 'image' | 'video' | 'quiz' | 'file';
+export type ContentBlockType = 'text' | 'image' | 'video' | 'quiz' | 'file' | 'markdown' | 'code';
 
 export interface ContentBlock {
   id: string;
