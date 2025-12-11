@@ -1,7 +1,7 @@
 'use client';
 
 import { DataGrid, GridColDef, GridFilterModel, GridSortModel } from '@mui/x-data-grid';
-import { Box, Chip, IconButton, Tooltip } from '@mui/material';
+import { Avatar, Box, Chip, IconButton, Tooltip } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -17,6 +17,7 @@ import { getDefaultFilter } from '@/lib/utils/filter';
 
 interface User {
   id: number;
+  avatarUrl: string;
   name: string;
   email: string;
   role: string;
@@ -27,6 +28,7 @@ interface User {
 
 const userSchema: Record<keyof User, FieldType> = {
   id: 'number',
+  avatarUrl: 'string',
   name: 'string',
   email: 'string',
   role: 'string',
@@ -37,6 +39,7 @@ const userSchema: Record<keyof User, FieldType> = {
 
 const userFieldsMap: Record<keyof User, string> = {
   id: 'ID',
+  avatarUrl: 'Ảnh đại diện',
   name: 'Họ tên',
   email: 'Email',
   role: 'Vai trò',
@@ -112,6 +115,7 @@ const fakeApi = {
 
     const allUsers: User[] = Array.from({ length: totalUsers }, (_, index) => {
       const name = generateRandomName();
+      const avatarUrl = `https://picsum.photos/200?random=${index}`;
       const role = getRandomRole();
       const email = `${nameToEmail(name)}@example.com`;
       const scope = role === 'admin' ? 'internal' : getRandomScope();
@@ -121,6 +125,7 @@ const fakeApi = {
       return {
         id: index + 1,
         name,
+        avatarUrl,
         email,
         role,
         scope,
@@ -308,7 +313,20 @@ export default function UserTable() {
 
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 70 },
+    {
+      field: 'avatarUrl',
+      headerName: 'Ảnh',
+      width: 70,
+      renderCell: (params) => {
+        const url = params.value;
 
+        return (
+          <Box height='100%' display='flex' justifyContent='center' alignItems='center'>
+            <Avatar alt='Remy Sharp' src={url} />
+          </Box>
+        );
+      },
+    },
     {
       field: 'name',
       headerName: 'Họ tên',
@@ -324,7 +342,7 @@ export default function UserTable() {
     {
       field: 'role',
       headerName: 'Vai trò',
-      width: 160,
+      width: 130,
       renderCell: (params) => {
         const role = params.value;
         const colors: any = {
@@ -339,7 +357,7 @@ export default function UserTable() {
     {
       field: 'scope',
       headerName: 'Phạm vi',
-      width: 160,
+      width: 130,
       renderCell: (params) => {
         const scope = params.value;
         const colors: any = {
@@ -365,7 +383,7 @@ export default function UserTable() {
     {
       field: 'createdAt',
       headerName: 'Ngày tạo',
-      width: 150,
+      width: 120,
     },
     {
       field: 'actions',
