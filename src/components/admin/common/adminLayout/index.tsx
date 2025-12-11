@@ -31,7 +31,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           p: 3,
           // width: '100%',
           minHeight: '100vh',
-          backgroundColor: theme.palette.background.default,
+          backgroundColor: 'customBackground.4',
           width: `calc(100% - ${open ? '240px' : `calc(${theme.spacing(7)} + 1px)`})`,
           // transition: theme.transitions.create('width', {
           //   easing: theme.transitions.easing.sharp,
