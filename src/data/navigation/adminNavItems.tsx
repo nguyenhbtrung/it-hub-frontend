@@ -16,11 +16,7 @@ export const navItems: NavItem[] = [
     label: 'Người dùng',
     icon: People,
     href: '/admin/usersss',
-    children: [
-      { label: 'Tất cả người dùng', href: '/admin/users' },
-      { label: 'Thêm người dùng', href: '/admin/users/add' },
-      { label: 'Nhóm người dùng', href: '/admin/users/groups' },
-    ],
+    children: [{ label: 'Tất cả người dùng', href: '/admin/users' }],
   },
   {
     label: 'Khóa học',
