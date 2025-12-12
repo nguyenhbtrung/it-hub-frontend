@@ -26,21 +26,21 @@ export const navItems: NavItem[] = [
     icon: School,
     href: '/admin/courses',
     children: [
-      { label: 'Tất cả khóa học', href: '/admin/courses' },
-      { label: 'Thêm khóa học', href: '/admin/courses/add' },
-      { label: 'Danh mục', href: '/admin/courses/categories' },
+      { label: 'Đang hoạt động', href: '/admin/courses/active' },
+      { label: 'Đang chờ phê duyệt', href: '/admin/courses/pending' },
+      { label: 'Đã đình chỉ', href: '/admin/courses/suspended' },
     ],
   },
-  {
-    label: 'Cuộc thi',
-    icon: EmojiEvents,
-    href: '/admin/competitions',
-    children: [
-      { label: 'Tất cả cuộc thi', href: '/admin/competitions' },
-      { label: 'Tạo cuộc thi', href: '/admin/competitions/create' },
-      { label: 'Đang diễn ra', href: '/admin/competitions/ongoing' },
-    ],
-  },
+  // {
+  //   label: 'Cuộc thi',
+  //   icon: EmojiEvents,
+  //   href: '/admin/competitions',
+  //   children: [
+  //     { label: 'Tất cả cuộc thi', href: '/admin/competitions' },
+  //     { label: 'Tạo cuộc thi', href: '/admin/competitions/create' },
+  //     { label: 'Đang diễn ra', href: '/admin/competitions/ongoing' },
+  //   ],
+  // },
   {
     label: 'Diễn đàn',
     icon: Forum,

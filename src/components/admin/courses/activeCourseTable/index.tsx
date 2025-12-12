@@ -1,7 +1,7 @@
 'use client';
 
 import { DataGrid, GridColDef, GridFilterModel, GridSortModel } from '@mui/x-data-grid';
-import { Avatar, Box, IconButton, Tooltip } from '@mui/material';
+import { Avatar, Box, Chip, IconButton, Tooltip, Typography } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/VisibilityOutlined';
 import CancelOutlined from '@mui/icons-material/CancelOutlined';
 import CheckCircleOutline from '@mui/icons-material/CheckCircleOutline';
@@ -16,28 +16,37 @@ import CustomColumnMenu from '@/components/common/customDataGrid/customColumnMen
 import { getDefaultFilter } from '@/lib/utils/filter';
 import { useMounted } from '@/hooks/useMounted';
 
-interface InstructorRegistration {
+interface ActiveCourse {
   id: number;
+  imgUrl: string;
+  title: string;
+  category: string;
+  instructor: string;
   avatarUrl: string;
-  name: string;
-  email: string;
+  status: string;
   createdAt: string;
 }
 
-const instructorRegistrationSchema: Record<keyof InstructorRegistration, FieldType> = {
+const activeCourseSchema: Record<keyof ActiveCourse, FieldType> = {
   id: 'number',
+  imgUrl: 'string',
+  title: 'string',
+  category: 'string',
+  instructor: 'string',
   avatarUrl: 'string',
-  name: 'string',
-  email: 'string',
+  status: 'string',
   createdAt: 'string',
 };
 
-const instructorRegistrationFieldsMap: Record<keyof InstructorRegistration, string> = {
+const activeCourseFieldsMap: Record<keyof ActiveCourse, string> = {
   id: 'ID',
+  imgUrl: 'Ảnh bìa khoá học',
+  title: 'Tiêu đề',
+  category: 'Danh mục',
+  instructor: 'Giảng viên',
   avatarUrl: 'Ảnh đại diện',
-  name: 'Họ tên',
-  email: 'Email',
-  createdAt: 'Ngày đăng ký',
+  status: 'Trạng thái',
+  createdAt: 'Ngày tạo',
 };
 
 function getRandomElement<T>(arr: T[]): T {
@@ -56,12 +65,10 @@ function generateRandomName(): string {
   return `${lastName} ${middleName} ${firstName}`;
 }
 
-function nameToEmail(name: string): string {
-  return name
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .replace(/\s+/g, '');
+function generateRandomCategory(): string {
+  const categories = ['Phát triển web', 'Khoa học dữ liệu', 'Trí tuệ nhân tạo', 'Game', 'Mobile', 'Thuật toán'];
+
+  return getRandomElement(categories);
 }
 
 function getSequentialDate(index: number, total: number): Date {
@@ -76,37 +83,42 @@ function getSequentialDate(index: number, total: number): Date {
 }
 
 const fakeApi = {
-  getInstructorRegistrations: async (
+  getActiveCourses: async (
     page: number = 1,
     pageSize: number = 10,
     sortBy?: string,
     sortOrder?: string | null,
     q?: string,
     filters?: FilterItem[]
-  ): Promise<{ instructorRegistrations: InstructorRegistration[]; total: number }> => {
+  ): Promise<{ activeCourses: ActiveCourse[]; total: number }> => {
     await new Promise((resolve) => setTimeout(resolve, 500));
 
     const total = 123;
 
-    const allRegistrations: InstructorRegistration[] = Array.from({ length: total }, (_, index) => {
-      const name = generateRandomName();
-      const avatarUrl = `https://picsum.photos/200?random=${index}`;
-      const email = `${nameToEmail(name)}@example.com`;
+    const allCourses: ActiveCourse[] = Array.from({ length: total }, (_, index) => {
+      const imgUrl = `https://picsum.photos/200?random=${index}`;
+      const title = 'Khoá học ' + index;
+      const instructor = generateRandomName();
+      const avatarUrl = `https://picsum.photos/200?random=${index + total}`;
+      const category = generateRandomCategory();
       const createdAt = toLocaleDateString(getSequentialDate(index, total));
 
       return {
         id: index + 1,
-        name,
+        imgUrl,
+        title,
+        instructor,
         avatarUrl,
-        email,
+        category,
+        status: 'active',
         createdAt,
       };
     });
 
-    let filteredRegistrations = [...allRegistrations];
+    let filteredCourses = [...allCourses];
     if (q) {
       const searchTerm = q.toLowerCase();
-      filteredRegistrations = filteredRegistrations.filter((registration) =>
+      filteredCourses = filteredCourses.filter((registration) =>
         Object.values(registration).some((value) => String(value).toLowerCase().includes(searchTerm))
       );
     }
@@ -114,8 +126,8 @@ const fakeApi = {
     if (filters && filters.length > 0) {
       filters.forEach((f) => {
         if (!f.value) return;
-        filteredRegistrations = filteredRegistrations.filter((user) => {
-          const val = String(user[f.field as keyof InstructorRegistration]).toLowerCase();
+        filteredCourses = filteredCourses.filter((user) => {
+          const val = String(user[f.field as keyof ActiveCourse]).toLowerCase();
           const target = f.value.toLowerCase();
 
           switch (f.operator) {
@@ -145,9 +157,9 @@ const fakeApi = {
     }
 
     if (sortBy && sortOrder) {
-      filteredRegistrations.sort((a, b) => {
-        const aVal = a[sortBy as keyof InstructorRegistration];
-        const bVal = b[sortBy as keyof InstructorRegistration];
+      filteredCourses.sort((a, b) => {
+        const aVal = a[sortBy as keyof ActiveCourse];
+        const bVal = b[sortBy as keyof ActiveCourse];
 
         if (aVal < bVal) return sortOrder === 'asc' ? -1 : 1;
         if (aVal > bVal) return sortOrder === 'asc' ? 1 : -1;
@@ -156,16 +168,16 @@ const fakeApi = {
     }
 
     const startIndex = (page - 1) * pageSize;
-    const paginatedRegistrations = filteredRegistrations.slice(startIndex, startIndex + pageSize);
+    const paginatedCourses = filteredCourses.slice(startIndex, startIndex + pageSize);
 
     return {
-      instructorRegistrations: paginatedRegistrations,
-      total: filteredRegistrations.length,
+      activeCourses: paginatedCourses,
+      total: filteredCourses.length,
     };
   },
 };
 
-export default function InstructorRegistrationTable() {
+export default function ActiveCourseTable() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -186,7 +198,7 @@ export default function InstructorRegistrationTable() {
     }
   });
 
-  const [registrations, setRegistrations] = useState<InstructorRegistration[]>([]);
+  const [registrations, setRegistrations] = useState<ActiveCourse[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
 
@@ -204,23 +216,19 @@ export default function InstructorRegistrationTable() {
     quickFilterValues: search ? [search] : [],
   });
   const [filters, setFilters] = useState<FilterItem[]>(
-    initFilters.length > 0 ? initFilters : [getDefaultFilter<InstructorRegistration>(instructorRegistrationSchema)]
+    initFilters.length > 0 ? initFilters : [getDefaultFilter<ActiveCourse>(activeCourseSchema)]
   );
   const isMounted = useMounted();
 
   useEffect(() => {
-    console.log(filterModel);
-  }, [filterModel]);
-
-  useEffect(() => {
-    const fetchRegistrations = async () => {
+    const fetchActiveCourses = async () => {
       setLoading(true);
       try {
         const sortField = sortModel[0]?.field;
         const sortOrder = sortModel[0]?.sort;
         const search = filterModel.quickFilterValues?.join(' ');
 
-        const response = await fakeApi.getInstructorRegistrations(
+        const response = await fakeApi.getActiveCourses(
           paginationModel.page + 1,
           paginationModel.pageSize,
           sortField,
@@ -229,7 +237,7 @@ export default function InstructorRegistrationTable() {
           filters
         );
 
-        setRegistrations(response.instructorRegistrations);
+        setRegistrations(response.activeCourses);
         setTotal(response.total);
       } catch (error) {
         console.error('Lỗi khi tải dữ liệu:', error);
@@ -238,7 +246,7 @@ export default function InstructorRegistrationTable() {
       }
     };
     if (isMounted) {
-      fetchRegistrations();
+      fetchActiveCourses();
     }
   }, [paginationModel, sortModel, filterModel, filters, isMounted]);
 
@@ -276,50 +284,65 @@ export default function InstructorRegistrationTable() {
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 70 },
     {
-      field: 'avatarUrl',
-      headerName: 'Ảnh',
-      width: 70,
+      field: 'course',
+      headerName: 'Khoá học',
+      flex: 1,
+      minWidth: 200,
       renderCell: (params) => {
-        const url = params.value;
-
+        const { imgUrl, title } = params.row;
         return (
-          <Box height='100%' display='flex' justifyContent='center' alignItems='center'>
-            <Avatar alt='Remy Sharp' src={url} />
+          <Box display='flex' alignItems='center' gap={1}>
+            <Box
+              component='img'
+              src={imgUrl}
+              alt={title}
+              sx={{ width: 48, height: 48, borderRadius: 0.5, objectFit: 'cover' }}
+            />
+            <Typography variant='body2' noWrap>
+              {title}
+            </Typography>
           </Box>
         );
       },
     },
     {
-      field: 'name',
-      headerName: 'Họ tên',
+      field: 'instructor',
+      headerName: 'Giảng viên',
+      flex: 1,
+      minWidth: 180,
+      renderCell: (params) => {
+        const { avatarUrl, instructor } = params.row;
+        return (
+          <Box height='100%' display='flex' alignItems='center' gap={1}>
+            <Avatar src={avatarUrl} alt={instructor} />
+            <Typography variant='body2' noWrap>
+              {instructor}
+            </Typography>
+          </Box>
+        );
+      },
+    },
+    {
+      field: 'category',
+      headerName: 'Danh mục',
       flex: 1,
       minWidth: 150,
     },
     {
-      field: 'email',
-      headerName: 'Email',
-      flex: 1,
-      minWidth: 200,
-    },
-    {
-      field: 'createdAt',
-      headerName: 'Ngày đăng ký',
-      width: 120,
+      field: 'status',
+      headerName: 'Trạng thái',
+      width: 150,
+      renderCell: () => <Chip label='Đang hoạt động' color='success' variant='outlined' />,
     },
     {
       field: 'actions',
       headerName: 'Thao tác',
-      width: 140,
+      width: 160,
       sortable: false,
       filterable: false,
       renderCell: () => (
         <Box>
-          <Tooltip title='Chấp nhận'>
-            <IconButton color='success'>
-              <CheckCircleOutline />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title='Từ chối'>
+          <Tooltip title='Đình chỉ'>
             <IconButton color='error'>
               <CancelOutlined />
             </IconButton>
@@ -360,19 +383,15 @@ export default function InstructorRegistrationTable() {
       slots={{
         toolbar: DataGridToolbar,
         columnHeaderFilterIconButton: (props) => <CustomFilterIconButton {...props} filters={filters} />,
-        filterPanel: CustomFilterPanel<InstructorRegistration>,
+        filterPanel: CustomFilterPanel<ActiveCourse>,
         columnMenu: (props) => (
-          <CustomColumnMenu<InstructorRegistration>
-            {...props}
-            schema={instructorRegistrationSchema}
-            setFilters={setFilters}
-          />
+          <CustomColumnMenu<ActiveCourse> {...props} schema={activeCourseSchema} setFilters={setFilters} />
         ),
       }}
       slotProps={{
         filterPanel: {
-          schema: instructorRegistrationSchema,
-          fieldsMap: instructorRegistrationFieldsMap,
+          schema: activeCourseSchema,
+          fieldsMap: activeCourseFieldsMap,
           filters: filters,
           setFilters: setFilters,
         },
