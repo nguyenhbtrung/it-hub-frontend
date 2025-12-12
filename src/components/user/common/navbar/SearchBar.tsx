@@ -11,7 +11,7 @@ export default function SearchBar() {
 
   const handleKeyPress = (event: React.KeyboardEvent) => {
     if (event.key === 'Enter' && searchQuery.trim()) {
-      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      router.push(`/search?query=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
 
