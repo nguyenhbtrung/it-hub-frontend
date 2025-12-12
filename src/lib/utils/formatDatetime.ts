@@ -24,3 +24,10 @@ export const toLocaleDateString = (date: Date): string => {
   const formattedDate = date.toLocaleDateString('vi-VN');
   return formattedDate;
 };
+
+export const toShortLocaleDateString = (date: Date) =>
+  date.toLocaleDateString('vi-VN', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  });
