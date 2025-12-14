@@ -1,13 +1,15 @@
 import { Grid } from '@mui/material';
-import { CourseCard, CourseCardSkeleton } from '../../common/CourseCard';
+import { CourseCardVertical, CourseCardSkeleton } from '../../common/courseCard/CourseCardVertical';
+import { CourseSummary } from '@/types/course';
 
-const courses = [
+const courses: CourseSummary[] = [
   {
     id: 1,
     title: 'Lập trình Web với React & Node.js',
     category: 'Web Development',
     level: 'Trung cấp',
     students: 2345,
+    instructor: 'ThS. Nguyễn Văn A',
     rating: 4.8,
     duration: '12 tuần',
     price: 'Miễn phí',
@@ -19,6 +21,7 @@ const courses = [
     category: 'Computer Science',
     level: 'Cơ bản',
     students: 3421,
+    instructor: 'ThS. Hoàng Văn B',
     rating: 4.9,
     duration: '10 tuần',
     price: 'Miễn phí',
@@ -30,6 +33,7 @@ const courses = [
     category: 'AI & ML',
     level: 'Nâng cao',
     students: 1876,
+    instructor: 'ThS. Lưu Thị C',
     rating: 4.7,
     duration: '16 tuần',
     price: 'Miễn phí',
@@ -41,6 +45,7 @@ const courses = [
     category: 'Data Science',
     level: 'Trung cấp',
     students: 2901,
+    instructor: 'TS. Đỗ Thị D',
     rating: 4.8,
     duration: '14 tuần',
     price: 'Miễn phí',
@@ -60,7 +65,7 @@ export async function FeaturedCourseList() {
     <Grid container spacing={2} px={{ xs: 3, md: 8 }}>
       {courses.map((course) => (
         <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={course.id}>
-          <CourseCard course={course} />
+          <CourseCardVertical course={course} />
         </Grid>
       ))}
     </Grid>

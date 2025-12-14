@@ -6,8 +6,11 @@ export interface CourseSummary {
   category: string;
   level: string;
   title: string;
+  description?: string;
+  instructor: string;
   students: number;
   rating: number;
+  reviewCount?: number;
   duration: string;
   price?: string;
 }

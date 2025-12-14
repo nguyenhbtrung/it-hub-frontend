@@ -56,8 +56,8 @@ export default function SearchResults() {
             Sắp xếp:
           </Typography>
           <FormControl size='small' sx={{ minWidth: 150 }}>
-            <InputLabel id='sort-label'>Phổ biến nhất</InputLabel>
-            <Select labelId='sort-label' label='Phổ biến nhất' defaultValue='popular'>
+            {/* <InputLabel id='sort-label'>Phổ biến nhất</InputLabel> */}
+            <Select labelId='sort-label' defaultValue='popular'>
               <MenuItem value='popular'>Phổ biến nhất</MenuItem>
               <MenuItem value='newest'>Mới nhất</MenuItem>
               <MenuItem value='rating'>Đánh giá cao</MenuItem>

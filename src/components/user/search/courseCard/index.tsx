@@ -53,7 +53,7 @@ export default function CourseCard({ course }: CourseCardProps) {
         </Typography>
 
         <Typography variant='body2' color='text.secondary' gutterBottom>
-          bởi {course.instructor}
+          Giảng viên: {course.instructor}
         </Typography>
 
         <Typography
@@ -92,7 +92,7 @@ export default function CourseCard({ course }: CourseCardProps) {
                 sx={{
                   fontSize: '0.75rem',
                   fontWeight: 600,
-                  backgroundColor: index === 0 ? 'primary.light' : 'action.selected',
+                  backgroundColor: index === 0 ? 'hero.light' : 'action.selected',
                   color: index === 0 ? 'primary.main' : 'text.secondary',
                 }}
               />

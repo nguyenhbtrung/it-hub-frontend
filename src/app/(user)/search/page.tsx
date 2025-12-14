@@ -10,20 +10,22 @@ interface SearchPageProps {
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
   return (
-    <Container maxWidth='lg' sx={{ py: 12 }}>
-      <Suspense>
-        <SearchHeader searchParams={searchParams} />
-      </Suspense>
+    <Container maxWidth='xl' sx={{ py: 12 }}>
+      <Box sx={{ px: 12 }}>
+        <Suspense>
+          <SearchHeader searchParams={searchParams} />
+        </Suspense>
 
-      <Grid container spacing={3}>
-        <Grid size={{ xs: 12, lg: 3 }}>
-          <FilterSidebar />
-        </Grid>
+        <Grid container spacing={3}>
+          <Grid size={{ xs: 12, lg: 3 }}>
+            <FilterSidebar />
+          </Grid>
 
-        <Grid size={{ xs: 12, lg: 9 }}>
-          <SearchResults />
+          <Grid size={{ xs: 12, lg: 9 }}>
+            <SearchResults />
+          </Grid>
         </Grid>
-      </Grid>
+      </Box>
     </Container>
   );
 }

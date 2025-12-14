@@ -2,7 +2,7 @@ import { Box, Typography } from '@mui/material';
 import { Suspense } from 'react';
 import ActiveCourseTable from '@/components/admin/courses/activeCourseTable';
 
-export default function IntructorRegistrationsPage() {
+export default function ActiveCoursesPage() {
   return (
     <Box sx={{ p: 1, height: '80vh' }}>
       <Box display='flex' justifyContent='space-between' sx={{ mb: 2 }}>
