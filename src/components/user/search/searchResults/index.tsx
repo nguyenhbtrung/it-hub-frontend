@@ -14,10 +14,11 @@ import {
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import EmptyState from '../emptyState';
-import CourseCard from '../courseCard';
+import { CourseCardHorizontal } from '../../common/courseCard/courseCardHorizontal';
+import { CourseSummary } from '@/types/course';
 
 export default function SearchResults() {
-  const courses = [
+  const courses: CourseSummary[] = [
     {
       id: 1,
       title: 'JavaScript Nâng Cao: Từ Con Số 0 đến Chuyên Gia',
@@ -27,7 +28,10 @@ export default function SearchResults() {
       rating: 4.8,
       reviewCount: 1250,
       image: 'https://picsum.photos/300/200?random=1',
-      tags: ['JavaScript', 'Web Dev'],
+      category: 'JavaScript',
+      level: 'Nâng cao',
+      students: 123,
+      duration: '40 giờ',
     },
     {
       id: 2,
@@ -38,7 +42,10 @@ export default function SearchResults() {
       rating: 4.9,
       reviewCount: 2130,
       image: 'https://picsum.photos/300/200?random=2',
-      tags: ['UI/UX', 'Figma'],
+      category: 'UI/UX',
+      level: 'Trung cấp',
+      students: 456,
+      duration: '30 giờ',
     },
   ];
 
@@ -72,7 +79,7 @@ export default function SearchResults() {
         <>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
             {courses.map((course) => (
-              <CourseCard key={course.id} course={course} />
+              <CourseCardHorizontal key={course.id} course={course} />
             ))}
           </Box>
 

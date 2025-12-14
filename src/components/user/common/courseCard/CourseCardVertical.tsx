@@ -16,11 +16,7 @@ import GroupIcon from '@mui/icons-material/Group';
 import StarIcon from '@mui/icons-material/Star';
 import Link from '@/components/common/Link';
 import Image from 'next/image';
-import { CourseSummary } from '@/types/course';
-
-interface CourseCardProps {
-  course: CourseSummary;
-}
+import { CourseCardProps } from './types';
 
 export function CourseCardVertical({ course }: CourseCardProps) {
   return (
