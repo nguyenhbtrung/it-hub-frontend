@@ -14,9 +14,13 @@ import {
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import GroupIcon from '@mui/icons-material/Group';
 import StarIcon from '@mui/icons-material/Star';
-import { CourseCardProps } from '@/types/course';
 import Link from '@/components/common/Link';
 import Image from 'next/image';
+import { CourseSummary } from '@/types/course';
+
+interface CourseCardProps {
+  course: CourseSummary;
+}
 
 export function CourseCardVertical({ course }: CourseCardProps) {
   return (

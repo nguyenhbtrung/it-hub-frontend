@@ -26,10 +26,6 @@ export interface courseProgress {
   lastAccess: string;
 }
 
-export interface CourseCardProps {
-  course: CourseSummary;
-}
-
 interface LessonBase {
   id: string;
   title: string;
