@@ -1,15 +1,15 @@
 import { Box, Typography, Select, MenuItem, FormControl } from '@mui/material';
-import EmptyState from '../emptyState';
-import { CourseCardHorizontal } from '../../common/courseCard/courseCardHorizontal';
+import EmptyState from './emptyState';
 import { CourseSummary } from '@/types/course';
 import AppPagination from '@/components/common/pagination';
-import CourseSortSelect from '../../common/courseSortSelect';
+import { CourseCardHorizontal } from '@/components/user/common/courseCard/courseCardHorizontal';
+import CourseSortSelect from '@/components/user/common/courseSortSelect';
 
 interface SearchResultsProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-export default async function SearchResults({ searchParams }: SearchResultsProps) {
+export default async function CourseList({ searchParams }: SearchResultsProps) {
   const courses: CourseSummary[] = [
     {
       id: 1,
