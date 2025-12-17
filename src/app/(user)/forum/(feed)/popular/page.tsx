@@ -1,6 +1,6 @@
 import ForumMainContent from '@/components/user/forum/forumMainContent';
 
-export default function ForumFeedPage() {
+export default function ForumFeedPopularPage() {
   return (
     <>
       <ForumMainContent />

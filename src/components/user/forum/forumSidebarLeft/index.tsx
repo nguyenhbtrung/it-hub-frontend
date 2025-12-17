@@ -26,18 +26,21 @@ import {
   PsychologyAlt as PsychologyAltIcon,
   CheckCircle as CheckCircleIcon,
 } from '@mui/icons-material';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 const navigationItems = [
-  { icon: <ForumIcon />, text: 'Tất cả bài viết' },
-  { icon: <TrendingUpIcon />, text: 'Phổ biến' },
-  { icon: <NewReleasesIcon />, text: 'Mới nhất' },
-  { icon: <RssFeedIcon />, text: 'Đang theo dõi' },
-  { icon: <SchoolIcon />, text: 'Bài viết trong khóa học' },
-  { icon: <EditNoteIcon />, text: 'Bài viết của tôi' },
-  { icon: <BookmarkIcon />, text: 'Đã lưu' },
+  { icon: <ForumIcon />, text: 'Tất cả bài viết', href: '/forum' },
+  { icon: <TrendingUpIcon />, text: 'Phổ biến', href: '/forum/popular' },
+  { icon: <NewReleasesIcon />, text: 'Mới nhất', href: '/forum/latest' },
+  { icon: <RssFeedIcon />, text: 'Đang theo dõi', href: '/forum/following' },
+  { icon: <SchoolIcon />, text: 'Bài viết trong khóa học', href: '/forum/in-course' },
+  { icon: <EditNoteIcon />, text: 'Bài viết của tôi', href: '/forum/me' },
+  { icon: <BookmarkIcon />, text: 'Đã lưu', href: '/forum/saved' },
 ];
 
 export default function ForumSidebarLeft() {
+  const pathname = usePathname();
   return (
     <Card
       sx={{
@@ -52,7 +55,9 @@ export default function ForumSidebarLeft() {
           {navigationItems.map((item, index) => (
             <ListItem key={index} disablePadding>
               <ListItemButton
-                selected={index === 0}
+                LinkComponent={Link}
+                href={item.href}
+                selected={pathname === item.href}
                 sx={{
                   borderRadius: 1,
                   mb: 0.5,
