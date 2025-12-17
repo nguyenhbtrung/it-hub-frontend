@@ -44,6 +44,7 @@ export const lightPalette: PaletteOptions = {
     3: '#fafafa',
     4: '#f5f7fa',
     5: '#f8fafc',
+    6: '#fffbeb',
   },
   hero: {
     main: '#E3F2FD',
@@ -62,5 +63,35 @@ export const lightPalette: PaletteOptions = {
   },
   footer: {
     background: '#f7f7f7',
+  },
+  badged: {
+    yellow: {
+      bg: '#fef9c3',
+      text: '#ca8a04',
+    },
+    blue: {
+      bg: '#dbeafe',
+      text: '#2563ee',
+    },
+    lightBlue: {
+      bg: '#f0f9ff',
+      text: '#0284c7',
+    },
+    purple: {
+      bg: '#faf5ff',
+      text: '#9333ea',
+    },
+    yellow2: {
+      bg: '#fffbeb',
+      text: '#d97706',
+    },
+    green: {
+      bg: '#dcfce7',
+      text: '#16a34a',
+    },
+    red: {
+      bg: '#fff1f2',
+      text: '#e11d48',
+    },
   },
 };

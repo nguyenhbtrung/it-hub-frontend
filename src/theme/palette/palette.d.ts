@@ -14,6 +14,12 @@ declare module '@mui/material/styles' {
     customBackground: {
       [key: string]: string;
     };
+    badged: {
+      [key: string]: {
+        bg: string;
+        text: string;
+      };
+    };
   }
   interface PaletteOptions {
     hero?: PaletteColorOptions;
@@ -26,6 +32,12 @@ declare module '@mui/material/styles' {
     };
     customBackground?: {
       [key: string]: string;
+    };
+    badged?: {
+      [key: string]: {
+        bg: string;
+        text: string;
+      };
     };
   }
 }
