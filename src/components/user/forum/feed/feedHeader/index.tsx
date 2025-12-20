@@ -13,6 +13,7 @@ import Tabs from '@mui/material/Tabs';
 import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useState } from 'react';
+import Link from '@/components/common/Link';
 
 const filterButtons = [
   { label: 'Tất cả', value: 'all' },
@@ -59,6 +60,8 @@ export default function FeedHeader() {
             </Typography>
           </Box>
           <Button
+            LinkComponent={Link}
+            href='/forum/new-post'
             variant='contained'
             startIcon={<Add />}
             sx={{
