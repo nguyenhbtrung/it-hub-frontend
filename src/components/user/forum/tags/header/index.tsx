@@ -8,27 +8,16 @@ import {
   Typography,
   Stack,
   Chip,
-  IconButton,
   Avatar,
   useTheme,
   useMediaQuery,
-  alpha,
 } from '@mui/material';
 import {
-  Search as SearchIcon,
   Notifications as NotificationsIcon,
-  ChatBubble as ChatBubbleIcon,
-  Bookmark as BookmarkIcon,
-  BookmarkBorder as BookmarkBorderIcon,
-  Visibility as VisibilityIcon,
-  ArrowDropUp as ArrowDropUpIcon,
-  ArrowDropDown as ArrowDropDownIcon,
   Tag as TagIcon,
   Article as ArticleIcon,
   Group as GroupIcon,
   Forum as ForumIcon,
-  Add as AddIcon,
-  SearchOff as SearchOffIcon,
 } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 import { useState } from 'react';
@@ -45,7 +34,6 @@ const filterOptions = [
 ];
 
 const StyledCard = styled(Card)(({ theme }) => ({
-  borderRadius: theme.shape.borderRadius * 2,
   border: `1px solid ${theme.palette.divider}`,
   backgroundColor: theme.palette.background.paper,
   position: 'relative',
@@ -75,7 +63,9 @@ const StatItem = ({ icon: Icon, value, label, color }: any) => (
   </Stack>
 );
 
-const FilterChip = styled(Chip)(({ theme, selected }: any) => ({
+const FilterChip = styled(Chip, {
+  shouldForwardProp: (prop) => prop !== 'selected',
+})<{ selected?: boolean }>(({ theme, selected }) => ({
   borderRadius: 16,
   height: 32,
   fontSize: '0.75rem',
