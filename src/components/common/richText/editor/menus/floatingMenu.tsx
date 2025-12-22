@@ -7,7 +7,21 @@ import AddIcon from '@mui/icons-material/Add';
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
 import ImageIcon from '@mui/icons-material/Image';
 import CodeIcon from '@mui/icons-material/Code';
+import InfoIcon from '@mui/icons-material/InfoOutline';
 import { useRichTextEditorActions } from '@/hooks/useRichTextEditorAction';
+import { EditorState } from '@tiptap/pm/state';
+
+export function isInsideNode(state: EditorState, name: string) {
+  const { $from } = state.selection;
+
+  for (let depth = $from.depth; depth > 0; depth--) {
+    if ($from.node(depth).type.name === name) {
+      return true;
+    }
+  }
+
+  return false;
+}
 
 export default function CustomFloatingMenu({ editor }: { editor: any }) {
   const [open, setOpen] = useState(false);
@@ -49,7 +63,7 @@ export default function CustomFloatingMenu({ editor }: { editor: any }) {
     <FloatingMenu editor={editor} options={{ offset: { mainAxis: -50 } }}>
       <Box
         sx={{
-          display: 'flex',
+          display: isInsideNode(editor.state, 'callout') ? 'none' : 'flex',
           flexDirection: 'row',
           gap: 1,
           '& .MuiIconButton-root': {
@@ -94,6 +108,9 @@ export default function CustomFloatingMenu({ editor }: { editor: any }) {
 
           <IconButton size='small' onClick={() => editor.chain().focus().toggleCodeBlock().run()}>
             <CodeIcon />
+          </IconButton>
+          <IconButton size='small' onClick={() => editor.chain().focus().toggleCallout('note').run()}>
+            <InfoIcon />
           </IconButton>
         </Box>
       </Box>

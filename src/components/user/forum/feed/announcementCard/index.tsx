@@ -1,3 +1,4 @@
+import { AnnouncementPost } from '@/types/forum';
 import AdminPanelSettings from '@mui/icons-material/AdminPanelSettings';
 import CampaignOutlined from '@mui/icons-material/CampaignOutlined';
 import Avatar from '@mui/material/Avatar';
@@ -6,7 +7,6 @@ import Card from '@mui/material/Card';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { AnnouncementPost } from '../../types';
 
 interface AnnouncementCardProps {
   post: AnnouncementPost;

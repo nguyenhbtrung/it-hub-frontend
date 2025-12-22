@@ -1,9 +1,7 @@
 import { contentTypeLabelsMap } from '@/lib/const/post';
-import { roleLabelsMap } from '@/lib/const/user';
 import ChatBubble from '@mui/icons-material/ChatBubble';
 import ArrowDropDown from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUp from '@mui/icons-material/ArrowDropUp';
-import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
@@ -13,11 +11,11 @@ import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Visibility from '@mui/icons-material/Visibility';
-import BookmarkBorder from '@mui/icons-material/BookmarkBorder';
-import Bookmark from '@mui/icons-material/Bookmark';
+import Edit from '@mui/icons-material/Edit';
+import Delete from '@mui/icons-material/Delete';
 import { NormalPost } from '@/types/forum';
 import { useState } from 'react';
-import { getContentTypeColor, getReputationColor, getReputationIcon, getRoleColor } from '@/lib/utils/postBadged';
+import { getContentTypeColor } from '@/lib/utils/postBadged';
 
 interface PostCardProps {
   post: NormalPost;
@@ -82,37 +80,15 @@ export default function PostCard({ post }: PostCardProps) {
         <Box sx={{ p: 3, flex: 1 }}>
           <Stack direction='row' justifyContent='space-between' alignItems='center' mb={1}>
             <Stack direction='row' alignItems='center' spacing={1}>
-              <Avatar src={post.author.avatar} sx={{ width: 24, height: 24 }} />
-              <Typography variant='body2' fontWeight='bold'>
-                {post.author.name}
-              </Typography>
-
-              {post.author.reputation && (
-                <Chip
-                  icon={<Box>{getReputationIcon(post.author.reputationLevel)}</Box>}
-                  label={post.author.reputation}
-                  size='small'
-                  sx={{
-                    height: 20,
-                    // border: 1,
-                    borderRadius: 0.5,
-                    ...getReputationColor(post.author.reputationLevel),
-                  }}
-                />
-              )}
-
               <Chip
-                label={roleLabelsMap[post.author.role]}
+                label={contentTypeLabelsMap[post.type]}
                 size='small'
                 sx={{
-                  height: 20,
-                  bgcolor: 'primary.light',
-                  color: 'primary.main',
+                  border: 1,
                   borderRadius: 0.5,
-                  ...getRoleColor(post.author.role),
+                  ...getContentTypeColor(post.type),
                 }}
               />
-
               <Typography variant='caption' color='text.secondary'>
                 •
               </Typography>
@@ -120,16 +96,6 @@ export default function PostCard({ post }: PostCardProps) {
                 {post.time}
               </Typography>
             </Stack>
-
-            <Chip
-              label={contentTypeLabelsMap[post.type]}
-              size='small'
-              sx={{
-                border: 1,
-                borderRadius: 0.5,
-                ...getContentTypeColor(post.type),
-              }}
-            />
           </Stack>
 
           <Typography variant='h6' fontWeight='bold' gutterBottom sx={{ cursor: 'pointer' }}>
@@ -193,20 +159,40 @@ export default function PostCard({ post }: PostCardProps) {
               </Button>
             </Stack>
 
-            <IconButton
-              onClick={() => toggleSave(post.id)}
-              sx={{
-                height: 25,
-                width: 25,
-                '&:hover': {
-                  boxShadow: 'none',
-                  bgcolor: 'transparent',
-                  color: 'primary.main',
-                },
-              }}
-            >
-              {savedPosts.includes(post.id) ? <Bookmark sx={{ color: 'primary.main' }} /> : <BookmarkBorder />}
-            </IconButton>
+            <Stack direction='row' spacing={3}>
+              <Button
+                startIcon={<Edit />}
+                size='small'
+                sx={{
+                  color: 'text.secondary',
+                  p: 0,
+                  height: 25,
+                  '&:hover': {
+                    boxShadow: 'none',
+                    bgcolor: 'transparent',
+                    color: 'text.primary',
+                  },
+                }}
+              >
+                Sửa
+              </Button>
+              <Button
+                startIcon={<Delete />}
+                size='small'
+                sx={{
+                  color: 'text.secondary',
+                  p: 0,
+                  height: 25,
+                  '&:hover': {
+                    boxShadow: 'none',
+                    bgcolor: 'transparent',
+                    color: 'text.primary',
+                  },
+                }}
+              >
+                Xoá
+              </Button>
+            </Stack>
           </Stack>
         </Box>
       </Stack>

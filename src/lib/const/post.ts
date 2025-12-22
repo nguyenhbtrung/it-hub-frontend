@@ -1,4 +1,4 @@
-import { PostContentType } from '@/components/user/forum/types';
+import { PostContentType } from '@/types/forum';
 
 export const contentTypeLabelsMap: Record<PostContentType, string> = {
   question: 'Câu hỏi',

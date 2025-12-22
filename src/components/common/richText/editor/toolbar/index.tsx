@@ -1,10 +1,7 @@
 'use client';
 
-import '../../styles.scss';
-import 'highlight.js/styles/atom-one-dark.css';
-
 import { useEditorState } from '@tiptap/react';
-import { ButtonGroup, IconButton, Paper, ToggleButtonGroup, ToggleButton, Divider } from '@mui/material';
+import { ButtonGroup, IconButton, Paper, ToggleButtonGroup, ToggleButton, Divider, Button } from '@mui/material';
 import FormatBoldIcon from '@mui/icons-material/FormatBold';
 import FormatItalicIcon from '@mui/icons-material/FormatItalic';
 import FormatUnderlinedIcon from '@mui/icons-material/FormatUnderlined';
@@ -15,6 +12,7 @@ import TitleIcon from '@mui/icons-material/Title';
 import CodeIcon from '@mui/icons-material/Code';
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
 import LinkIcon from '@mui/icons-material/Link';
+import InfoIcon from '@mui/icons-material/InfoOutline';
 
 import { useRichTextEditorActions } from '@/hooks/useRichTextEditorAction';
 
@@ -226,6 +224,44 @@ export default function Toolbar({ editor }: { editor: any }) {
         >
           <CodeIcon fontSize='small' />
         </IconButton>
+
+        <IconButton
+          onClick={() => editor.chain().focus().toggleCallout('note').run()}
+          // disabled={!editorState.canCode}
+          color={editorState.isCodeBlock ? 'primary' : 'default'}
+          sx={{ bgcolor: editorState.isCodeBlock ? 'hero.light' : 'transparent' }}
+          size='small'
+        >
+          <InfoIcon fontSize='small' />
+        </IconButton>
+        {/* <ToggleButtonGroup
+          value={selected}
+          exclusive
+          onChange={(e, newType) => {
+            setSelected(newType);
+            if (newType) {
+              editor.chain().focus().toggleCallout(newType).run();
+            } else {
+              editor.chain().focus().toggleCallout(newType).run(); // hoặc bỏ callout
+            }
+          }}
+        >
+          <ToggleButton value='note'>
+            <NoteIcon />
+          </ToggleButton>
+          <ToggleButton value='tip'>
+            <LightbulbIcon />
+          </ToggleButton>
+          <ToggleButton value='warning'>
+            <WarningIcon />
+          </ToggleButton>
+          <ToggleButton value='important'>
+            <PriorityHighIcon />
+          </ToggleButton>
+          <ToggleButton value='caution'>
+            <ReportProblemIcon />
+          </ToggleButton>
+        </ToggleButtonGroup> */}
       </ButtonGroup>
     </Paper>
   );

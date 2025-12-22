@@ -26,13 +26,10 @@ import { all, createLowlight } from 'lowlight';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import Blockquote from '@tiptap/extension-blockquote';
 import Link from '@tiptap/extension-link';
-import CustomBubbleMenu from '../menus/bubbleMenu';
-import CustomFloatingMenu from '../menus/floatingMenu';
 import { Figure } from '../../extensions/figure';
 import CodeBlockComponent from '../../components/codeBlockComponent';
-import Toolbar from '../toolbar';
+import Toolbar from '../toolbar/minimal';
 import { Placeholder } from '@tiptap/extensions';
-import { Callout } from '../../extensions/callout';
 
 // create a lowlight instance
 const lowlight = createLowlight(all);
@@ -70,7 +67,6 @@ export default function EditorBase({
       Blockquote,
       //   Image,
       Figure,
-      Callout,
       //   CustomComponent,
       Link.configure({
         openOnClick: true,
@@ -144,10 +140,6 @@ export default function EditorBase({
       Placeholder.configure({
         emptyEditorClass: 'is-editor-empty',
         placeholder,
-        // showOnlyWhenEditable: true,
-        // placeholder: ({ editor }) => {
-        //   return editor.view.dom.classList.contains('menu-open') ? '' : 'Nhập nội dung...';
-        // },
       }),
     ],
     content: value,
@@ -188,33 +180,21 @@ export default function EditorBase({
         borderRadius,
         overflow: 'auto',
         bgcolor: 'background.paper',
-        // '& .tiptap': {
-        //   minHeight: 200,
-        //   padding: 2,
-        //   outline: 'none',
-        //   '& h1': { fontSize: '1.5rem', fontWeight: 600, mt: 2, mb: 1 },
-        //   '& h2': { fontSize: '1.25rem', fontWeight: 600, mt: 2, mb: 1 },
-        //   '& h3': { fontSize: '1.125rem', fontWeight: 600, mt: 2, mb: 1 },
-        //   '& ul, & ol': { pl: 2 },
-        //   '& p': { mb: 1 },
-        // },
         '& .tiptap': {
-          minHeight: 200,
+          minHeight: height,
           padding: 2,
           // outline: 'none',
-          // '& h1': { fontSize: { xs: '2rem', md: '2.5rem' }, fontWeight: 600, mt: 0, mb: 2 },
-          // '& h2': { fontSize: '1.5rem', fontWeight: 600, mt: 4, mb: 2 },
-          // '& h3': { fontSize: '1.25rem', fontWeight: 500, mt: 4, mb: 1 },
+          //   '& h1': { fontSize: { xs: '2rem', md: '2.5rem' }, fontWeight: 600, mt: 0, mb: 2 },
+          //   '& h2': { fontSize: '1.5rem', fontWeight: 600, mt: 4, mb: 2 },
+          //   '& h3': { fontSize: '1.25rem', fontWeight: 500, mt: 4, mb: 1 },
           // '& ul, & ol': { pl: 4 },
           // '& li': { pl: 1, mb: 1 },
-          // '& p': { color: 'text.secodary', mb: 2, lineHeight: 1.6, whiteSpace: 'pre-wrap' },
+          //   '& p': { color: 'text.secodary', mb: 2, lineHeight: 1.6, whiteSpace: 'pre-wrap' },
         },
       }}
     >
       <Toolbar editor={editor} />
-      <Box px={8} sx={{ height, overflow: 'auto', position: 'relative' }}>
-        {editor && <CustomBubbleMenu editor={editor} />}
-        {editor && <CustomFloatingMenu editor={editor} />}
+      <Box sx={{ position: 'relative' }}>
         <EditorContent editor={editor} />
       </Box>
     </Box>

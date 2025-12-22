@@ -8,7 +8,7 @@ export default function PostEditor() {
   const [content, setContent] = useState<JSONContent>({
     type: 'doc',
     content: [{ type: 'paragraph', content: [] }],
-  }); // JSON mặc định
+  });
 
   return (
     <>
@@ -19,6 +19,7 @@ export default function PostEditor() {
         height={500}
         placeholder='Nhập nội dung bài viết'
       />
+      {/* <pre>{JSON.stringify(content, null, 2)}</pre> */}
     </>
   );
 }

@@ -13,36 +13,14 @@ import {
   Paper,
   ToggleButtonGroup,
   ToggleButton,
-  useTheme,
 } from '@mui/material';
-import {
-  Help as HelpIcon,
-  School as SchoolIcon,
-  Forum as ForumIcon,
-  WorkHistory as WorkHistoryIcon,
-  Article as ArticleIcon,
-  FolderOpen as FolderOpenIcon,
-  Campaign as CampaignIcon,
-  Label as LabelIcon,
-  Close as CloseIcon,
-  Send as SendIcon,
-} from '@mui/icons-material';
+import { Label as LabelIcon, Close as CloseIcon, Send as SendIcon } from '@mui/icons-material';
 import PostEditor from '@/components/common/richText/editor/postEditor';
-
-const postTypes = [
-  { value: 'question', label: 'Câu hỏi', icon: <HelpIcon /> },
-  { value: 'knowledge', label: 'Chia sẻ kiến thức', icon: <SchoolIcon /> },
-  { value: 'discussion', label: 'Thảo luận', icon: <ForumIcon /> },
-  { value: 'experience', label: 'Kinh nghiệm thực tế', icon: <WorkHistoryIcon /> },
-  { value: 'news', label: 'Tin tức', icon: <ArticleIcon /> },
-  { value: 'resource', label: 'Tài nguyên', icon: <FolderOpenIcon /> },
-  { value: 'announcement', label: 'Thông báo', icon: <CampaignIcon /> },
-];
+import { postContentTypes } from '@/lib/utils/postBadged';
 
 const initialTags = ['#JavaSpring', '#Backend'];
 
 export default function EditPostForm() {
-  const theme = useTheme();
   const [postType, setPostType] = useState('question');
   const [title, setTitle] = useState('');
   const [tags, setTags] = useState<string[]>(initialTags);
@@ -126,7 +104,7 @@ export default function EditPostForm() {
               },
             }}
           >
-            {postTypes.map((type) => (
+            {postContentTypes.map((type) => (
               <ToggleButton
                 key={type.value}
                 value={type.value}

@@ -3,6 +3,55 @@
   :first-child {
     margin-top: 0;
   }
+  outline: none;
+
+  // ===== h1 =====
+  h1 {
+    font-weight: 600;
+    margin-top: 0;
+    margin-bottom: 16px; // mb: 2 (MUI = 8px * 2)
+
+    font-size: 2rem; // xs
+
+    @media (min-width: 900px) {
+      font-size: 2.5rem; // md
+    }
+  }
+
+  // ===== h2 =====
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-top: 32px; // mt: 4
+    margin-bottom: 16px; // mb: 2
+  }
+
+  // ===== h3 =====
+  h3 {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-top: 32px; // mt: 4
+    margin-bottom: 8px; // mb: 1
+  }
+
+  // ===== Lists =====
+  ul,
+  ol {
+    padding-left: 32px; // pl: 4
+  }
+
+  li {
+    padding-left: 8px; // pl: 1
+    margin-bottom: 8px; // mb: 1
+  }
+
+  // ===== Paragraph =====
+  p {
+    color: var(--mui-palette-text-secondary); // tương đương text.secondary
+    margin-bottom: 16px; // mb: 2
+    line-height: 1.6;
+    white-space: pre-wrap;
+  }
 
   blockquote {
     border-left: 3px solid #616161;
@@ -57,6 +106,14 @@
         background: rgba(255, 255, 255, 0.2);
       }
     }
+  }
+
+  code {
+    background-color: #f6f2ff;
+    border-radius: 0.4rem;
+    color: #000;
+    font-size: 0.85rem;
+    padding: 0.25em 0.3em;
   }
 
   /* ========== Base Callout ========== */

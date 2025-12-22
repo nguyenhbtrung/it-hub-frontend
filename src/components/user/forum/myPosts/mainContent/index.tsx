@@ -2,22 +2,9 @@
 
 import { Box, Button, Stack } from '@mui/material';
 import { ExpandMore as ExpandMoreIcon } from '@mui/icons-material';
-import { AnnouncementPost, NormalPost } from '@/types/forum';
-import FeedHeader from '../feed/feedHeader';
-import AnnouncementCard from '../feed/announcementCard';
-import PostCard from '../feed/postCard';
-
-const announcements: AnnouncementPost[] = [
-  {
-    id: 1,
-    type: 'announcement',
-    time: '3 giờ trước',
-    title: 'Cập nhật quy định diễn đàn & Hệ thống điểm danh tiếng mới',
-    content:
-      'Chào các bạn, BQT xin thông báo về việc cập nhật một số quy định mới nhằm nâng cao chất lượng thảo luận. Đồng thời, hệ thống điểm danh tiếng (reputation) sẽ được reset và tính toán lại dựa trên...',
-    isAnnouncement: true,
-  },
-];
+import { NormalPost } from '@/types/forum';
+import PostCard from '../postCard';
+import Header from '../header';
 
 const posts: NormalPost[] = [
   {
@@ -85,17 +72,14 @@ const posts: NormalPost[] = [
   },
 ];
 
-export default function ForumMainContent() {
+export default function MyPostsMainContent() {
   return (
     <Box>
       {/* Header */}
-      <FeedHeader />
+      <Header />
 
       {/* Posts */}
       <Stack spacing={2}>
-        {announcements.map((post) => (
-          <AnnouncementCard key={post.id} post={post} />
-        ))}
         {posts.map((post) => (
           <PostCard key={post.id} post={post} />
         ))}
