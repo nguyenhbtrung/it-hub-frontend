@@ -6,9 +6,9 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   images: {
     remotePatterns: [
-      new URL('https://img-c.udemycdn.com/**'),
-      new URL('https://picsum.photos/**'),
-      new URL('https://lh3.googleusercontent.com/**'),
+      { protocol: 'https', hostname: 'img-c.udemycdn.com', pathname: '/**' },
+      { protocol: 'https', hostname: 'picsum.photos', pathname: '/**' },
+      { protocol: 'https', hostname: 'lh3.googleusercontent.com', pathname: '/**' },
     ],
   },
   logging: {

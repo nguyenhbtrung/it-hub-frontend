@@ -12,7 +12,7 @@ export default function ProfileTabs() {
 
   const tabs = [
     { label: 'Tổng quan', href: '/profile' },
-    { label: 'Khóa học của tôi', href: '/profile/courses' },
+    { label: 'Khóa học của tôi', href: '/profile/my-courses' },
     { label: 'Chỉnh sửa hồ sơ', href: '/profile/edit' },
     { label: 'Cài đặt', href: '/profile/settings' },
   ];
