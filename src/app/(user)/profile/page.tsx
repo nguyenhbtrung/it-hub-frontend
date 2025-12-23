@@ -1,18 +1,4 @@
-'use client';
-import {
-  Box,
-  Grid,
-  Typography,
-  Stack,
-  LinearProgress,
-  Chip,
-  Card,
-  CardContent,
-  Avatar,
-  Divider,
-  useTheme,
-  useMediaQuery,
-} from '@mui/material';
+import { Box, Grid, Typography, Stack, LinearProgress, Chip, Card, CardContent, Avatar } from '@mui/material';
 import {
   MilitaryTech,
   CheckCircle,
@@ -125,9 +111,6 @@ function BadgeCard({
 }
 
 export default function ProfilePage() {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
       {/* Phần giới thiệu */}

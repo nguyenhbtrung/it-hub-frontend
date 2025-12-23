@@ -94,7 +94,7 @@ export default function ProfileLayout({ children }: ProfileLayoutProps) {
                       Trường
                     </Typography>
                     <Typography variant='body2' fontWeight='medium'>
-                      Đại học Bách Khoa HN
+                      Đại học Kiến trúc Hà Nội
                     </Typography>
                   </Box>
                 </Box>
