@@ -21,8 +21,10 @@ import AccountManagement from '../accountManagement';
 import NotificationSettings from '../notificationSettings';
 import PrivacySettings from '../privacySettings';
 import ThemeSettings from '../themeSettings';
+import ChangePasswordDialog from '../changePassword/dialog';
 import { SettingsData } from '../types';
 import { defaultSettings } from '../data';
+import { ChangePasswordFormData } from '../changePassword/schemas';
 
 interface SettingsFormProps {
   initialData?: SettingsData;
@@ -34,6 +36,7 @@ export default function SettingsForm({ initialData = defaultSettings }: Settings
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [showPasswordDialog, setShowPasswordDialog] = useState(false);
   const [dialogType, setDialogType] = useState<'password' | 'devices' | 'delete' | null>(null);
 
   const handleNotificationChange = (notificationSettings: typeof settings.notifications) => {
@@ -52,15 +55,33 @@ export default function SettingsForm({ initialData = defaultSettings }: Settings
   };
 
   const handleAccountAction = (type: 'password' | 'devices' | 'delete') => {
-    setDialogType(type);
-    setShowConfirmDialog(true);
+    if (type === 'password') {
+      setShowPasswordDialog(true);
+    } else {
+      setDialogType(type);
+      setShowConfirmDialog(true);
+    }
+  };
+
+  const handleChangePassword = async (data: ChangePasswordFormData) => {
+    // Giả lập API call để đổi mật khẩu
+    console.log('Changing password:', data);
+
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+
+    // Trong thực tế, bạn sẽ gọi API ở đây
+    // Ví dụ: await api.changePassword(data);
+
+    // Hiển thị thông báo thành công
+    setShowSuccess(true);
+
+    // Đóng dialog
+    setShowPasswordDialog(false);
   };
 
   const handleConfirmAction = () => {
     if (dialogType === 'delete') {
       alert('Chức năng xóa tài khoản đang được phát triển');
-    } else if (dialogType === 'password') {
-      alert('Chức năng đổi mật khẩu đang được phát triển');
     } else if (dialogType === 'devices') {
       alert('Chức năng quản lý thiết bị đang được phát triển');
     }
@@ -92,8 +113,6 @@ export default function SettingsForm({ initialData = defaultSettings }: Settings
 
   const getDialogTitle = () => {
     switch (dialogType) {
-      case 'password':
-        return 'Đổi mật khẩu';
       case 'devices':
         return 'Quản lý thiết bị';
       case 'delete':
@@ -105,8 +124,6 @@ export default function SettingsForm({ initialData = defaultSettings }: Settings
 
   const getDialogContent = () => {
     switch (dialogType) {
-      case 'password':
-        return 'Bạn sẽ được chuyển hướng đến trang đổi mật khẩu.';
       case 'devices':
         return 'Bạn sẽ được chuyển hướng đến trang quản lý thiết bị.';
       case 'delete':
@@ -171,12 +188,18 @@ export default function SettingsForm({ initialData = defaultSettings }: Settings
           borderColor: 'divider',
         }}
       >
-        <Button variant='outlined' onClick={handleCancel} disabled={!isDirty || isSubmitting} sx={{ px: 4 }}>
+        <Button
+          variant='text'
+          startIcon={<Cancel />}
+          onClick={handleCancel}
+          disabled={!isDirty || isSubmitting}
+          sx={{ px: 4 }}
+        >
           Hủy
         </Button>
         <Button
           variant='contained'
-          startIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+          startIcon={isSubmitting ? <CircularProgress size={20} /> : <Save />}
           onClick={handleSubmit}
           disabled={!isDirty || isSubmitting}
           sx={{ px: 4 }}
@@ -184,6 +207,13 @@ export default function SettingsForm({ initialData = defaultSettings }: Settings
           {isSubmitting ? 'Đang lưu...' : 'Lưu thay đổi'}
         </Button>
       </Box>
+
+      {/* Change Password Dialog */}
+      <ChangePasswordDialog
+        open={showPasswordDialog}
+        onClose={() => setShowPasswordDialog(false)}
+        onSubmit={handleChangePassword}
+      />
 
       {/* Success Snackbar */}
       <Snackbar
