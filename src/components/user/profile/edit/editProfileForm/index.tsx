@@ -13,6 +13,7 @@ import {
   Button,
   CircularProgress,
   Alert,
+  Card,
 } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -203,7 +204,7 @@ export default function EditProfileForm({ initialData = defaultUserProfile }: Ed
   };
 
   return (
-    <Box component='form' onSubmit={handleSubmit(onSubmit)} sx={{ p: 3 }}>
+    <Card component='form' onSubmit={handleSubmit(onSubmit)} sx={{ p: 3 }}>
       {submitSuccess && (
         <Alert severity='success' sx={{ mb: 3 }}>
           Thay đổi đã được lưu thành công!
@@ -274,6 +275,6 @@ export default function EditProfileForm({ initialData = defaultUserProfile }: Ed
           )}
         </Button>
       </Box>
-    </Box>
+    </Card>
   );
 }
