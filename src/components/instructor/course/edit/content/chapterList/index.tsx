@@ -23,8 +23,9 @@ interface ChapterListProps {
   onUpdateChapter: (chapterId: string, updates: Partial<Chapter>) => void;
   onUpdateLesson: (chapterId: string, lessonId: string, updates: Partial<Chapter>) => void;
   onAddLesson: (chapterId: string) => void;
+  onAddExcercise: (chapterId: string) => void;
   onDeleteChapter: (chapterId: string) => void;
-  onDeleteLesson: (chapterId: string, lessonId: string) => void;
+  onDeleteUnit: (chapterId: string, lessonId: string) => void;
   onOpenContentEditor: (lessonId: string) => void;
 }
 
@@ -36,8 +37,9 @@ export default function ChapterList({
   onUpdateChapter,
   onUpdateLesson,
   onAddLesson,
+  onAddExcercise,
   onDeleteChapter,
-  onDeleteLesson,
+  onDeleteUnit,
   onOpenContentEditor,
 }: ChapterListProps) {
   const sensors = useSensors(
@@ -83,8 +85,9 @@ export default function ChapterList({
               onUpdateChapter={onUpdateChapter}
               onUpdateLesson={onUpdateLesson}
               onAddLesson={onAddLesson}
+              onAddExcercise={onAddExcercise}
               onDeleteChapter={onDeleteChapter}
-              onDeleteLesson={onDeleteLesson}
+              onDeleteUnit={onDeleteUnit}
               onOpenContentEditor={onOpenContentEditor}
             />
           ))}

@@ -11,7 +11,9 @@ import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LessonItem from '../lessonItem';
-import { Chapter } from '../../types';
+import CloseIcon from '@mui/icons-material/Close';
+import { Chapter, Lesson } from '../../types';
+import ExcerciseItem from '../excerciseItem';
 
 interface ChapterItemProps {
   chapter: Chapter;
@@ -21,8 +23,9 @@ interface ChapterItemProps {
   onUpdateChapter: (chapterId: string, updates: Partial<Chapter>) => void;
   onUpdateLesson: (chapterId: string, lessonId: string, updates: Partial<Chapter>) => void;
   onAddLesson: (chapterId: string) => void;
+  onAddExcercise: (chapterId: string) => void;
   onDeleteChapter: (chapterId: string) => void;
-  onDeleteLesson: (chapterId: string, lessonId: string) => void;
+  onDeleteUnit: (chapterId: string, lessonId: string) => void;
   onOpenContentEditor: (lessonId: string) => void;
 }
 
@@ -34,8 +37,9 @@ export default function ChapterItem({
   onUpdateChapter,
   onUpdateLesson,
   onAddLesson,
+  onAddExcercise,
   onDeleteChapter,
-  onDeleteLesson,
+  onDeleteUnit,
   onOpenContentEditor,
 }: ChapterItemProps) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: chapter.id });
@@ -49,6 +53,7 @@ export default function ChapterItem({
   const [localTitle, setLocalTitle] = useState(chapter.title);
   const [localDescription, setLocalDescription] = useState(chapter.description);
   const [localObjectives, setLocalObjectives] = useState(chapter.objectives);
+  const [isAddingUnit, setIsAddingUnit] = useState(false);
 
   const handleSave = () => {
     onUpdateChapter(chapter.id, {
@@ -110,7 +115,7 @@ export default function ChapterItem({
         </Box>
 
         <Box sx={{ display: 'flex', gap: 0.5 }}>
-          <IconButton size='small' onClick={() => onAddLesson(chapter.id)} title='Thêm bài học'>
+          <IconButton size='small' onClick={() => setIsAddingUnit((prev) => !prev)} title='Thêm đơn vị học tập'>
             <AddIcon />
           </IconButton>
           <IconButton size='small' onClick={() => onToggleChapterEdit(chapter.id)} title='Chỉnh sửa chương'>
@@ -121,6 +126,20 @@ export default function ChapterItem({
           </IconButton>
         </Box>
       </Box>
+
+      <Collapse in={isAddingUnit}>
+        <Box display='flex' gap={1} sx={{ borderTop: 1, borderColor: 'divider', p: 3 }}>
+          <IconButton onClick={() => setIsAddingUnit(false)}>
+            <CloseIcon />
+          </IconButton>
+          <Button variant='contained' onClick={() => onAddLesson(chapter.id)}>
+            Bài giảng
+          </Button>
+          <Button variant='contained' onClick={() => onAddExcercise(chapter.id)} color='warning'>
+            Bài tập
+          </Button>
+        </Box>
+      </Collapse>
 
       {/* Chapter Edit Form */}
       <Collapse in={chapter.isEditing}>
@@ -181,20 +200,26 @@ export default function ChapterItem({
         </Box>
       </Collapse>
 
-      {/* Lessons List */}
+      {/* Unit List */}
       <Collapse in={chapter.isExpanded}>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, p: 2, pt: 0 }}>
-          {chapter.lessons.map((lesson) => (
-            <LessonItem
-              key={lesson.id}
-              lesson={lesson}
-              chapter={chapter}
-              onToggleLessonEdit={onToggleLessonEdit}
-              onUpdateLesson={onUpdateLesson}
-              onDeleteLesson={onDeleteLesson}
-              onOpenContentEditor={onOpenContentEditor}
-            />
-          ))}
+          {chapter.units.map((unit) => {
+            if (unit.type === 'lesson') {
+              return (
+                <LessonItem
+                  key={unit.id}
+                  lesson={unit as Lesson}
+                  chapter={chapter}
+                  onToggleLessonEdit={onToggleLessonEdit}
+                  onUpdateLesson={onUpdateLesson}
+                  onDeleteUnit={onDeleteUnit}
+                  onOpenContentEditor={onOpenContentEditor}
+                />
+              );
+            } else {
+              return <ExcerciseItem key={unit.id} excercise={unit} chapter={chapter} onDeleteUnit={onDeleteUnit} />;
+            }
+          })}
         </Box>
       </Collapse>
     </Paper>

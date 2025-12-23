@@ -49,6 +49,8 @@ export default function MenuContent({ course }: MenuContentProps) {
     }));
   };
 
+  const handleExcerciseClick = (excerciseId: string) => {};
+
   const getStatusIcon = (status: CompletionStatus, size: 'small' | 'medium' = 'small') => {
     const iconProps = { fontSize: size };
 
@@ -127,52 +129,56 @@ export default function MenuContent({ course }: MenuContentProps) {
 
               <Collapse in={openSections[section.id]}>
                 <List sx={{ pl: 3, pt: 0.5 }}>
-                  {section.lessons.map((lesson) => (
-                    <ListItem key={lesson.id} sx={{ p: 0, mb: 0.5 }}>
-                      {lesson.steps ? (
+                  {section.units.map((unit) => (
+                    <ListItem key={unit.id} sx={{ p: 0, mb: 0.5 }}>
+                      {unit.steps ? (
                         <Box sx={{ width: '100%' }}>
                           <ListItemButton
-                            onClick={() => handleLessonClick(lesson.id)}
+                            onClick={() => handleLessonClick(unit.id)}
                             sx={[
                               {
                                 borderRadius: 1,
                                 py: 1,
-                                backgroundColor: isLessonActive(lesson.id) ? 'hero.light' : 'transparent',
+                                backgroundColor: isLessonActive(unit.id) ? 'hero.light' : 'transparent',
                                 '&:hover': {
-                                  backgroundColor: isLessonActive(lesson.id) ? 'primary.light' : 'grey.100',
+                                  backgroundColor: isLessonActive(unit.id) ? 'primary.light' : 'grey.100',
                                 },
                               },
                               (theme) =>
                                 theme.applyStyles('dark', {
-                                  backgroundColor: isLessonActive(lesson.id) ? '#223843' : 'transparent',
+                                  backgroundColor: isLessonActive(unit.id) ? '#223843' : 'transparent',
                                   '&:hover': {
-                                    backgroundColor: isLessonActive(lesson.id) ? '#223843' : 'grey.800',
+                                    backgroundColor: isLessonActive(unit.id) ? '#223843' : 'grey.800',
                                   },
                                 }),
                             ]}
                           >
-                            <ListItemIcon sx={{ minWidth: 32 }}>{getStatusIcon(lesson.status)}</ListItemIcon>
+                            <ListItemIcon sx={{ minWidth: 32 }}>{getStatusIcon(unit.status)}</ListItemIcon>
                             <ListItemText
-                              primary={`Bài ${section.order}.${lesson.order}: ${lesson.title}`}
+                              primary={
+                                unit.type === 'lesson'
+                                  ? `Bài ${section.order}.${unit.order}: ${unit.title}`
+                                  : `Bài tập: ${unit.title}`
+                              }
                               primaryTypographyProps={{
                                 fontSize: '0.875rem',
-                                fontWeight: isLessonActive(lesson.id) ? 500 : 400,
-                                color: isLessonActive(lesson.id) ? 'primary.main' : 'text.secondary',
+                                fontWeight: isLessonActive(unit.id) ? 500 : 400,
+                                color: isLessonActive(unit.id) ? 'primary.main' : 'text.secondary',
                               }}
                             />
                             <ChevronRight
                               fontSize='small'
                               sx={{
-                                transform: openLessons[lesson.id] ? 'rotate(90deg)' : 'none',
+                                transform: openLessons[unit.id] ? 'rotate(90deg)' : 'none',
                                 transition: 'transform 0.2s',
                                 color: 'text.secondary',
                               }}
                             />
                           </ListItemButton>
 
-                          <Collapse in={openLessons[lesson.id]}>
+                          <Collapse in={openLessons[unit.id]}>
                             <Box sx={{ pl: 3, mt: 0.5, borderLeft: '1px solid', borderColor: 'grey.200' }}>
-                              {lesson.steps.map((step) => (
+                              {unit.steps.map((step) => (
                                 <ListItemButton
                                   key={step.id}
                                   sx={[
@@ -213,10 +219,15 @@ export default function MenuContent({ course }: MenuContentProps) {
                             },
                             (theme) => theme.applyStyles('dark', { '&:hover': { backgroundColor: 'grey.800' } }),
                           ]}
+                          onClick={() => handleExcerciseClick(unit.id)}
                         >
-                          <ListItemIcon sx={{ minWidth: 32 }}>{getStatusIcon(lesson.status)}</ListItemIcon>
+                          <ListItemIcon sx={{ minWidth: 32 }}>{getStatusIcon(unit.status)}</ListItemIcon>
                           <ListItemText
-                            primary={`Bài ${section.order}.${lesson.order}: ${lesson.title}`}
+                            primary={
+                              unit.type === 'lesson'
+                                ? `Bài ${section.order}.${unit.order}: ${unit.title}`
+                                : `Bài tập: ${unit.title}`
+                            }
                             primaryTypographyProps={{
                               fontSize: '0.875rem',
                               color: 'text.secondary',

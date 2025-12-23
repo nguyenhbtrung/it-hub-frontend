@@ -1,7 +1,7 @@
 // data/mockCourseData.ts
 
 import { StepContent } from '@/types/content';
-import { LearningCourse, LearningLesson, LearningSection, Step } from '@/types/course';
+import { LearningCourse, LearningUnit, LearningSection, Step } from '@/types/course';
 
 const mockCourseData: LearningCourse = {
   id: '1',
@@ -13,13 +13,14 @@ const mockCourseData: LearningCourse = {
       id: 'section-1',
       title: 'Giới thiệu',
       order: 1,
-      lessons: [
+      units: [
         {
           id: 'lesson-1-1',
           sectionId: 'section-1',
           title: 'Tổng quan',
           order: 1,
           status: 'completed',
+          type: 'lesson',
         },
         {
           id: 'lesson-1-2',
@@ -27,6 +28,7 @@ const mockCourseData: LearningCourse = {
           title: 'Công cụ cần thiết',
           order: 2,
           status: 'completed',
+          type: 'lesson',
         },
       ],
     },
@@ -34,13 +36,14 @@ const mockCourseData: LearningCourse = {
       id: 'section-2',
       title: 'Kiến thức cơ bản',
       order: 2,
-      lessons: [
+      units: [
         {
           id: 'lesson-2-1',
           sectionId: 'section-2',
           title: 'Cài đặt môi trường',
           order: 1,
           status: 'in-progress',
+          type: 'lesson',
           steps: [
             {
               id: 'step-2-1-1',
@@ -68,6 +71,15 @@ const mockCourseData: LearningCourse = {
           title: 'Hello World',
           order: 2,
           status: 'not-started',
+          type: 'lesson',
+        },
+        {
+          id: 'lesson-2-3',
+          sectionId: 'section-2',
+          title: 'Thiết lập dự án',
+          order: 3,
+          status: 'not-started',
+          type: 'excercise',
         },
       ],
     },
@@ -75,7 +87,7 @@ const mockCourseData: LearningCourse = {
       id: 'section-3',
       title: 'Nâng cao',
       order: 3,
-      lessons: [],
+      units: [],
     },
   ],
   createdAt: '',
@@ -422,7 +434,7 @@ export const stepApi = {
     stepId: string
   ): Promise<{
     step: Step;
-    lesson: LearningLesson;
+    lesson: LearningUnit;
     section: LearningSection;
     content: StepContent;
   } | null> => {
@@ -430,7 +442,7 @@ export const stepApi = {
 
     // Tìm step trong course data
     for (const section of mockCourseData.sections) {
-      for (const lesson of section.lessons) {
+      for (const lesson of section.units) {
         if (lesson.steps) {
           const step = lesson.steps.find((s) => s.id === stepId);
           if (step) {

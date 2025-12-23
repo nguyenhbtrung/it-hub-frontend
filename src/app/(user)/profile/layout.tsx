@@ -1,5 +1,5 @@
 import { Box, Container, Grid, Typography, Avatar, Stack, Button, Card } from '@mui/material';
-import { Person, School, Code, BusinessCenter, Language, Edit, GitHub, LinkedIn, Public } from '@mui/icons-material';
+import { Person, School, Edit, GitHub, LinkedIn, Public } from '@mui/icons-material';
 import { ReactNode } from 'react';
 import ProfileTabs from '@/components/user/profile/profileTabs';
 

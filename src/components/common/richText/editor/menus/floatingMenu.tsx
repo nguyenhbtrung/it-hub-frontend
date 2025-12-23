@@ -19,45 +19,59 @@ export function isInsideNode(state: EditorState, name: string) {
       return true;
     }
   }
-
   return false;
 }
 
 export default function CustomFloatingMenu({ editor }: { editor: any }) {
   const [open, setOpen] = useState(false);
 
+  // ===============================
+  // Effect: register / cleanup events
+  // ===============================
   useEffect(() => {
-    if (!editor) return;
+    if (!editor || editor.isDestroyed) return;
+    if (!editor.view || !editor.view.dom) return;
 
     const closeMenu = () => setOpen(false);
 
-    // Đóng khi selection thay đổi hoặc mất focus
     editor.on('selectionUpdate', closeMenu);
     editor.on('blur', closeMenu);
 
-    // Đóng khi click vào editor (kể cả cùng dòng)
+    const dom = editor.view.dom;
     const handleClick = () => setOpen(false);
-    editor.view.dom.addEventListener('mousedown', handleClick);
+    dom.addEventListener('mousedown', handleClick);
 
     return () => {
       editor.off('selectionUpdate', closeMenu);
       editor.off('blur', closeMenu);
-      editor.view.dom.removeEventListener('mousedown', handleClick);
+      dom.removeEventListener('mousedown', handleClick);
     };
   }, [editor]);
 
+  // ===============================
+  // Effect: toggle class on editor DOM
+  // ===============================
   useEffect(() => {
-    if (!editor) return;
+    if (!editor || editor.isDestroyed) return;
+    if (!editor.view || !editor.view.dom) return;
+
+    const dom = editor.view.dom;
+
     if (open) {
-      editor.view.dom.classList.add('menu-open');
+      dom.classList.add('menu-open');
     } else {
-      editor.view.dom.classList.remove('menu-open');
+      dom.classList.remove('menu-open');
     }
   }, [open, editor]);
 
   const { addFigure } = useRichTextEditorActions(editor);
 
-  if (!editor) return null;
+  // ===============================
+  // Render guard (RẤT QUAN TRỌNG)
+  // ===============================
+  if (!editor || editor.isDestroyed || !editor.view?.dom) {
+    return null;
+  }
 
   return (
     <FloatingMenu editor={editor} options={{ offset: { mainAxis: -50 } }}>
@@ -88,7 +102,6 @@ export default function CustomFloatingMenu({ editor }: { editor: any }) {
             position: 'absolute',
             top: 0,
             left: 50,
-
             display: 'flex',
             flexDirection: 'row',
             gap: 1,
@@ -109,6 +122,7 @@ export default function CustomFloatingMenu({ editor }: { editor: any }) {
           <IconButton size='small' onClick={() => editor.chain().focus().toggleCodeBlock().run()}>
             <CodeIcon />
           </IconButton>
+
           <IconButton size='small' onClick={() => editor.chain().focus().toggleCallout('note').run()}>
             <InfoIcon />
           </IconButton>

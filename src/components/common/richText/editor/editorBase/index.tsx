@@ -213,8 +213,9 @@ export default function EditorBase({
     >
       <Toolbar editor={editor} />
       <Box px={8} sx={{ height, overflow: 'auto', position: 'relative' }}>
-        {editor && <CustomBubbleMenu editor={editor} />}
-        {editor && <CustomFloatingMenu editor={editor} />}
+        {editor?.view && <CustomBubbleMenu editor={editor} />}
+        {editor && !editor.isDestroyed && editor.view?.dom && <CustomFloatingMenu editor={editor} />}
+
         <EditorContent editor={editor} />
       </Box>
     </Box>

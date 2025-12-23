@@ -11,6 +11,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import DescriptionIcon from '@mui/icons-material/Description';
 import QuizIcon from '@mui/icons-material/Quiz';
 import CloseIcon from '@mui/icons-material/Close';
+import MenuBookOutlined from '@mui/icons-material/MenuBookOutlined';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import { Chapter, Lesson, LessonStep } from '../../types';
 import ContentStep from '../contentStep';
@@ -20,7 +21,7 @@ interface LessonItemProps {
   chapter: Chapter;
   onToggleLessonEdit: (chapterId: string, lessonId: string) => void;
   onUpdateLesson: (chapterId: string, lessonId: string, updates: Partial<Lesson>) => void;
-  onDeleteLesson: (chapterId: string, lessonId: string) => void;
+  onDeleteUnit: (chapterId: string, lessonId: string) => void;
   onOpenContentEditor: (lessonId: string) => void;
 }
 
@@ -29,11 +30,10 @@ export default function LessonItem({
   chapter,
   onToggleLessonEdit,
   onUpdateLesson,
-  onDeleteLesson,
+  onDeleteUnit,
   onOpenContentEditor,
 }: LessonItemProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [isAddingStep, setIsAddingStep] = useState(false);
   const [localTitle, setLocalTitle] = useState(lesson.title);
   const [localDescription, setLocalDescription] = useState(lesson.description);
 
@@ -45,14 +45,13 @@ export default function LessonItem({
     onToggleLessonEdit(chapter.id, lesson.id);
   };
 
-  const handleAddStep = (type: 'lecture' | 'assignment' | 'quiz' | 'resource', title: string) => {
+  const handleAddStep = (title: string) => {
     const steps = lesson.steps;
     const lecture: LessonStep = {
       id: crypto.randomUUID(),
-      type,
       title,
       order: Math.max(...steps.map((step) => step.order)) + 1,
-      blocks: type === 'lecture' ? [] : undefined,
+      blocks: [],
     };
     onUpdateLesson(chapter.id, lesson.id, {
       steps: [...steps, lecture],
@@ -95,7 +94,9 @@ export default function LessonItem({
           <DragIndicatorIcon sx={{ color: 'text.disabled', fontSize: 18 }} />
         </Box>
 
-        <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
+        <MenuBookOutlined color='primary' />
+
+        <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', gap: 1, ml: 1 }}>
           <Typography variant='body2' color='text.secondary'>
             Bài {lesson.order}:
           </Typography>
@@ -116,19 +117,19 @@ export default function LessonItem({
         </Box>
 
         <Box sx={{ display: 'flex', gap: 0.5 }}>
-          <IconButton size='small' onClick={() => setIsAddingStep(true)} title='Thêm bước'>
+          <IconButton size='small' onClick={() => handleAddStep('Bài giảng không tiêu đề')} title='Thêm bước'>
             <AddIcon fontSize='small' />
           </IconButton>
           <IconButton size='small' onClick={() => onToggleLessonEdit(chapter.id, lesson.id)} title='Chỉnh sửa bài học'>
             <EditIcon fontSize='small' />
           </IconButton>
-          <IconButton size='small' onClick={() => onDeleteLesson(chapter.id, lesson.id)} title='Xóa bài học'>
+          <IconButton size='small' onClick={() => onDeleteUnit(chapter.id, lesson.id)} title='Xóa bài học'>
             <DeleteIcon fontSize='small' />
           </IconButton>
         </Box>
       </Box>
 
-      <Collapse in={isAddingStep}>
+      {/* <Collapse in={isAddingStep}>
         <Box display='flex' gap={1} sx={{ borderTop: 1, borderColor: 'divider', p: 3 }}>
           <IconButton onClick={() => setIsAddingStep(false)}>
             <CloseIcon />
@@ -140,7 +141,7 @@ export default function LessonItem({
             Bài tập
           </Button>
         </Box>
-      </Collapse>
+      </Collapse> */}
 
       {/* Lesson Edit Form */}
       <Collapse in={lesson.isEditing}>

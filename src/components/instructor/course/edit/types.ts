@@ -1,3 +1,5 @@
+import { UnitType } from '@/types/course';
+
 export type ContentBlockType = 'text' | 'image' | 'video' | 'quiz' | 'file' | 'markdown' | 'code';
 
 export interface ContentBlock {
@@ -10,7 +12,6 @@ export interface ContentBlock {
 
 export interface LessonStep {
   id: string;
-  type: 'lecture' | 'assignment' | 'quiz' | 'resource';
   title: string;
   content?: string;
   order: number;
@@ -27,6 +28,25 @@ export interface Lesson {
   isEditing?: boolean;
 }
 
+export type ExcerciseType = 'assigment' | 'project' | 'quiz' | 'coding';
+
+export interface Excercise {
+  id: string;
+  type: ExcerciseType;
+}
+
+export interface Unit {
+  id: string;
+  chapterId: string;
+  title: string;
+  description?: string;
+  steps?: LessonStep[];
+  excercise?: Excercise;
+  order: number;
+  type: UnitType;
+  isEditing?: boolean;
+}
+
 export interface Chapter {
   id: string;
   courseId: string;
@@ -34,7 +54,7 @@ export interface Chapter {
   description: string;
   objectives: string;
   order: number;
-  lessons: Lesson[];
+  units: Unit[];
   isExpanded?: boolean;
   isEditing?: boolean;
 }

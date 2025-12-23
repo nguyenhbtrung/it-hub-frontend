@@ -15,7 +15,7 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import ChapterList from '../chapterList';
 import EditContentModal from '../editContentModal';
-import { Chapter, Lesson, LessonStep } from '../../types';
+import { Chapter, Lesson, LessonStep, Unit } from '../../types';
 
 // Mock data
 const initialChapters: Chapter[] = [
@@ -28,19 +28,20 @@ const initialChapters: Chapter[] = [
     order: 1,
     isExpanded: true,
     isEditing: false,
-    lessons: [
+    units: [
       {
         id: '1-1',
         chapterId: '1',
         title: 'Tổng quan về ReactJS',
         description: '',
         order: 1,
+        type: 'lesson',
         isEditing: false,
         steps: [
           {
             id: '1-1-1',
             type: 'lecture',
-            title: 'Bài giảng: React là gì?',
+            title: ' React là gì?',
             content: '',
             order: 1,
             blocks: [
@@ -86,7 +87,7 @@ greet("Next.js");
           {
             id: '1-1-2',
             type: 'quiz',
-            title: 'Bài tập: Quiz kiểm tra kiến thức',
+            title: 'Tìm hiểu về hook trong React',
             content: '',
             order: 2,
           },
@@ -98,6 +99,7 @@ greet("Next.js");
         title: 'Cài đặt môi trường phát triển',
         description: '',
         order: 2,
+        type: 'lesson',
         isEditing: false,
         steps: [],
       },
@@ -112,7 +114,7 @@ greet("Next.js");
     order: 2,
     isExpanded: false,
     isEditing: false,
-    lessons: [],
+    units: [],
   },
 ];
 
@@ -141,7 +143,7 @@ export default function CourseContentPage() {
         if (chapter.id === chapterId) {
           return {
             ...chapter,
-            lessons: chapter.lessons.map((lesson) =>
+            units: chapter.units.map((lesson) =>
               lesson.id === lessonId ? { ...lesson, isEditing: !lesson.isEditing } : { ...lesson, isEditing: false }
             ),
           };
@@ -161,7 +163,7 @@ export default function CourseContentPage() {
         if (chapter.id === chapterId) {
           return {
             ...chapter,
-            lessons: chapter.lessons.map((lesson) => (lesson.id === lessonId ? { ...lesson, ...updates } : lesson)),
+            units: chapter.units.map((lesson) => (lesson.id === lessonId ? { ...lesson, ...updates } : lesson)),
           };
         }
         return chapter;
@@ -179,7 +181,7 @@ export default function CourseContentPage() {
       order: chapters.length + 1,
       isExpanded: true,
       isEditing: true,
-      lessons: [],
+      units: [],
     };
     setChapters([...chapters, newChapter]);
   };
@@ -188,18 +190,48 @@ export default function CourseContentPage() {
     setChapters(
       chapters.map((chapter) => {
         if (chapter.id === chapterId) {
-          const newLesson: Lesson = {
+          const newLesson: Unit = {
             id: `lesson-${Date.now()}`,
             chapterId,
             title: 'Bài học mới',
             description: '',
-            order: chapter.lessons.length + 1,
+            order: chapter.units.length + 1,
             isEditing: true,
             steps: [],
+            type: 'lesson',
           };
           return {
             ...chapter,
-            lessons: [...chapter.lessons, newLesson],
+            units: [...chapter.units, newLesson],
+            isExpanded: true,
+          };
+        }
+        return chapter;
+      })
+    );
+  };
+
+  const addNewExcercise = (chapterId: string) => {
+    setChapters(
+      chapters.map((chapter) => {
+        if (chapter.id === chapterId) {
+          const newExcercise: Unit = {
+            id: `excercise-${Date.now()}`,
+            chapterId,
+            title: 'Bài tập mới',
+            description: '',
+            order: chapter.units.length + 1,
+            isEditing: false,
+            steps: [],
+            type: 'excercise',
+            excercise: {
+              id: `excercise-${Date.now()}`,
+              type: 'quiz',
+            },
+          };
+          return {
+            ...chapter,
+            units: [...chapter.units, newExcercise],
             isExpanded: true,
           };
         }
@@ -212,13 +244,13 @@ export default function CourseContentPage() {
     setChapters(chapters.filter((chapter) => chapter.id !== chapterId));
   };
 
-  const deleteLesson = (chapterId: string, lessonId: string) => {
+  const deleteUnit = (chapterId: string, unitId: string) => {
     setChapters(
       chapters.map((chapter) => {
         if (chapter.id === chapterId) {
           return {
             ...chapter,
-            lessons: chapter.lessons.filter((lesson) => lesson.id !== lessonId),
+            units: chapter.units.filter((unit) => unit.id !== unitId),
           };
         }
         return chapter;
@@ -230,9 +262,9 @@ export default function CourseContentPage() {
     setChapters(
       chapters.map((chapter) => ({
         ...chapter,
-        lessons: chapter.lessons.map((lesson) => ({
+        units: chapter.units.map((lesson) => ({
           ...lesson,
-          steps: lesson.steps.map((step) => (step.id === stepId ? { ...step, ...updatedStep } : step)),
+          steps: lesson.steps?.map((step) => (step.id === stepId ? { ...step, ...updatedStep } : step)),
         })),
       }))
     );
@@ -241,8 +273,8 @@ export default function CourseContentPage() {
 
   const openContentEditor = (stepId: string) => {
     for (const chapter of chapters) {
-      for (const lesson of chapter.lessons) {
-        const step = lesson.steps.find((s) => s.id === stepId);
+      for (const lesson of chapter.units) {
+        const step = lesson.steps?.find((s) => s.id === stepId);
         if (step) {
           setSelectedStep(step);
           setIsModalOpen(true);
@@ -287,8 +319,9 @@ export default function CourseContentPage() {
         onUpdateChapter={updateChapter}
         onUpdateLesson={updateLesson}
         onAddLesson={addNewLesson}
+        onAddExcercise={addNewExcercise}
         onDeleteChapter={deleteChapter}
-        onDeleteLesson={deleteLesson}
+        onDeleteUnit={deleteUnit}
         onOpenContentEditor={openContentEditor}
       />
 

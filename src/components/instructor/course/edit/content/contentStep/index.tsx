@@ -8,6 +8,7 @@ import EditNoteIcon from '@mui/icons-material/EditNote';
 import SettingsIcon from '@mui/icons-material/Settings';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { LessonStep } from '../../types';
+import { useParams, useRouter } from 'next/navigation';
 
 interface ContentStepProps {
   step: LessonStep;
@@ -16,26 +17,10 @@ interface ContentStepProps {
 }
 
 export default function ContentStep({ step, onEditContent, onDelete }: ContentStepProps) {
-  const getStepIcon = () => {
-    switch (step.type) {
-      case 'lecture':
-        return <DescriptionIcon color='primary' />;
-      case 'quiz':
-        return <QuizIcon sx={{ color: '#ed6c02' }} />;
-      default:
-        return <DescriptionIcon />;
-    }
-  };
-
-  const getStepColor = () => {
-    switch (step.type) {
-      case 'lecture':
-        return 'primary.light';
-      case 'quiz':
-        return 'warning.light';
-      default:
-        return 'grey.100';
-    }
+  const router = useRouter();
+  const params = useParams();
+  const handleEditClick = (stepId: string) => {
+    router.push(`/instructor/courses/${params.id}/edit/content/steps/${stepId}`);
   };
 
   return (
@@ -55,22 +40,17 @@ export default function ContentStep({ step, onEditContent, onDelete }: ContentSt
         <DragIndicatorIcon sx={{ color: 'text.disabled' }} />
       </Box>
 
-      {getStepIcon()}
+      {<DescriptionIcon color='primary' />}
 
       <Typography variant='body2' color='text.secondary' sx={{ ml: 1, flex: 1 }}>
         {step.title}
       </Typography>
 
       <Box sx={{ display: 'flex', gap: 0.5 }}>
-        {step.type === 'lecture' ? (
-          <IconButton size='small' onClick={() => onEditContent(step.id)} title='Chỉnh sửa nội dung'>
-            <EditNoteIcon fontSize='small' />
-          </IconButton>
-        ) : (
-          <IconButton size='small' title='Thiết lập bài tập'>
-            <SettingsIcon fontSize='small' />
-          </IconButton>
-        )}
+        <IconButton size='small' onClick={() => handleEditClick(step.id)} title='Chỉnh sửa nội dung'>
+          <EditNoteIcon fontSize='small' />
+        </IconButton>
+
         <IconButton size='small' title='Xóa bước' onClick={() => onDelete(step.id)}>
           <DeleteIcon fontSize='small' />
         </IconButton>

@@ -37,12 +37,25 @@ export interface CourseDetailLesson extends LessonBase {
   resourceUrl?: string | null;
 }
 
-export interface LearningLesson extends LessonBase {
+export type UnitType = 'lesson' | 'excercise';
+
+export interface LearningUnit {
+  id: string;
+  title: string;
   sectionId: string;
   order: number;
   status: CompletionStatus;
   steps?: Step[];
+  excercise?: Excercise;
+  type: UnitType;
   lessonType?: 'theory' | 'practice' | 'project' | 'review';
+}
+
+export type ExcerciseType = 'assigment' | 'project' | 'quiz' | 'coding';
+
+export interface Excercise {
+  id: string;
+  type: ExcerciseType;
 }
 
 interface SectionBase {
@@ -56,7 +69,7 @@ export interface CourseDetailSection extends SectionBase {
 }
 
 export interface LearningSection extends SectionBase {
-  lessons: LearningLesson[];
+  units: LearningUnit[];
   description?: string;
 }
 
