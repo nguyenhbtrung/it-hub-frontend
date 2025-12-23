@@ -42,10 +42,10 @@ function StatCard({
     <Card
       variant='outlined'
       sx={{
-        borderRadius: 2,
+        borderRadius: 1,
         borderColor: 'divider',
         bgcolor: 'background.paper',
-        boxShadow: 1,
+        // boxShadow: 1,
       }}
     >
       <CardContent>
@@ -88,7 +88,7 @@ function BadgeCard({
     <Card
       variant='outlined'
       sx={{
-        borderRadius: 2,
+        borderRadius: 1,
         borderColor: `${color}30`,
         bgcolor: `${color}10`,
         cursor: 'pointer',
@@ -148,10 +148,10 @@ export default function ProfilePage() {
           <Card
             variant='outlined'
             sx={{
-              borderRadius: 2,
+              borderRadius: 1,
               borderColor: 'divider',
               bgcolor: 'background.paper',
-              boxShadow: 1,
+              // boxShadow: 1,
               height: '100%',
             }}
           >
@@ -235,10 +235,10 @@ export default function ProfilePage() {
           <Card
             variant='outlined'
             sx={{
-              borderRadius: 2,
+              borderRadius: 1,
               borderColor: 'divider',
               bgcolor: 'background.paper',
-              boxShadow: 1,
+              // boxShadow: 1,
               height: '100%',
             }}
           >
@@ -300,10 +300,10 @@ export default function ProfilePage() {
       <Card
         variant='outlined'
         sx={{
-          borderRadius: 2,
+          borderRadius: 1,
           borderColor: 'divider',
           bgcolor: 'background.paper',
-          boxShadow: 1,
+          // boxShadow: 1,
         }}
       >
         <CardContent>

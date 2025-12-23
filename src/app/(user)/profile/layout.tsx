@@ -1,4 +1,4 @@
-import { Box, Container, Grid, Typography, Avatar, Stack, Button, Divider, ThemeProvider } from '@mui/material';
+import { Box, Container, Grid, Typography, Avatar, Stack, Button, Card } from '@mui/material';
 import { Person, School, Code, BusinessCenter, Language, Edit, GitHub, LinkedIn, Public } from '@mui/icons-material';
 import { ReactNode } from 'react';
 import ProfileTabs from '@/components/user/profile/profileTabs';
@@ -9,7 +9,7 @@ interface ProfileLayoutProps {
 
 export default function ProfileLayout({ children }: ProfileLayoutProps) {
   return (
-    <Container maxWidth='xl' sx={{ py: { xs: 2, md: 12 }, px: { xs: 2, md: 12 } }}>
+    <Container maxWidth='xl' sx={{ py: { xs: 2, md: 12 }, px: { xs: 2, md: 12 }, bgcolor: 'customBackground.4' }}>
       <Grid container spacing={3}>
         {/* Cột bên trái - Thông tin cá nhân */}
         <Grid size={{ xs: 12, lg: 4, xl: 3 }}>
@@ -22,11 +22,11 @@ export default function ProfileLayout({ children }: ProfileLayoutProps) {
               gap: 3,
             }}
           >
-            <Box
+            <Card
               sx={{
                 bgcolor: 'background.paper',
-                borderRadius: 2,
-                boxShadow: 1,
+                borderRadius: 1,
+                // boxShadow: 1,
                 border: 1,
                 borderColor: 'divider',
                 p: 3,
@@ -178,7 +178,7 @@ export default function ProfileLayout({ children }: ProfileLayoutProps) {
                   Chỉnh sửa hồ sơ
                 </Button>
               </Box>
-            </Box>
+            </Card>
           </Box>
         </Grid>
 

@@ -154,7 +154,7 @@ export default function CourseCard({ course, status }: CourseCardProps) {
       sx={{
         display: 'flex',
         flexDirection: { xs: 'column', sm: 'row' },
-        borderRadius: 2,
+        borderRadius: 1,
         border: 1,
         borderColor: 'divider',
         bgcolor: 'background.paper',
