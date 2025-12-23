@@ -9,6 +9,7 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import SidebarEnrollCard from '../sidebarEnrollCard';
 import PromoVideo from '../promoVideo';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
+import NextLink from '@/components/common/Link';
 
 export default function CourseHeader({ course }: { course: CourseDetail }) {
   return (
@@ -96,7 +97,12 @@ export default function CourseHeader({ course }: { course: CourseDetail }) {
               {/* <Button variant='contained' sx={{ width: { xs: '100%', sm: 200 } }}>
                 Đăng ký
               </Button> */}
-              <Button variant='contained' sx={{ width: { xs: '100%', sm: 200 } }}>
+              <Button
+                variant='contained'
+                LinkComponent={Link}
+                href='/courses/1/learn/units/lesson-1-1'
+                sx={{ width: { xs: '100%', sm: 200 } }}
+              >
                 Tiếp tục học
               </Button>
               <Button variant='outlined' sx={{ width: 42, height: 42, minWidth: 42, p: 0 }}>
