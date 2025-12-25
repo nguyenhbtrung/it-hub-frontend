@@ -1,5 +1,6 @@
 'use client';
 
+import { signIn } from 'next-auth/react';
 import { AuthFormProps } from '@/types/auth';
 import { Box, TextField, Button, Link, Stack } from '@mui/material';
 import { useState } from 'react';
@@ -15,8 +16,14 @@ export default function AuthForm({ type }: AuthFormProps) {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = () => {
-    console.log('Submitted:', form);
+  const handleSubmit = async () => {
+    if (type === 'login') {
+      await signIn('credentials', {
+        email: form.email,
+        password: form.password,
+        callbackUrl: '/',
+      });
+    }
   };
 
   return (

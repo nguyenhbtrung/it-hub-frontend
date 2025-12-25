@@ -17,7 +17,7 @@ export default function LectureEditor() {
         onChange={setContent}
         borderRadius={0}
         height={600}
-        placeholder='Nhập nội dung bài viết'
+        placeholder='Nhập nội dung bài giảng'
       />
     </>
   );

@@ -40,7 +40,6 @@ const initialChapters: Chapter[] = [
         steps: [
           {
             id: '1-1-1',
-            type: 'lecture',
             title: ' React là gì?',
             content: '',
             order: 1,
@@ -86,7 +85,6 @@ greet("Next.js");
           },
           {
             id: '1-1-2',
-            type: 'quiz',
             title: 'Tìm hiểu về hook trong React',
             content: '',
             order: 2,

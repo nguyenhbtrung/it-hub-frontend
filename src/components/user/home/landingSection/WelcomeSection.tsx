@@ -3,6 +3,8 @@ import { Box, Container } from '@mui/material';
 import EnrolledWelcomeSection from './EnrolledWelcomeSection';
 import NewStudentWelcomeSection from './NewStudentWelcomeSection';
 import { courseProgress } from '@/types/course';
+import { auth } from '@/auth';
+import { jwtPayload } from '@/types/jwt';
 
 async function getUserLearningData(userId: string): Promise<courseProgress[]> {
   await new Promise((resolve) => setTimeout(resolve, 3000));
@@ -43,10 +45,10 @@ async function getUserLearningData(userId: string): Promise<courseProgress[]> {
 }
 
 export default async function WelcomeSection() {
-  const session = await verifySession();
-  const user = session;
+  const session = await auth();
+  if (!session) return;
 
-  if (!user) return null;
+  const user: jwtPayload = { userId: '1', name: 'John', role: 'instructor' };
 
   const learning = await getUserLearningData(user.userId.toString());
   const hasCourses = learning.length > 0;
