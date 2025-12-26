@@ -1,6 +1,7 @@
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import 'next-auth/jwt';
+import { signInUser } from './services/auth.service';
 
 declare module 'next-auth' {
   interface User {
@@ -28,16 +29,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: { label: 'Password', type: 'password' },
       },
       authorize: async (credentials) => {
-        const res = await fetch('http://localhost:8080/api/auth/login', {
-          method: 'POST',
-          body: JSON.stringify(credentials),
-          headers: { 'Content-Type': 'application/json' },
-        });
-
-        const data = await res.json();
-        if (res.ok && data.data) {
+        const res = await signInUser(credentials);
+        if (res?.success && res?.data) {
           return {
-            accessToken: data.data.accessToken,
+            accessToken: res.data.accessToken,
             // role: data.data.user.role,
           };
         }
