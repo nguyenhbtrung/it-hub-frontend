@@ -50,10 +50,9 @@ export const userNavItems: NavItem[] = [
       },
     ],
   },
-  { label: 'Cuộc thi', href: '/courses' },
   { label: 'Diễn đàn', href: '/forum' },
 ];
 
 export const instructorNavItems: NavItem[] = [{ label: 'Giảng dạy', href: '/instructor' }];
 
-export const studentNavItems: NavItem[] = [{ label: 'Việc học của tôi', href: '/my-learning' }];
+export const studentNavItems: NavItem[] = [];

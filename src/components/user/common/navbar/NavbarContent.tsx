@@ -3,12 +3,12 @@ import SearchBar from './SearchBar';
 import NavbarLinks from './NavbarLinks';
 import MobileMenu from './MobileMenu';
 import Logo from '@/components/common/Logo';
-import { verifySession } from '@/lib/utils/dal';
 import { instructorNavItems, studentNavItems, userNavItems } from '@/data/navigation/userNavItems';
+import { auth } from '@/auth';
 
 export default async function NavbarContent() {
   let navItems = userNavItems;
-  const session = await verifySession();
+  const session = await auth();
 
   if (session?.role === 'student') {
     navItems = [...userNavItems, ...studentNavItems];
@@ -29,7 +29,7 @@ export default async function NavbarContent() {
         <SearchBar />
       </Box>
       <Box sx={{ display: { xs: 'none', md: 'block' } }}>
-        <NavbarLinks navItems={navItems} />
+        <NavbarLinks navItems={navItems} session={session} />
       </Box>
     </Toolbar>
   );

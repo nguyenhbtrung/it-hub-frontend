@@ -2,8 +2,13 @@ import { Box, Typography, Button, Container } from '@mui/material';
 import { AddCircle } from '@mui/icons-material';
 import CourseTabs from '@/components/instructor/course/courseTabs';
 import CourseList from '@/components/instructor/course/courseList';
+import { Suspense } from 'react';
 
-export default function ManageCoursesPage() {
+interface ManageCoursesPageProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+export default function ManageCoursesPage({ searchParams }: ManageCoursesPageProps) {
   return (
     <Box sx={{ flex: 1, overflowY: 'auto', p: 4 }}>
       <Container maxWidth='xl' sx={{ px: { xs: 2, sm: 3 } }}>
@@ -34,7 +39,9 @@ export default function ManageCoursesPage() {
         <CourseTabs />
 
         {/* Course List */}
-        <CourseList />
+        <Suspense>
+          <CourseList searchParams={searchParams} />
+        </Suspense>
       </Container>
     </Box>
   );

@@ -1,11 +1,24 @@
 'use client';
 import { useState } from 'react';
-import { Button, Box, Paper, Typography, Stack, useMediaQuery, useTheme, Menu, MenuItem } from '@mui/material';
+import {
+  Button,
+  Box,
+  Paper,
+  Typography,
+  Stack,
+  useMediaQuery,
+  useTheme,
+  Menu,
+  MenuItem,
+  IconButton,
+  Avatar,
+} from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import Link from '@/components/common/Link';
 import LinkButton from '@mui/material/Link';
 import { NavItem } from '@/types/navigation.user';
+import { Session } from 'next-auth';
 
 const navButtonSx = {
   color: 'text.primary',
@@ -76,12 +89,21 @@ function SmallMenu({
 
 interface NavbarLinksProps {
   navItems: NavItem[];
+  session: Session | null;
 }
 
-export default function NavbarLinks({ navItems }: NavbarLinksProps) {
+export default function NavbarLinks({ navItems, session }: NavbarLinksProps) {
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [hoverTimer, setHoverTimer] = useState<NodeJS.Timeout | null>(null);
+
+  const [avatarAnchor, setAvatarAnchor] = useState<null | HTMLElement>(null);
+  const handleAvatarClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAvatarAnchor(event.currentTarget);
+  };
+  const handleAvatarClose = () => {
+    setAvatarAnchor(null);
+  };
 
   const isOpen = (label: string) => openMenu === label;
 
@@ -142,12 +164,47 @@ export default function NavbarLinks({ navItems }: NavbarLinksProps) {
             )}
           </Box>
         ))}
-        <Button component={Link} href='/auth/login' variant='contained'>
-          Đăng nhập
-        </Button>
-        <Button component={Link} href='/auth/signup' variant='outlined' sx={{ display: { xs: 'none', lg: 'block' } }}>
-          Đăng ký
-        </Button>
+        {session ? (
+          <>
+            {' '}
+            <IconButton onClick={handleAvatarClick} sx={{ p: 0 }}>
+              {' '}
+              <Avatar alt={session.user?.name || 'User'} src={session.user?.image || undefined} />{' '}
+            </IconButton>{' '}
+            <Menu anchorEl={avatarAnchor} open={Boolean(avatarAnchor)} onClose={handleAvatarClose}>
+              {' '}
+              <MenuItem component={Link} href='/profile' onClick={handleAvatarClose}>
+                {' '}
+                Hồ sơ{' '}
+              </MenuItem>{' '}
+              <MenuItem component={Link} href='/settings' onClick={handleAvatarClose}>
+                {' '}
+                Cài đặt{' '}
+              </MenuItem>{' '}
+              <MenuItem component={Link} href='/auth/logout' onClick={handleAvatarClose}>
+                {' '}
+                Đăng xuất{' '}
+              </MenuItem>{' '}
+            </Menu>{' '}
+          </>
+        ) : (
+          <>
+            {' '}
+            <Button component={Link} href='/auth/login' variant='contained'>
+              {' '}
+              Đăng nhập{' '}
+            </Button>{' '}
+            <Button
+              component={Link}
+              href='/auth/signup'
+              variant='outlined'
+              sx={{ display: { xs: 'none', lg: 'block' } }}
+            >
+              {' '}
+              Đăng ký{' '}
+            </Button>{' '}
+          </>
+        )}
       </Box>
 
       {currentItem?.menuType === 'small' && currentItem.submenu && (

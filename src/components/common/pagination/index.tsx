@@ -20,33 +20,37 @@ export default function AppPagination({ count, page, onChange }: AppPaginationPr
     router.replace(`?${params.toString()}`);
   };
   return (
-    <Pagination
-      count={count}
-      page={page}
-      onChange={onChange || handleChangePage}
-      renderItem={(item) => (
-        <PaginationItem
-          slots={{
-            previous: ArrowBackIosNew,
-            next: ArrowForwardIos,
-          }}
-          {...item}
-          sx={{
-            '&.Mui-selected': {
-              backgroundColor: 'primary.main',
-              color: 'white',
-              '&:hover': {
-                backgroundColor: 'primary.dark',
-              },
-            },
-            border: '1px solid',
-            borderColor: 'divider',
-            borderRadius: 1,
-            minWidth: 40,
-            height: 40,
-          }}
+    <>
+      {count > 1 && (
+        <Pagination
+          count={count}
+          page={page}
+          onChange={onChange || handleChangePage}
+          renderItem={(item) => (
+            <PaginationItem
+              slots={{
+                previous: ArrowBackIosNew,
+                next: ArrowForwardIos,
+              }}
+              {...item}
+              sx={{
+                '&.Mui-selected': {
+                  backgroundColor: 'primary.main',
+                  color: 'white',
+                  '&:hover': {
+                    backgroundColor: 'primary.dark',
+                  },
+                },
+                border: '1px solid',
+                borderColor: 'divider',
+                borderRadius: 1,
+                minWidth: 40,
+                height: 40,
+              }}
+            />
+          )}
         />
       )}
-    />
+    </>
   );
 }

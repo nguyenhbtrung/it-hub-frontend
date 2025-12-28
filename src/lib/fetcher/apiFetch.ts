@@ -16,6 +16,7 @@ export async function apiFetch<T>(endpoint: string, options: ApiFetchOptions = {
       ...(headers || {}),
       ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
       'Content-Type': 'application/json',
+      Cookie: `refreshToken=${session?.refreshToken || ''}`,
     },
     credentials: 'include',
     cache: 'no-store',
@@ -23,14 +24,14 @@ export async function apiFetch<T>(endpoint: string, options: ApiFetchOptions = {
 
   // ===== Access token hết hạn =====
   if (res.status === 401 && needAuth && retry) {
-    const refreshed = await refreshAccessToken();
+    // const refreshed = await refreshAccessToken();
 
-    if (!refreshed) {
-      const error = await parseError(res);
-      throw new ApiError(res.status, 'UNAUTHORIZED', error.code);
-    }
+    // if (!refreshed) {
+    //   const error = await parseError(res);
+    //   throw new ApiError(res.status, 'UNAUTHORIZED', error.code);
+    // }
 
-    // Retry request 1 lần
+    // Retry request
     return apiFetch<T>(endpoint, {
       ...options,
       retry: false,

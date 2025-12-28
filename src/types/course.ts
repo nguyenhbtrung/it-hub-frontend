@@ -162,3 +162,5 @@ export interface LearningCourse {
   createdAt: string;
   updatedAt: string;
 }
+
+export type CourseStatus = 'draft' | 'pending' | 'published' | 'hidden' | 'suspended';
