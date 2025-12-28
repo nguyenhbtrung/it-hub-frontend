@@ -3,6 +3,7 @@ import { AddCircle } from '@mui/icons-material';
 import CourseTabs from '@/components/instructor/course/courseTabs';
 import CourseList from '@/components/instructor/course/courseList';
 import { Suspense } from 'react';
+import AddCourse from '@/components/instructor/course/addCourse';
 
 interface ManageCoursesPageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -22,17 +23,7 @@ export default function ManageCoursesPage({ searchParams }: ManageCoursesPagePro
               Xem, tạo mới, và quản lý tất cả các khóa học của bạn.
             </Typography>
           </Box>
-          <Button
-            variant='contained'
-            startIcon={<AddCircle />}
-            sx={{
-              height: 40,
-              fontWeight: 700,
-              textTransform: 'none',
-            }}
-          >
-            Thêm khóa học mới
-          </Button>
+          <AddCourse />
         </Box>
 
         {/* Tabs */}

@@ -31,3 +31,29 @@ export async function getMyCreatedCourse({
     throw err;
   }
 }
+
+export async function createCourse(payload: {
+  title: string;
+  categoryId: string;
+  subCategoryId: string;
+}): Promise<any> {
+  try {
+    return await apiFetch(`/api/courses`, {
+      auth: true,
+      credentials: 'include',
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      return {
+        success: false,
+        error: {
+          message: 'Có lỗi xảy ra',
+          code: err.code,
+        },
+      };
+    }
+    throw err;
+  }
+}

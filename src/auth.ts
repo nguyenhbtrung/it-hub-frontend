@@ -61,41 +61,40 @@ export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
         token.role = user.role;
         return token;
       }
-      console.log('middle');
 
-      if (Date.now() < token.expiresAt * 1000) {
-        return token;
-      }
+      // if (Date.now() < token.expiresAt * 1000) {
+      //   return token;
+      // }
 
-      const res = await fetch(`${API_BASE_URL}${REFRESH_ENDPOINT}`, {
-        method: 'POST',
-        credentials: 'include',
-        cache: 'no-store',
-        headers: {
-          Cookie: `refreshToken=${token?.refreshToken || ''}`,
-        },
-      });
+      // const res = await fetch(`${API_BASE_URL}${REFRESH_ENDPOINT}`, {
+      //   method: 'POST',
+      //   credentials: 'include',
+      //   cache: 'no-store',
+      //   headers: {
+      //     Cookie: `refreshToken=${token?.refreshToken || ''}`,
+      //   },
+      // });
 
-      const json = await res.json();
-      if (json?.success && json?.data) {
-        const data = json.data;
-        console.log('data', data);
+      // const json = await res.json();
+      // if (json?.success && json?.data) {
+      //   const data = json.data;
+      //   console.log('data', data);
 
-        const decoded = jwtDecode(data.accessToken);
-        token.expiresAt = decoded.exp ?? Math.floor(Date.now() / 1000) + 10 * 60;
-        token.accessToken = data.accessToken;
-        const setCookieHeader = res.headers.get('set-cookie');
-        console.log('setCookieHeader', setCookieHeader);
-        if (setCookieHeader) {
-          const match = setCookieHeader.match(/refreshToken=([^;]+)/);
-          if (match) {
-            console.log('match', match[1]);
-            token.refreshToken = match[1];
-          }
-        }
-      }
+      //   const decoded = jwtDecode(data.accessToken);
+      //   token.expiresAt = decoded.exp ?? Math.floor(Date.now() / 1000) + 10 * 60;
+      //   token.accessToken = data.accessToken;
+      //   const setCookieHeader = res.headers.get('set-cookie');
+      //   console.log('setCookieHeader', setCookieHeader);
+      //   if (setCookieHeader) {
+      //     const match = setCookieHeader.match(/refreshToken=([^;]+)/);
+      //     if (match) {
+      //       console.log('match', match[1]);
+      //       token.refreshToken = match[1];
+      //     }
+      //   }
+      // }
 
-      console.log('token', token);
+      // console.log('token', token);
       return token;
     },
     async session({ session, token }) {

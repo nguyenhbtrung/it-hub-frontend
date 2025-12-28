@@ -65,7 +65,7 @@ export default async function CourseList({ searchParams }: CourseListProps) {
     courses = res.data;
     const meta = res?.meta;
     if (typeof meta?.total === 'number' && typeof meta?.page === 'number' && meta.page > 0) {
-      count = Math.ceil(meta.total / meta.page);
+      count = Math.ceil(meta.total / meta.limit);
     }
   }
 

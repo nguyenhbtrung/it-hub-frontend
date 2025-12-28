@@ -1,16 +1,18 @@
 import { auth } from '@/auth';
 import { API_BASE_URL } from './constants';
-import { refreshAccessToken } from './refreshToken';
 import { ApiFetchOptions } from './types';
 import { ApiError } from '../errors/ApiError';
 
 export async function apiFetch<T>(endpoint: string, options: ApiFetchOptions = {}): Promise<T> {
-  const { auth: needAuth = true, retry = true, headers, ...rest } = options;
+  const { auth: needAuth = true, retry = true, headers, query, ...rest } = options;
 
   const session = needAuth ? await auth() : null;
   const accessToken = session?.accessToken;
 
-  const res = await fetch(`${API_BASE_URL}${endpoint}`, {
+  const queryString = buildQueryString(query);
+  const url = `${API_BASE_URL}${endpoint}${queryString}`;
+
+  const res = await fetch(url, {
     ...rest,
     headers: {
       ...(headers || {}),
@@ -45,6 +47,21 @@ export async function apiFetch<T>(endpoint: string, options: ApiFetchOptions = {
   }
 
   return res.json();
+}
+
+function buildQueryString(query?: ApiFetchOptions['query']) {
+  if (!query) return '';
+
+  const params = new URLSearchParams();
+
+  Object.entries(query).forEach(([key, value]) => {
+    if (value !== undefined && value !== null) {
+      params.append(key, String(value));
+    }
+  });
+
+  const qs = params.toString();
+  return qs ? `?${qs}` : '';
 }
 
 async function parseError(res: Response) {
