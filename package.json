@@ -41,6 +41,7 @@
     "@tiptap/static-renderer": "^3.13.0",
     "highlight.js": "^11.11.1",
     "jwt-decode": "^4.0.0",
+    "lodash": "^4.17.21",
     "lowlight": "^3.3.0",
     "next": "16.0.1",
     "next-auth": "^5.0.0-beta.30",
@@ -53,6 +54,7 @@
     "zod": "^4.2.1"
   },
   "devDependencies": {
+    "@types/lodash": "^4.17.21",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

@@ -1,6 +1,17 @@
 'use client';
 
-import { Box, TextField, MenuItem, IconButton, Button, Chip, Paper, Typography, Grid } from '@mui/material';
+import {
+  Box,
+  TextField,
+  MenuItem,
+  IconButton,
+  Button,
+  Chip,
+  Paper,
+  Typography,
+  Grid,
+  Autocomplete,
+} from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
@@ -8,6 +19,9 @@ import VideocamIcon from '@mui/icons-material/Videocam';
 import CloseIcon from '@mui/icons-material/Close';
 import { useState } from 'react';
 import RichTextEditor from '@/components/common/richTextEditor';
+import debounce from 'lodash/debounce';
+import { Tag } from '@/types/tag';
+import { getTags } from '@/services/tag.service';
 
 export default function EditCourseDetailForm() {
   const [requirements, setRequirements] = useState([
@@ -22,7 +36,14 @@ export default function EditCourseDetailForm() {
 
   const [tags, setTags] = useState(['ReactJS', 'Next.js', 'TypeScript']);
   const [newTag, setNewTag] = useState('');
+  const [value, setValue] = useState(null);
   const [detailedDescription, setDetailedDescription] = useState('');
+  const [suggestedTags, setSuggestedTags] = useState<Tag[]>([]);
+
+  const handleSearch = debounce(async (keyword) => {
+    const res = await getTags({ page: 1, limit: 10, q: keyword });
+    if (res?.success && res?.data) setSuggestedTags(res.data);
+  }, 300);
 
   const addRequirement = () => {
     setRequirements([...requirements, '']);
@@ -52,7 +73,7 @@ export default function EditCourseDetailForm() {
     setOutcomes(newOutcomes);
   };
 
-  const addTag = () => {
+  const addTag = (newTag: string) => {
     if (newTag.trim() && !tags.includes(newTag.trim())) {
       setTags([...tags, newTag.trim()]);
       setNewTag('');
@@ -61,13 +82,6 @@ export default function EditCourseDetailForm() {
 
   const removeTag = (tagToRemove: string) => {
     setTags(tags.filter((tag) => tag !== tagToRemove));
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && newTag.trim()) {
-      e.preventDefault();
-      addTag();
-    }
   };
 
   return (
@@ -245,15 +259,37 @@ export default function EditCourseDetailForm() {
                 }}
               />
             ))}
-            <TextField
-              value={newTag}
-              onChange={(e) => setNewTag(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder='Thêm tag...'
-              variant='standard'
-              size='small'
-              sx={{ flex: 1, minWidth: 120 }}
-              InputProps={{ disableUnderline: true }}
+            <Autocomplete
+              freeSolo
+              value={value}
+              inputValue={newTag}
+              onInputChange={(event, newInputValue) => {
+                setNewTag(newInputValue);
+                handleSearch(newInputValue);
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  placeholder='Thêm tag...'
+                  variant='standard'
+                  size='small'
+                  sx={{ flex: 1, minWidth: 240 }}
+                />
+              )}
+              options={suggestedTags}
+              getOptionLabel={(option) => (typeof option === 'string' ? option : option.name)}
+              filterOptions={(x) => x}
+              onChange={(event, newValue) => {
+                if (typeof newValue === 'string') {
+                  addTag(newValue);
+                } else if (newValue && newValue.name) {
+                  const newTag = newValue.name;
+                  addTag(newTag);
+                }
+
+                setNewTag('');
+                setValue(null);
+              }}
             />
           </Paper>
         </Box>
