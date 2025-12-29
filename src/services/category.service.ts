@@ -18,6 +18,7 @@ export async function getCategories({
 }): Promise<any> {
   try {
     return await apiFetch(`/api/categories`, {
+      auth: false,
       credentials: 'include',
       query: {
         page,

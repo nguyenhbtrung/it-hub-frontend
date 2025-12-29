@@ -1,14 +1,19 @@
-'use client';
-
 import { AppBar, Toolbar, IconButton, Typography, Box, Divider, Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import SaveIcon from '@mui/icons-material/Save';
-import { useParams } from 'next/navigation';
-import Link from 'next/link';
 
-export default function CourseHeader() {
-  const { id } = useParams();
+import Link from '@/components/common/Link';
+import HeaderAction from './headerAction';
+import { getCourseDetailByIntructor } from '@/services/course.service';
+
+interface CourseHeaderProps {
+  params: Promise<{ id: string }>;
+}
+
+export default async function CourseHeader({ params }: CourseHeaderProps) {
+  const { id } = await params;
+  const res = await getCourseDetailByIntructor(id);
+  const slug = res?.data?.slug || '';
+  const course = res?.data;
   return (
     <AppBar
       position='static'
@@ -41,38 +46,13 @@ export default function CourseHeader() {
               Chỉnh sửa khóa học
             </Typography>
             <Typography variant='subtitle1' fontWeight='semibold'>
-              Lập trình Web Frontend Nâng cao
+              {course?.title ? course.title : ''}
             </Typography>
           </Box>
         </Box>
 
         <Box sx={{ ml: 'auto', display: 'flex', gap: 2 }}>
-          <Button
-            component='a'
-            href={`/courses/${id}`}
-            target='_blank'
-            rel='noopener noreferrer'
-            variant='outlined'
-            endIcon={<VisibilityIcon />}
-            sx={{
-              borderColor: 'grey.300',
-              color: 'text.primary',
-              '&:hover': { bgcolor: 'grey.50' },
-            }}
-          >
-            Xem trước
-          </Button>
-          <Button
-            variant='contained'
-            endIcon={<SaveIcon />}
-            sx={{
-              bgcolor: 'primary.main',
-              fontWeight: 'bold',
-              '&:hover': { bgcolor: 'primary.dark' },
-            }}
-          >
-            Lưu thay đổi
-          </Button>
+          <HeaderAction slug={slug} />
         </Box>
       </Toolbar>
     </AppBar>

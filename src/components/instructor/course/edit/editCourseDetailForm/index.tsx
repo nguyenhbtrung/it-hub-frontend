@@ -11,34 +11,90 @@ import {
   Typography,
   Grid,
   Autocomplete,
+  CircularProgress,
+  Select,
+  SelectChangeEvent,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import CloseIcon from '@mui/icons-material/Close';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import RichTextEditor from '@/components/common/richTextEditor';
 import debounce from 'lodash/debounce';
 import { Tag } from '@/types/tag';
 import { getTags } from '@/services/tag.service';
+import { CourseDetail } from './types';
+import { Category } from '@/types/category';
+import { getCategories } from '@/services/category.service';
+import { levelLabelsMap } from '@/lib/const/course';
+import { CourseLevel } from '@/types/course';
 
-export default function EditCourseDetailForm() {
-  const [requirements, setRequirements] = useState([
-    'Kiến thức HTML, CSS, Javascript cơ bản',
-    'Máy tính cá nhân có kết nối internet',
-  ]);
+interface EditCourseDetailFormProps {
+  courseDetail: CourseDetail | null;
+}
 
-  const [outcomes, setOutcomes] = useState([
-    'Xây dựng được ứng dụng web hiện đại với ReactJS',
-    'Nắm vững TypeScript để viết code an toàn và dễ bảo trì',
-  ]);
+export default function EditCourseDetailForm({ courseDetail }: EditCourseDetailFormProps) {
+  const [title, setTitle] = useState(courseDetail?.title || '');
+  const [shortDescription, setShortDescription] = useState(courseDetail?.shortDescription || '');
 
-  const [tags, setTags] = useState(['ReactJS', 'Next.js', 'TypeScript']);
+  const [categoryId, setCategoryId] = useState(courseDetail?.category.id || '');
+  const [subCategoryId, setSubCategoryId] = useState(courseDetail?.subCategory?.id || '');
+
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [subCategories, setSubCategories] = useState<Category[]>([]);
+  const [loadingCategories, setLoadingCategories] = useState(false);
+  const [loadingSubCategories, setLoadingSubCategories] = useState(false);
+
+  const [level, setLevel] = useState<CourseLevel>(courseDetail?.level || 'beginner');
+
+  const [requirements, setRequirements] = useState(courseDetail?.requirements || []);
+  const [outcomes, setOutcomes] = useState(courseDetail?.keyTakeaway || []);
+
+  const [tags, setTags] = useState(courseDetail?.tags || []);
   const [newTag, setNewTag] = useState('');
   const [value, setValue] = useState(null);
   const [detailedDescription, setDetailedDescription] = useState('');
   const [suggestedTags, setSuggestedTags] = useState<Tag[]>([]);
+
+  useEffect(() => {
+    async function fetchRoot() {
+      setLoadingCategories(true);
+      const res = await getCategories({ all: true, root: true });
+      if (res?.success && res?.data) {
+        setCategories(res.data || []);
+      }
+      setLoadingCategories(false);
+    }
+
+    fetchRoot();
+  }, []);
+
+  useEffect(() => {
+    if (!categoryId) {
+      setSubCategories([]);
+      setSubCategoryId('');
+      return;
+    }
+
+    async function fetchChildren() {
+      setLoadingSubCategories(true);
+
+      const res = await getCategories({ all: true, parentId: categoryId, root: false });
+      if (res?.success && res?.data) {
+        setSubCategories(res.data || []);
+        // reset selected subcategory if not in new list
+        if (!res.data?.some((c: Category) => c.id === subCategoryId)) {
+          setSubCategoryId('');
+        }
+      }
+      setLoadingSubCategories(false);
+    }
+
+    fetchChildren();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [categoryId]);
 
   const handleSearch = debounce(async (keyword) => {
     const res = await getTags({ page: 1, limit: 10, q: keyword });
@@ -101,7 +157,13 @@ export default function EditCourseDetailForm() {
           <Typography variant='subtitle2' gutterBottom>
             Tiêu đề khóa học
           </Typography>
-          <TextField fullWidth defaultValue='Lập trình Web Frontend Nâng cao' variant='outlined' size='small' />
+          <TextField
+            fullWidth
+            defaultValue={title}
+            onChange={(e) => setTitle(e.target.value)}
+            variant='outlined'
+            size='small'
+          />
         </Box>
 
         {/* Mô tả ngắn */}
@@ -113,7 +175,8 @@ export default function EditCourseDetailForm() {
             fullWidth
             multiline
             rows={3}
-            defaultValue='Khóa học này cung cấp kiến thức sâu về ReactJS, Next.js và TypeScript, giúp học viên xây dựng các ứng dụng web hiện đại và hiệu suất cao.'
+            defaultValue={shortDescription}
+            onChange={(e) => setShortDescription(e.target.value)}
             variant='outlined'
             size='small'
           />
@@ -133,32 +196,82 @@ export default function EditCourseDetailForm() {
             <Typography variant='subtitle2' gutterBottom>
               Danh mục
             </Typography>
-            <TextField select fullWidth defaultValue='Lập trình Web' size='small'>
-              <MenuItem value='Lập trình Web'>Lập trình Web</MenuItem>
-              <MenuItem value='Phát triển Di động'>Phát triển Di động</MenuItem>
-              <MenuItem value='Khoa học Dữ liệu'>Khoa học Dữ liệu</MenuItem>
-            </TextField>
+            <Select
+              size='small'
+              fullWidth
+              value={categoryId}
+              onChange={(e: SelectChangeEvent) => setCategoryId(e.target.value as string)}
+              renderValue={(v) => {
+                const found = categories.find((c) => c.id === v);
+                return found ? found.name : '';
+              }}
+            >
+              {loadingCategories ? (
+                <MenuItem value=''>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <CircularProgress size={18} />
+                    <Typography>Đang tải danh mục...</Typography>
+                  </Box>
+                </MenuItem>
+              ) : (
+                categories.map((c) => (
+                  <MenuItem key={c.id} value={c.id}>
+                    {c.name}
+                  </MenuItem>
+                ))
+              )}
+            </Select>
           </Grid>
           <Grid size={{ xs: 12, md: 4 }}>
             <Typography variant='subtitle2' gutterBottom>
               Danh mục con
             </Typography>
-            <TextField select fullWidth defaultValue='Frontend' size='small'>
-              <MenuItem value='Frontend'>Frontend</MenuItem>
-              <MenuItem value='Backend'>Backend</MenuItem>
-              <MenuItem value='Fullstack'>Fullstack</MenuItem>
-            </TextField>
+            <Select
+              size='small'
+              fullWidth
+              value={subCategoryId}
+              onChange={(e: SelectChangeEvent) => setSubCategoryId(e.target.value as string)}
+              renderValue={(v) => {
+                const found = subCategories.find((c) => c.id === v);
+                return found ? found.name : '';
+              }}
+            >
+              {loadingSubCategories ? (
+                <MenuItem value=''>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <CircularProgress size={18} />
+                    <Typography>Đang tải danh mục con...</Typography>
+                  </Box>
+                </MenuItem>
+              ) : subCategories.length > 0 ? (
+                subCategories.map((c) => (
+                  <MenuItem key={c.id} value={c.id}>
+                    {c.name}
+                  </MenuItem>
+                ))
+              ) : (
+                <MenuItem value=''>
+                  <em>Không có danh mục con</em>
+                </MenuItem>
+              )}
+            </Select>
           </Grid>
           <Grid size={{ xs: 12, md: 4 }}>
             <Typography variant='subtitle2' gutterBottom>
               Trình độ
             </Typography>
-            <TextField select fullWidth defaultValue='Nâng cao' size='small'>
-              <MenuItem value='Cơ bản'>Cơ bản</MenuItem>
-              <MenuItem value='Trung cấp'>Trung cấp</MenuItem>
-              <MenuItem value='Nâng cao'>Nâng cao</MenuItem>
-              <MenuItem value='Chuyên gia'>Chuyên gia</MenuItem>
-            </TextField>
+            <Select
+              size='small'
+              fullWidth
+              value={level}
+              onChange={(e: SelectChangeEvent) => setLevel(e.target.value as CourseLevel)}
+              renderValue={(v) => levelLabelsMap[level]}
+            >
+              <MenuItem value='beginner'>Cơ bản</MenuItem>
+              <MenuItem value='intermediate'>Trung cấp</MenuItem>
+              <MenuItem value='advanced'>Nâng cao</MenuItem>
+              <MenuItem value='expert'>Chuyên gia</MenuItem>
+            </Select>
           </Grid>
         </Grid>
 

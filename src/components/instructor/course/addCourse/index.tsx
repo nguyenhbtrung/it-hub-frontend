@@ -21,14 +21,7 @@ import { AddCircle } from '@mui/icons-material';
 import { getCategories } from '@/services/category.service';
 import { createCourse } from '@/services/course.service';
 import { useRouter } from 'next/navigation';
-
-type Category = {
-  id: string;
-  parentId: string | null;
-  name: string;
-  slug: string;
-  description?: string | null;
-};
+import { Category } from '@/types/category';
 
 export default function AddCourse({ onCreated }: { onCreated?: () => void }) {
   const [open, setOpen] = useState(false);

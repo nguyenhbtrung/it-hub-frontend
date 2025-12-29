@@ -32,6 +32,25 @@ export async function getMyCreatedCourse({
   }
 }
 
+export async function getCourseDetailByIntructor(id: string): Promise<any> {
+  try {
+    return await apiFetch(`/api/courses/${id}/by-instructor`, {
+      auth: true,
+    });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      return {
+        success: false,
+        error: {
+          message: 'Có lỗi xảy ra',
+          code: err.code,
+        },
+      };
+    }
+    throw err;
+  }
+}
+
 export async function createCourse(payload: {
   title: string;
   categoryId: string;

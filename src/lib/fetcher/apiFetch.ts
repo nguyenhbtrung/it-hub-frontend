@@ -4,7 +4,7 @@ import { ApiFetchOptions } from './types';
 import { ApiError } from '../errors/ApiError';
 
 export async function apiFetch<T>(endpoint: string, options: ApiFetchOptions = {}): Promise<T> {
-  const { auth: needAuth = true, retry = true, headers, query, ...rest } = options;
+  const { auth: needAuth = true, retry = true, headers, query, signal, ...rest } = options;
 
   const session = needAuth ? await auth() : null;
   const accessToken = session?.accessToken;
@@ -14,6 +14,7 @@ export async function apiFetch<T>(endpoint: string, options: ApiFetchOptions = {
 
   const res = await fetch(url, {
     ...rest,
+    signal,
     headers: {
       ...(headers || {}),
       ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
