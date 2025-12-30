@@ -1,4 +1,5 @@
-import { Course, CourseLevel, CourseStatus, CourseTab } from './types';
+import { CourseLevel } from '@/types/course';
+import { Course, CourseStatus, CourseTab } from './types';
 
 export const courseTabs: CourseTab[] = [
   {

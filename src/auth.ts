@@ -98,12 +98,12 @@ export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
       return token;
     },
     async session({ session, token }) {
-      console.log('session-token', token);
+      // console.log('session-token', token);
       session.expiresAt = token.expiresAt;
       session.accessToken = token.accessToken;
       session.refreshToken = token.refreshToken;
       session.role = token.role;
-      console.log('session-session', session);
+      // console.log('session-session', session);
       return session;
     },
   },

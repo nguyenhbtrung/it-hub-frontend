@@ -3,12 +3,15 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import SaveIcon from '@mui/icons-material/Save';
 import Link from 'next/link';
 import Button from '@mui/material/Button';
+import { useSaveStore } from '@/store/useSaveStore';
 
 interface HeaderActionProps {
   slug: string;
 }
 
 export default function HeaderAction({ slug }: HeaderActionProps) {
+  const triggerSave = useSaveStore((state) => state.triggerSave);
+  const isSubmitting = useSaveStore((state) => state.isSubmitting);
   return (
     <>
       <Button
@@ -29,6 +32,8 @@ export default function HeaderAction({ slug }: HeaderActionProps) {
       <Button
         variant='contained'
         endIcon={<SaveIcon />}
+        onClick={triggerSave}
+        disabled={isSubmitting}
         sx={{
           bgcolor: 'primary.main',
           fontWeight: 'bold',

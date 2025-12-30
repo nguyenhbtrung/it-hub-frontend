@@ -21,7 +21,6 @@ import UploadFileIcon from '@mui/icons-material/UploadFile';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import CloseIcon from '@mui/icons-material/Close';
 import { useEffect, useState } from 'react';
-import RichTextEditor from '@/components/common/richTextEditor';
 import debounce from 'lodash/debounce';
 import { Tag } from '@/types/tag';
 import { getTags } from '@/services/tag.service';
@@ -30,6 +29,12 @@ import { Category } from '@/types/category';
 import { getCategories } from '@/services/category.service';
 import { levelLabelsMap } from '@/lib/const/course';
 import { CourseLevel } from '@/types/course';
+import { useSaveStore } from '@/store/useSaveStore';
+import EditorBase from '@/components/common/richText/editor/editorBase/textOnly';
+import { JSONContent } from '@tiptap/react';
+import { updateCourseDetail } from '@/services/course.service';
+import { useNotification } from '@/contexts/notificationContext';
+import { useRouter } from 'next/navigation';
 
 interface EditCourseDetailFormProps {
   courseDetail: CourseDetail | null;
@@ -38,6 +43,7 @@ interface EditCourseDetailFormProps {
 export default function EditCourseDetailForm({ courseDetail }: EditCourseDetailFormProps) {
   const [title, setTitle] = useState(courseDetail?.title || '');
   const [shortDescription, setShortDescription] = useState(courseDetail?.shortDescription || '');
+  const [description, setDescription] = useState<JSONContent>(courseDetail?.description || {});
 
   const [categoryId, setCategoryId] = useState(courseDetail?.category.id || '');
   const [subCategoryId, setSubCategoryId] = useState(courseDetail?.subCategory?.id || '');
@@ -50,13 +56,52 @@ export default function EditCourseDetailForm({ courseDetail }: EditCourseDetailF
   const [level, setLevel] = useState<CourseLevel>(courseDetail?.level || 'beginner');
 
   const [requirements, setRequirements] = useState(courseDetail?.requirements || []);
-  const [outcomes, setOutcomes] = useState(courseDetail?.keyTakeaway || []);
+  const [keyTakeaway, setKeyTakeaway] = useState(courseDetail?.keyTakeaway || []);
 
   const [tags, setTags] = useState(courseDetail?.tags || []);
   const [newTag, setNewTag] = useState('');
   const [value, setValue] = useState(null);
-  const [detailedDescription, setDetailedDescription] = useState('');
   const [suggestedTags, setSuggestedTags] = useState<Tag[]>([]);
+
+  const shouldSubmit = useSaveStore((state) => state.shouldSubmit);
+  const setSubmitting = useSaveStore((state) => state.setSubmitting);
+  const setShouldSubmit = useSaveStore((state) => state.setShouldSubmit);
+  const { notify } = useNotification();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!shouldSubmit) return;
+    setShouldSubmit(false);
+    const handleSaveData = async () => {
+      setSubmitting(true);
+      const payload = {
+        title,
+        categoryId,
+        subCategoryId,
+        description: JSON.stringify(description),
+        shortDescription,
+        level,
+        requirements,
+        keyTakeaway,
+        tags,
+      };
+      try {
+        const res = await updateCourseDetail(courseDetail?.id || '', payload);
+        if (res?.success) {
+          notify('success', 'Lưu thành công!', { vertical: 'top', horizontal: 'right' });
+          router.refresh();
+        } else {
+          const msg = res?.error?.message || 'Lưu thất bại!';
+          notify('error', msg, { vertical: 'top', horizontal: 'right' });
+        }
+      } catch (error) {
+      } finally {
+        setSubmitting(false);
+      }
+    };
+    handleSaveData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shouldSubmit]);
 
   useEffect(() => {
     async function fetchRoot() {
@@ -116,17 +161,17 @@ export default function EditCourseDetailForm({ courseDetail }: EditCourseDetailF
   };
 
   const addOutcome = () => {
-    setOutcomes([...outcomes, '']);
+    setKeyTakeaway([...keyTakeaway, '']);
   };
 
   const removeOutcome = (index: number) => {
-    setOutcomes(outcomes.filter((_, i) => i !== index));
+    setKeyTakeaway(keyTakeaway.filter((_, i) => i !== index));
   };
 
   const updateOutcome = (index: number, value: string) => {
-    const newOutcomes = [...outcomes];
+    const newOutcomes = [...keyTakeaway];
     newOutcomes[index] = value;
-    setOutcomes(newOutcomes);
+    setKeyTakeaway(newOutcomes);
   };
 
   const addTag = (newTag: string) => {
@@ -187,7 +232,14 @@ export default function EditCourseDetailForm({ courseDetail }: EditCourseDetailF
           <Typography variant='subtitle2' gutterBottom>
             Mô tả chi tiết
           </Typography>
-          <RichTextEditor value={detailedDescription} onChange={setDetailedDescription} />
+          <EditorBase
+            value={description}
+            onChange={setDescription}
+            borderRadius={1}
+            height={200}
+            placeholder='Nhập mô tả chi tiết...'
+          />
+          {/* <pre>{JSON.stringify(description, null, 2)}</pre> */}
         </Box>
 
         {/* Danh mục, trình độ */}
@@ -265,7 +317,7 @@ export default function EditCourseDetailForm({ courseDetail }: EditCourseDetailF
               fullWidth
               value={level}
               onChange={(e: SelectChangeEvent) => setLevel(e.target.value as CourseLevel)}
-              renderValue={(v) => levelLabelsMap[level]}
+              renderValue={(v) => levelLabelsMap[v]}
             >
               <MenuItem value='beginner'>Cơ bản</MenuItem>
               <MenuItem value='intermediate'>Trung cấp</MenuItem>
@@ -316,7 +368,7 @@ export default function EditCourseDetailForm({ courseDetail }: EditCourseDetailF
             Kết quả học tập (Key takeaways)
           </Typography>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            {outcomes.map((outcome, index) => (
+            {keyTakeaway.map((outcome, index) => (
               <Box key={index} sx={{ display: 'flex', gap: 1 }}>
                 <TextField
                   fullWidth

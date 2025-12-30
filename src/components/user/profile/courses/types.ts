@@ -1,5 +1,6 @@
+import { CourseLevel } from '@/types/course';
+
 export type CourseStatus = 'in-progress' | 'registered' | 'completed';
-export type CourseLevel = 'beginner' | 'intermediate' | 'advanced';
 
 export interface Course {
   id: string;

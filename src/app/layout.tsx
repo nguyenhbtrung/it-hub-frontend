@@ -7,6 +7,7 @@ import { CssBaseline, InitColorSchemeScript } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import { theme } from '@/theme';
 import { ThemeConfigProvider } from '@/contexts/uiConfigContext';
+import { NotificationProvider } from '@/contexts/notificationContext';
 
 const roboto = Roboto({
   weight: ['300', '400', '500', '600', '700'],
@@ -33,7 +34,7 @@ export default function RootLayout({
           <ThemeProvider theme={theme}>
             <ThemeConfigProvider>
               <CssBaseline />
-              {children}
+              <NotificationProvider>{children}</NotificationProvider>
             </ThemeConfigProvider>
           </ThemeProvider>
         </AppRouterCacheProvider>

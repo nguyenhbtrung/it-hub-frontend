@@ -2,7 +2,8 @@
 
 import { apiFetch } from '@/lib/fetcher/apiFetch';
 import { ApiError } from '@/lib/errors/ApiError';
-import { CourseStatus } from '@/types/course';
+import { CourseLevel, CourseStatus } from '@/types/course';
+import { JSONContent } from '@tiptap/react';
 
 export async function getMyCreatedCourse({
   page = 1,
@@ -72,6 +73,46 @@ export async function createCourse(payload: {
           code: err.code,
         },
       };
+    }
+    throw err;
+  }
+}
+interface UpdateCourseDetailPayload {
+  title: string;
+  categoryId: string;
+  subCategoryId: string;
+  description: string | JSONContent;
+  shortDescription: string;
+  level: CourseLevel;
+  requirements: string[];
+  keyTakeaway: string[];
+  tags: string[];
+}
+
+export async function updateCourseDetail(courseId: string, payload: UpdateCourseDetailPayload): Promise<any> {
+  if (typeof payload.description === 'string') payload.description = JSON.parse(payload.description) as JSONContent;
+  try {
+    return await apiFetch(`/api/courses/${courseId}`, {
+      auth: true,
+      credentials: 'include',
+      method: 'PATCH',
+      body: JSON.stringify(payload),
+    });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      const res = {
+        success: false,
+        error: {
+          message: 'Có lỗi xảy ra',
+          code: err.code,
+        },
+      };
+      if (err.code === 'FORBIDDEN') {
+        res.error.message = 'Bạn không có quyền cập nhật khoá học này';
+      } else if (err.code === 'NOT_FOUND') {
+        res.error.message = 'Khoá học không tồn tại';
+      }
+      return res;
     }
     throw err;
   }
