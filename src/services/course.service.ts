@@ -33,9 +33,12 @@ export async function getMyCreatedCourse({
   }
 }
 
-export async function getCourseDetailByIntructor(id: string): Promise<any> {
+export async function getCourseDetail(id: string, view: 'instructor' | 'student' = 'student'): Promise<any> {
   try {
-    return await apiFetch(`/api/courses/${id}/by-instructor`, {
+    return await apiFetch(`/api/courses/${id}`, {
+      query: {
+        view,
+      },
       auth: true,
     });
   } catch (err) {

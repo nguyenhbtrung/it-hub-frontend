@@ -1,5 +1,5 @@
 import EditCourseDetailForm from '@/components/instructor/course/edit/editCourseDetailForm';
-import { getCourseDetailByIntructor } from '@/services/course.service';
+import { getCourseDetail } from '@/services/course.service';
 import { Suspense } from 'react';
 
 interface EditCoursePageProps {
@@ -16,7 +16,7 @@ export default function EditCoursePage({ params }: EditCoursePageProps) {
 
 async function EditFormWrapper({ params }: EditCoursePageProps) {
   const { id } = await params;
-  const courseRes = await getCourseDetailByIntructor(id);
+  const courseRes = await getCourseDetail(id, 'instructor');
   const courseDetail = courseRes?.data;
   return (
     <>
