@@ -6,15 +6,20 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 // import ChapterList from '../chapterList';
 import { Section, Lesson, Unit } from '../../types';
 import dynamic from 'next/dynamic';
+import { addSection } from '@/services/course.service';
+import { useNotification } from '@/contexts/notificationContext';
+import { deleteSection } from '@/services/section.service';
 
 const ChapterList = dynamic(() => import('../chapterList'), { ssr: false });
 
 interface CourseContentPageProps {
   initialSections: Section[] | null | undefined;
+  courseId: string;
 }
 
-export default function CourseContentPage({ initialSections }: CourseContentPageProps) {
+export default function CourseContentPage({ initialSections, courseId }: CourseContentPageProps) {
   const [sections, setSections] = useState<Section[]>(initialSections || []);
+  const { notify } = useNotification();
 
   const updateChapter = (chapterId: string, updates: Partial<Section>) => {
     setSections(sections.map((chapter) => (chapter.id === chapterId ? { ...chapter, ...updates } : chapter)));
@@ -35,17 +40,17 @@ export default function CourseContentPage({ initialSections }: CourseContentPage
     );
   };
 
-  const addNewChapter = () => {
-    const newChapter: Section = {
-      id: `chapter-${Date.now()}`,
-      courseId: 'course-1',
+  const addNewSection = async () => {
+    const res = await addSection(courseId, {
       title: 'Chương mới',
       description: '',
       objectives: [],
-      order: sections.length + 1,
-      units: [],
-    };
-    setSections([...sections, newChapter]);
+    });
+    if (res?.success && res?.data) {
+      setSections([...sections, res.data]);
+    } else {
+      notify('error', 'Thêm chương mới thất bại, vui lòng thử lại', { vertical: 'top', horizontal: 'right' });
+    }
   };
 
   const addNewLesson = (chapterId: string) => {
@@ -100,14 +105,19 @@ export default function CourseContentPage({ initialSections }: CourseContentPage
     );
   };
 
-  const deleteChapter = (chapterId: string) => {
-    setSections(sections.filter((chapter) => chapter.id !== chapterId));
+  const handleDeleteSection = async (sectionId: string) => {
+    const res = await deleteSection(sectionId);
+    if (res?.success) {
+      setSections(sections.filter((section) => section.id !== sectionId));
+    } else {
+      notify('error', 'Xoá chương thất bại, vui lòng thử lại', { vertical: 'top', horizontal: 'right' });
+    }
   };
 
-  const deleteUnit = (chapterId: string, unitId: string) => {
+  const deleteUnit = async (sectionId: string, unitId: string) => {
     setSections(
       sections.map((chapter) => {
-        if (chapter.id === chapterId) {
+        if (chapter.id === sectionId) {
           return {
             ...chapter,
             units: chapter.units.filter((unit) => unit.id !== unitId),
@@ -193,7 +203,7 @@ export default function CourseContentPage({ initialSections }: CourseContentPage
         <Button
           variant='contained'
           startIcon={<AddCircleIcon />}
-          onClick={addNewChapter}
+          onClick={addNewSection}
           sx={{
             bgcolor: 'primary.main',
             color: 'white',
@@ -211,7 +221,7 @@ export default function CourseContentPage({ initialSections }: CourseContentPage
         onUpdateLesson={updateLesson}
         onAddLesson={addNewLesson}
         onAddExcercise={addNewExcercise}
-        onDeleteChapter={deleteChapter}
+        onDeleteChapter={handleDeleteSection}
         onDeleteUnit={deleteUnit}
         onOpenContentEditor={openContentEditor}
         onReorderSection={reorderSection}

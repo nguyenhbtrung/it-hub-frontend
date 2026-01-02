@@ -21,7 +21,7 @@ async function PageWrapper({ params }: ContentPageProps) {
   const courseContent = res?.data;
   return (
     <>
-      <CourseContentPage initialSections={courseContent?.sections} />
+      <CourseContentPage initialSections={courseContent?.sections} courseId={id || ''} />
     </>
   );
 }

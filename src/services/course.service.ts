@@ -102,6 +102,35 @@ export async function createCourse(payload: {
     throw err;
   }
 }
+
+interface AddSectionPayload {
+  title: string;
+  description: string;
+  objectives: string[];
+}
+
+export async function addSection(courseId: string, payload: AddSectionPayload): Promise<any> {
+  try {
+    return await apiFetch(`/api/courses/${courseId}/section`, {
+      auth: true,
+      credentials: 'include',
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      return {
+        success: false,
+        error: {
+          message: 'Có lỗi xảy ra',
+          code: err.code,
+        },
+      };
+    }
+    throw err;
+  }
+}
+
 interface UpdateCourseDetailPayload {
   title: string;
   categoryId: string;
