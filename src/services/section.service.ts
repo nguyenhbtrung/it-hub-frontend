@@ -2,6 +2,7 @@
 
 import { ApiError } from '@/lib/errors/ApiError';
 import { apiFetch } from '@/lib/fetcher/apiFetch';
+import { UnitType } from '@/types/course';
 
 export async function deleteSection(sectionId: string): Promise<any> {
   try {
@@ -36,6 +37,34 @@ export async function updateSection(sectionId: string, payload: UpdateSectionPay
       auth: true,
       credentials: 'include',
       method: 'PATCH',
+      body: JSON.stringify(payload),
+    });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      return {
+        success: false,
+        error: {
+          message: 'Có lỗi xảy ra',
+          code: err.code,
+        },
+      };
+    }
+    throw err;
+  }
+}
+
+interface AddUnitPayload {
+  title: string;
+  description: string;
+  type: UnitType;
+}
+
+export async function addUnit(sectionId: string, payload: AddUnitPayload): Promise<any> {
+  try {
+    return await apiFetch(`/api/sections/${sectionId}/unit`, {
+      auth: true,
+      credentials: 'include',
+      method: 'POST',
       body: JSON.stringify(payload),
     });
   } catch (err) {

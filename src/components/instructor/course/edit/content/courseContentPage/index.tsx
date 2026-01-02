@@ -8,7 +8,8 @@ import { Section, Lesson, Unit } from '../../types';
 import dynamic from 'next/dynamic';
 import { addSection } from '@/services/course.service';
 import { useNotification } from '@/contexts/notificationContext';
-import { deleteSection, updateSection, UpdateSectionPayload } from '@/services/section.service';
+import { addUnit, deleteSection, updateSection, UpdateSectionPayload } from '@/services/section.service';
+import { UnitType } from '@/types/course';
 
 const ChapterList = dynamic(() => import('../chapterList'), { ssr: false });
 
@@ -58,56 +59,52 @@ export default function CourseContentPage({ initialSections, courseId }: CourseC
     }
   };
 
-  const addNewLesson = (chapterId: string) => {
-    setSections(
-      sections.map((chapter) => {
-        if (chapter.id === chapterId) {
-          const newLesson: Unit = {
-            id: `lesson-${Date.now()}`,
-            sectionId: chapterId,
-            title: 'Bài học mới',
-            description: '',
-            order: chapter.units.length + 1,
-            steps: [],
-            type: 'lesson',
-          };
-          return {
-            ...chapter,
-            units: [...chapter.units, newLesson],
-            isExpanded: true,
-          };
-        }
-        return chapter;
-      })
-    );
+  const addNewLesson = async (sectionId: string) => {
+    const payload = {
+      title: 'Bài học mới',
+      description: '',
+      type: 'lesson' as UnitType,
+    };
+    const res = await addUnit(sectionId, payload);
+    if (res?.success && res?.data) {
+      setSections(
+        sections.map((section) => {
+          if (section.id === sectionId) {
+            return {
+              ...section,
+              units: [...section.units, res.data],
+            };
+          }
+          return section;
+        })
+      );
+    } else {
+      notify('error', 'Thêm bài giảng mới thất bại, vui lòng thử lại', { vertical: 'top', horizontal: 'right' });
+    }
   };
 
-  const addNewExcercise = (chapterId: string) => {
-    setSections(
-      sections.map((chapter) => {
-        if (chapter.id === chapterId) {
-          const newExcercise: Unit = {
-            id: `excercise-${Date.now()}`,
-            sectionId: chapterId,
-            title: 'Bài tập mới',
-            description: '',
-            order: chapter.units.length + 1,
-            steps: [],
-            type: 'excercise',
-            excercise: {
-              id: `excercise-${Date.now()}`,
-              type: 'quiz',
-            },
-          };
-          return {
-            ...chapter,
-            units: [...chapter.units, newExcercise],
-            isExpanded: true,
-          };
-        }
-        return chapter;
-      })
-    );
+  const addNewExcercise = async (sectionId: string) => {
+    const payload = {
+      title: 'Bài tập mới',
+      description: '',
+      type: 'excercise' as UnitType,
+    };
+    const res = await addUnit(sectionId, payload);
+    if (res?.success && res?.data) {
+      setSections(
+        sections.map((section) => {
+          if (section.id === sectionId) {
+            return {
+              ...section,
+              units: [...section.units, res.data],
+            };
+          }
+          return section;
+        })
+      );
+    } else {
+      notify('error', 'Thêm bài tập mới thất bại, vui lòng thử lại', { vertical: 'top', horizontal: 'right' });
+    }
   };
 
   const handleDeleteSection = async (sectionId: string) => {

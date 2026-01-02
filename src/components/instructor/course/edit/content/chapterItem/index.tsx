@@ -171,7 +171,14 @@ export default function ChapterItem({
         </Box>
 
         <Box sx={{ display: 'flex', gap: 0.5 }}>
-          <IconButton size='small' onClick={() => setIsAddingUnit((prev) => !prev)} title='Thêm đơn vị học tập'>
+          <IconButton
+            size='small'
+            onClick={() => {
+              setIsAddingUnit((prev) => !prev);
+              setIsExpanded(true);
+            }}
+            title='Thêm đơn vị học tập'
+          >
             <AddIcon />
           </IconButton>
           <IconButton size='small' onClick={() => setIsEditing((prev) => !prev)} title='Chỉnh sửa chương'>
