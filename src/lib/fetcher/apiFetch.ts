@@ -16,10 +16,10 @@ export async function apiFetch<T>(endpoint: string, options: ApiFetchOptions = {
     ...rest,
     signal,
     headers: {
-      ...(headers || {}),
       ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-      'Content-Type': 'application/json',
       Cookie: `refreshToken=${session?.refreshToken || ''}`,
+      ...(headers || {}),
+      ...(!(rest.body instanceof FormData) ? { 'Content-Type': 'application/json' } : {}),
     },
     credentials: 'include',
     cache: 'no-store',

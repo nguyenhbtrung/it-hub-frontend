@@ -17,8 +17,6 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
-import UploadFileIcon from '@mui/icons-material/UploadFile';
-import VideocamIcon from '@mui/icons-material/Videocam';
 import CloseIcon from '@mui/icons-material/Close';
 import { useEffect, useState } from 'react';
 import debounce from 'lodash/debounce';
@@ -35,6 +33,8 @@ import { JSONContent } from '@tiptap/react';
 import { updateCourseDetail } from '@/services/course.service';
 import { useNotification } from '@/contexts/notificationContext';
 import { useRouter } from 'next/navigation';
+import UploadImageAndVideo from './uploadImageAndVideo';
+import { SessionProvider } from 'next-auth/react';
 
 interface EditCourseDetailFormProps {
   courseDetail: CourseDetail | null;
@@ -460,105 +460,13 @@ export default function EditCourseDetailForm({ courseDetail }: EditCourseDetailF
         </Box>
 
         {/* Ảnh bìa và Video */}
-        <Grid container spacing={4}>
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Typography variant='subtitle2' gutterBottom>
-              Ảnh bìa khóa học
-            </Typography>
-            <Paper
-              variant='outlined'
-              sx={{
-                p: 4,
-                height: '100%',
-                textAlign: 'center',
-                borderStyle: 'dashed',
-                borderWidth: 2,
-              }}
-            >
-              <Box
-                component='img'
-                src='https://lh3.googleusercontent.com/aida-public/AB6AXuDNhF2Qs5J-NTY_OoDBq0VvvuDVgjMZqYDO4RK1KtzNq3np6M4kx8auktG5pNncK7c04sD5inPvVqmZV083iyFfWa-C_Ujd1EXPp_J7SRDqiONChTsEOQ7Zlww0yHt8F9euaM4gG7P7MkaKYgM1XMztjG07N9SecOKMdPcgW3RDL2Rwb2iYESO5C1JG-RTUO2wWxyY8aOnUUjkXc8KWt7yQmmDXpa-qEN5K2EfL1prih64b1l7rCn9dBwGEa9Fc0WMW9Ra8uk7rBSI'
-                alt='Ảnh bìa khóa học hiện tại'
-                sx={{
-                  width: '100%',
-                  height: 128,
-                  objectFit: 'cover',
-                  borderRadius: 1,
-                  mb: 2,
-                }}
-              />
-              <Box
-                sx={{
-                  width: 48,
-                  height: 48,
-                  borderRadius: '50%',
-                  bgcolor: 'action.hover',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  mx: 'auto',
-                  mb: 2,
-                }}
-              >
-                <UploadFileIcon color='action' />
-              </Box>
-              <Typography variant='body2' color='text.secondary'>
-                Kéo thả hoặc{' '}
-                <Button variant='text' size='small'>
-                  tải lên
-                </Button>
-              </Typography>
-              <Typography variant='caption' color='text.secondary'>
-                PNG, JPG, GIF (tối đa 5MB)
-              </Typography>
-            </Paper>
-          </Grid>
-
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Typography variant='subtitle2' gutterBottom>
-              Video quảng cáo
-            </Typography>
-            <Paper
-              variant='outlined'
-              sx={{
-                p: 4,
-                textAlign: 'center',
-                borderStyle: 'dashed',
-                borderWidth: 2,
-                height: '100%',
-                flex: 1,
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-              }}
-            >
-              <Box
-                sx={{
-                  width: 48,
-                  height: 48,
-                  borderRadius: '50%',
-                  bgcolor: 'action.hover',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  mx: 'auto',
-                  mb: 2,
-                }}
-              >
-                <VideocamIcon color='action' />
-              </Box>
-              <Typography variant='body2' color='text.secondary'>
-                Kéo thả hoặc{' '}
-                <Button variant='text' size='small'>
-                  tải lên video
-                </Button>
-              </Typography>
-              <Typography variant='caption' color='text.secondary'>
-                MP4, MOV (tối đa 500MB)
-              </Typography>
-            </Paper>
-          </Grid>
-        </Grid>
+        <SessionProvider>
+          <UploadImageAndVideo
+            courseId={courseDetail?.id || ''}
+            img={courseDetail?.img || null}
+            promoVideo={courseDetail?.promoVideo || null}
+          />
+        </SessionProvider>
       </Box>
     </Box>
   );

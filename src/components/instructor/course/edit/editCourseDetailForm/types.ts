@@ -12,6 +12,6 @@ export interface CourseDetail {
   keyTakeaway: string[];
   requirements: string[];
   tags: string[];
-  imgUrl: string | null;
-  promoVideoUrl: string | null;
+  img: { id: string; url: string } | null;
+  promoVideo: { id: string; url: string } | null;
 }
