@@ -33,7 +33,7 @@ import { restrictToVerticalAxis, restrictToWindowEdges } from '@dnd-kit/modifier
 interface ChapterItemProps {
   section: Section;
   onUpdateSection: (chapterId: string, updates: Partial<Section>) => void;
-  onUpdateLesson: (chapterId: string, lessonId: string, updates: Partial<Section>) => void;
+  onUpdateUnit: (chapterId: string, lessonId: string, updates: Partial<Section>) => void;
   onAddLesson: (chapterId: string) => void;
   onAddExcercise: (chapterId: string) => void;
   onDeleteChapter: (chapterId: string) => void;
@@ -46,7 +46,7 @@ interface ChapterItemProps {
 export default function ChapterItem({
   section,
   onUpdateSection,
-  onUpdateLesson,
+  onUpdateUnit,
   onAddLesson,
   onAddExcercise,
   onDeleteChapter,
@@ -295,14 +295,22 @@ export default function ChapterItem({
                       key={unit.id}
                       lesson={unit as Lesson}
                       section={section}
-                      onUpdateLesson={onUpdateLesson}
+                      onUpdateUnit={onUpdateUnit}
                       onDeleteUnit={onDeleteUnit}
                       onOpenContentEditor={onOpenContentEditor}
                       onReorderStep={onReorderStep}
                     />
                   );
                 } else {
-                  return <ExcerciseItem key={unit.id} excercise={unit} chapter={section} onDeleteUnit={onDeleteUnit} />;
+                  return (
+                    <ExcerciseItem
+                      key={unit.id}
+                      excercise={unit}
+                      section={section}
+                      onDeleteUnit={onDeleteUnit}
+                      onUpdateUnit={onUpdateUnit}
+                    />
+                  );
                 }
               })}
             </Box>

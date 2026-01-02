@@ -36,8 +36,8 @@ import { restrictToVerticalAxis, restrictToWindowEdges } from '@dnd-kit/modifier
 interface LessonItemProps {
   lesson: Lesson;
   section: Section;
-  onUpdateLesson: (chapterId: string, lessonId: string, updates: Partial<Lesson>) => void;
-  onDeleteUnit: (chapterId: string, lessonId: string) => void;
+  onUpdateUnit: (sectionId: string, lessonId: string, updates: Partial<Lesson>) => void;
+  onDeleteUnit: (sectionId: string, lessonId: string) => void;
   onOpenContentEditor: (lessonId: string) => void;
   onReorderStep: (sectionId: string, unitId: string, oldIndex: number, newIndex: number) => void;
 }
@@ -45,7 +45,7 @@ interface LessonItemProps {
 export default function LessonItem({
   lesson,
   section,
-  onUpdateLesson,
+  onUpdateUnit,
   onDeleteUnit,
   onOpenContentEditor,
   onReorderStep,
@@ -75,7 +75,7 @@ export default function LessonItem({
   };
 
   const handleSave = () => {
-    onUpdateLesson(section.id, lesson.id, {
+    onUpdateUnit(section.id, lesson.id, {
       title: localTitle,
       description: localDescription,
     });
@@ -91,7 +91,7 @@ export default function LessonItem({
       order: Math.max(...steps.map((step) => step.order)) + 1,
       blocks: [],
     };
-    onUpdateLesson(section.id, lesson.id, {
+    onUpdateUnit(section.id, lesson.id, {
       steps: [...steps, lecture],
     });
   };
@@ -100,7 +100,7 @@ export default function LessonItem({
     const steps = lesson.steps;
     const updatedSteps = steps.filter((step) => step.id !== stepId);
 
-    onUpdateLesson(section.id, lesson.id, {
+    onUpdateUnit(section.id, lesson.id, {
       steps: updatedSteps,
     });
   };

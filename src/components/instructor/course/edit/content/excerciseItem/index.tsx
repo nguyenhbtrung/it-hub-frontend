@@ -21,11 +21,12 @@ import { CSS } from '@dnd-kit/utilities';
 
 interface LessonItemProps {
   excercise: Unit;
-  chapter: Section;
+  section: Section;
+  onUpdateUnit: (sectionId: string, lessonId: string, updates: Partial<Lesson>) => void;
   onDeleteUnit: (chapterId: string, lessonId: string) => void;
 }
 
-export default function ExcerciseItem({ excercise, chapter, onDeleteUnit }: LessonItemProps) {
+export default function ExcerciseItem({ excercise, section, onDeleteUnit, onUpdateUnit }: LessonItemProps) {
   const [localTitle, setLocalTitle] = useState(excercise.title);
   const [isEditing, setIsEditing] = useState(false);
 
@@ -34,6 +35,13 @@ export default function ExcerciseItem({ excercise, chapter, onDeleteUnit }: Less
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : 1,
+  };
+
+  const handleSave = () => {
+    onUpdateUnit(section.id, excercise.id, {
+      title: localTitle,
+    });
+    setIsEditing(false);
   };
 
   const getExcerciseIcon = () => {
@@ -102,13 +110,23 @@ export default function ExcerciseItem({ excercise, chapter, onDeleteUnit }: Less
               {excercise.title}
             </Typography>
           )}
+          {isEditing && (
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+              <Button variant='outlined' onClick={() => setIsEditing(false)}>
+                Hủy
+              </Button>
+              <Button variant='contained' onClick={handleSave}>
+                Lưu bài học
+              </Button>
+            </Box>
+          )}
         </Box>
 
         <Box sx={{ display: 'flex', gap: 0.5 }}>
-          <IconButton size='small' onClick={() => {}} title='Chỉnh sửa bài học'>
+          <IconButton size='small' onClick={() => setIsEditing((prev) => !prev)} title='Chỉnh sửa bài học'>
             <EditIcon fontSize='small' />
           </IconButton>
-          <IconButton size='small' onClick={() => onDeleteUnit(chapter.id, excercise.id)} title='Xóa bài học'>
+          <IconButton size='small' onClick={() => onDeleteUnit(section.id, excercise.id)} title='Xóa bài học'>
             <DeleteIcon fontSize='small' />
           </IconButton>
         </Box>

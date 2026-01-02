@@ -10,6 +10,7 @@ import { addSection } from '@/services/course.service';
 import { useNotification } from '@/contexts/notificationContext';
 import { addUnit, deleteSection, updateSection, UpdateSectionPayload } from '@/services/section.service';
 import { UnitType } from '@/types/course';
+import { updateUnit, UpdateUnitPayload } from '@/services/unit.service';
 
 const ChapterList = dynamic(() => import('../chapterList'), { ssr: false });
 
@@ -26,24 +27,28 @@ export default function CourseContentPage({ initialSections, courseId }: CourseC
     const res = await updateSection(sectionId, updates as UpdateSectionPayload);
     if (res?.success) {
       setSections(sections.map((chapter) => (chapter.id === sectionId ? { ...chapter, ...updates } : chapter)));
-      console.log('chapter', sections);
     } else {
       notify('error', 'Lưu chương thất bại', { vertical: 'top', horizontal: 'right' });
     }
   };
 
-  const updateLesson = (chapterId: string, lessonId: string, updates: Partial<Lesson>) => {
-    setSections(
-      sections.map((chapter) => {
-        if (chapter.id === chapterId) {
-          return {
-            ...chapter,
-            units: chapter.units.map((lesson) => (lesson.id === lessonId ? { ...lesson, ...updates } : lesson)),
-          };
-        }
-        return chapter;
-      })
-    );
+  const handleUpdateUnit = async (sectionId: string, unitId: string, updates: Partial<Lesson>) => {
+    const res = await updateUnit(unitId, updates as UpdateUnitPayload);
+    if (res?.success) {
+      setSections(
+        sections.map((section) => {
+          if (section.id === sectionId) {
+            return {
+              ...section,
+              units: section.units.map((unit) => (unit.id === unitId ? { ...unit, ...updates } : unit)),
+            };
+          }
+          return section;
+        })
+      );
+    } else {
+      notify('error', 'Lưu thất bại', { vertical: 'top', horizontal: 'right' });
+    }
   };
 
   const addNewSection = async () => {
@@ -220,7 +225,7 @@ export default function CourseContentPage({ initialSections, courseId }: CourseC
       <ChapterList
         sections={sections}
         onUpdateSection={handleUpdateSection}
-        onUpdateLesson={updateLesson}
+        onUpdateUnit={handleUpdateUnit}
         onAddLesson={addNewLesson}
         onAddExcercise={addNewExcercise}
         onDeleteChapter={handleDeleteSection}
