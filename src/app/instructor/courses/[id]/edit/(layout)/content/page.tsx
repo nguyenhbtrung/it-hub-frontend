@@ -1,12 +1,28 @@
 import CourseContentPage from '@/components/instructor/course/edit/content/courseContentPage';
 import { Suspense } from 'react';
 import { Container, Box, Skeleton, Typography } from '@mui/material';
+import { getCourseContent } from '@/services/course.service';
 
-export default async function ContentPage() {
+interface ContentPageProps {
+  params: Promise<{ id: string }>;
+}
+
+export default async function ContentPage({ params }: ContentPageProps) {
   return (
     <Suspense fallback={<ContentPageSkeleton />}>
-      <CourseContentPage />
+      <PageWrapper params={params} />
     </Suspense>
+  );
+}
+
+async function PageWrapper({ params }: ContentPageProps) {
+  const { id } = await params;
+  const res = await getCourseContent(id, 'instructor');
+  const courseContent = res?.data;
+  return (
+    <>
+      <CourseContentPage initialSections={courseContent?.sections} />
+    </>
   );
 }
 

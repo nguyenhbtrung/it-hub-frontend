@@ -14,18 +14,27 @@ import QuizIcon from '@mui/icons-material/QuizOutlined';
 import CodeOutlinedIcon from '@mui/icons-material/CodeOutlined';
 import CloseIcon from '@mui/icons-material/Close';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
-import { Chapter, Lesson, LessonStep, Unit } from '../../types';
+import { Section, Lesson, LessonStep, Unit } from '../../types';
 import ContentStep from '../contentStep';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 interface LessonItemProps {
   excercise: Unit;
-  chapter: Chapter;
+  chapter: Section;
   onDeleteUnit: (chapterId: string, lessonId: string) => void;
 }
 
 export default function ExcerciseItem({ excercise, chapter, onDeleteUnit }: LessonItemProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
   const [localTitle, setLocalTitle] = useState(excercise.title);
+  const [isEditing, setIsEditing] = useState(false);
+
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: excercise.id });
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
 
   const getExcerciseIcon = () => {
     const color = '#ed6c02';
@@ -44,6 +53,9 @@ export default function ExcerciseItem({ excercise, chapter, onDeleteUnit }: Less
   };
   return (
     <Paper
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
       elevation={0}
       sx={{
         border: 1,
@@ -66,7 +78,7 @@ export default function ExcerciseItem({ excercise, chapter, onDeleteUnit }: Less
         </IconButton> */}
         <Box width={30} height={30} pr={5} />
 
-        <Box sx={{ cursor: 'grab', mr: 2, display: 'flex', alignItems: 'center' }}>
+        <Box {...listeners} sx={{ cursor: 'grab', mr: 2, display: 'flex', alignItems: 'center' }}>
           <DragIndicatorIcon sx={{ color: 'text.disabled', fontSize: 18 }} />
         </Box>
 
@@ -76,7 +88,7 @@ export default function ExcerciseItem({ excercise, chapter, onDeleteUnit }: Less
           <Typography variant='body2' color='text.secondary'>
             Bài tập:
           </Typography>
-          {excercise.isEditing ? (
+          {isEditing ? (
             <TextField
               value={localTitle}
               onChange={(e) => setLocalTitle(e.target.value)}

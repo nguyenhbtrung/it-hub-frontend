@@ -1,163 +1,29 @@
 'use client';
 
 import { useState } from 'react';
-import { Box, Typography, Button, Paper, IconButton, Collapse, TextField, TextareaAutosize } from '@mui/material';
+import { Box, Typography, Button } from '@mui/material';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import ArrowRightIcon from '@mui/icons-material/ArrowRight';
-import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import AddIcon from '@mui/icons-material/Add';
-import ArticleIcon from '@mui/icons-material/Article';
-import QuizIcon from '@mui/icons-material/Quiz';
-import DescriptionIcon from '@mui/icons-material/Description';
-import UploadFileIcon from '@mui/icons-material/UploadFile';
-import ChapterList from '../chapterList';
-import EditContentModal from '../editContentModal';
-import { Chapter, Lesson, LessonStep, Unit } from '../../types';
+// import ChapterList from '../chapterList';
+import { Section, Lesson, Unit } from '../../types';
+import dynamic from 'next/dynamic';
 
-// Mock data
-const initialChapters: Chapter[] = [
-  {
-    id: '1',
-    courseId: 'course-1',
-    title: 'Giới thiệu về React và Môi trường',
-    description: '',
-    objectives: '',
-    order: 1,
-    isExpanded: true,
-    isEditing: false,
-    units: [
-      {
-        id: '1-1',
-        chapterId: '1',
-        title: 'Tổng quan về ReactJS',
-        description: '',
-        order: 1,
-        type: 'lesson',
-        isEditing: false,
-        steps: [
-          {
-            id: '1-1-1',
-            title: ' React là gì?',
-            content: '',
-            order: 1,
-            blocks: [
-              {
-                id: '1',
-                type: 'text',
-                title: 'Khối văn bản',
-                content:
-                  '<h1>Hướng dẫn cài đặt trên Windows</h1><p>Trong bài học này, chúng ta sẽ đi qua từng bước để cài đặt và cấu hình phần mềm cần thiết trên hệ điều hành Windows. Hãy đảm bảo bạn đã xem video hướng dẫn và làm theo các bước bên dưới.</p>',
-                order: 1,
-              },
-              { id: '2', type: 'image', title: 'Khối hình ảnh', content: 'https://picsum.photos/600/300', order: 2 },
-              {
-                id: '3',
-                type: 'text',
-                title: 'Khối văn bản',
-                content:
-                  '<h2>Các bước thực hiện</h2><ol><li><p>Tải xuống tệp cài đặt từ trang web chính thức. Chúng tôi đã cung cấp liên kết trực tiếp để bạn tiện theo dõi.</p></li><li><p>Chạy tệp .exe vừa tải về và làm theo các hướng dẫn trên màn hình. Lưu ý chọn đúng đường dẫn cài đặt.</p></li><li><p>Sau khi cài đặt xong, mở ứng dụng lên và tiến hành cấu hình ban đầu như thiết lập ngôn ngữ, giao diện.</p></li><li><p>Kiểm tra lại phiên bản đã cài đặt để chắc chắn rằng mọi thứ đã hoạt động chính xác.</p></li></ol>',
-                order: 3,
-              },
-              {
-                id: '4',
-                type: 'markdown',
-                title: 'Khối văn bản',
-                content: `
-# Markdown 
+const ChapterList = dynamic(() => import('../chapterList'), { ssr: false });
 
-Inline code: \`console.log("Hello " + name);\`
-
-Block code:
-
-\`\`\`javascript
-function greet(name) {
-  console.log("Hello " + name);
+interface CourseContentPageProps {
+  initialSections: Section[] | null | undefined;
 }
-greet("Next.js");
-\`\`\`
-        `,
-                order: 3,
-              },
-            ],
-          },
-          {
-            id: '1-1-2',
-            title: 'Tìm hiểu về hook trong React',
-            content: '',
-            order: 2,
-          },
-        ],
-      },
-      {
-        id: '1-2',
-        chapterId: '1',
-        title: 'Cài đặt môi trường phát triển',
-        description: '',
-        order: 2,
-        type: 'lesson',
-        isEditing: false,
-        steps: [],
-      },
-    ],
-  },
-  {
-    id: '2',
-    courseId: 'course-1',
-    title: 'Components và Props',
-    description: '',
-    objectives: '',
-    order: 2,
-    isExpanded: false,
-    isEditing: false,
-    units: [],
-  },
-];
 
-export default function CourseContentPage() {
-  const [chapters, setChapters] = useState<Chapter[]>(initialChapters);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedStep, setSelectedStep] = useState<LessonStep | null>(null);
+export default function CourseContentPage({ initialSections }: CourseContentPageProps) {
+  const [sections, setSections] = useState<Section[]>(initialSections || []);
 
-  const toggleChapter = (chapterId: string) => {
-    setChapters(
-      chapters.map((chapter) => (chapter.id === chapterId ? { ...chapter, isExpanded: !chapter.isExpanded } : chapter))
-    );
-  };
-
-  const toggleChapterEdit = (chapterId: string) => {
-    setChapters(
-      chapters.map((chapter) =>
-        chapter.id === chapterId ? { ...chapter, isEditing: !chapter.isEditing } : { ...chapter, isEditing: false }
-      )
-    );
-  };
-
-  const toggleLessonEdit = (chapterId: string, lessonId: string) => {
-    setChapters(
-      chapters.map((chapter) => {
-        if (chapter.id === chapterId) {
-          return {
-            ...chapter,
-            units: chapter.units.map((lesson) =>
-              lesson.id === lessonId ? { ...lesson, isEditing: !lesson.isEditing } : { ...lesson, isEditing: false }
-            ),
-          };
-        }
-        return chapter;
-      })
-    );
-  };
-
-  const updateChapter = (chapterId: string, updates: Partial<Chapter>) => {
-    setChapters(chapters.map((chapter) => (chapter.id === chapterId ? { ...chapter, ...updates } : chapter)));
+  const updateChapter = (chapterId: string, updates: Partial<Section>) => {
+    setSections(sections.map((chapter) => (chapter.id === chapterId ? { ...chapter, ...updates } : chapter)));
+    console.log('chapter', sections);
   };
 
   const updateLesson = (chapterId: string, lessonId: string, updates: Partial<Lesson>) => {
-    setChapters(
-      chapters.map((chapter) => {
+    setSections(
+      sections.map((chapter) => {
         if (chapter.id === chapterId) {
           return {
             ...chapter,
@@ -170,31 +36,28 @@ export default function CourseContentPage() {
   };
 
   const addNewChapter = () => {
-    const newChapter: Chapter = {
+    const newChapter: Section = {
       id: `chapter-${Date.now()}`,
       courseId: 'course-1',
       title: 'Chương mới',
       description: '',
-      objectives: '',
-      order: chapters.length + 1,
-      isExpanded: true,
-      isEditing: true,
+      objectives: [],
+      order: sections.length + 1,
       units: [],
     };
-    setChapters([...chapters, newChapter]);
+    setSections([...sections, newChapter]);
   };
 
   const addNewLesson = (chapterId: string) => {
-    setChapters(
-      chapters.map((chapter) => {
+    setSections(
+      sections.map((chapter) => {
         if (chapter.id === chapterId) {
           const newLesson: Unit = {
             id: `lesson-${Date.now()}`,
-            chapterId,
+            sectionId: chapterId,
             title: 'Bài học mới',
             description: '',
             order: chapter.units.length + 1,
-            isEditing: true,
             steps: [],
             type: 'lesson',
           };
@@ -210,16 +73,15 @@ export default function CourseContentPage() {
   };
 
   const addNewExcercise = (chapterId: string) => {
-    setChapters(
-      chapters.map((chapter) => {
+    setSections(
+      sections.map((chapter) => {
         if (chapter.id === chapterId) {
           const newExcercise: Unit = {
             id: `excercise-${Date.now()}`,
-            chapterId,
+            sectionId: chapterId,
             title: 'Bài tập mới',
             description: '',
             order: chapter.units.length + 1,
-            isEditing: false,
             steps: [],
             type: 'excercise',
             excercise: {
@@ -239,12 +101,12 @@ export default function CourseContentPage() {
   };
 
   const deleteChapter = (chapterId: string) => {
-    setChapters(chapters.filter((chapter) => chapter.id !== chapterId));
+    setSections(sections.filter((chapter) => chapter.id !== chapterId));
   };
 
   const deleteUnit = (chapterId: string, unitId: string) => {
-    setChapters(
-      chapters.map((chapter) => {
+    setSections(
+      sections.map((chapter) => {
         if (chapter.id === chapterId) {
           return {
             ...chapter,
@@ -256,30 +118,64 @@ export default function CourseContentPage() {
     );
   };
 
-  const updateStep = (stepId: string, updatedStep: Partial<LessonStep>) => {
-    setChapters(
-      chapters.map((chapter) => ({
-        ...chapter,
-        units: chapter.units.map((lesson) => ({
-          ...lesson,
-          steps: lesson.steps?.map((step) => (step.id === stepId ? { ...step, ...updatedStep } : step)),
-        })),
-      }))
-    );
-    setIsModalOpen(false);
-  };
-
   const openContentEditor = (stepId: string) => {
-    for (const chapter of chapters) {
+    for (const chapter of sections) {
       for (const lesson of chapter.units) {
         const step = lesson.steps?.find((s) => s.id === stepId);
         if (step) {
-          setSelectedStep(step);
-          setIsModalOpen(true);
           return;
         }
       }
     }
+  };
+
+  const reorderSection = (oldIndex: number, newIndex: number) => {
+    setSections((prevSections) => {
+      const updated = [...prevSections];
+
+      const [movedItem] = updated.splice(oldIndex, 1);
+
+      updated.splice(newIndex, 0, movedItem);
+      return updated;
+    });
+  };
+
+  const reorderUnit = (sectionId: string, oldIndex: number, newIndex: number) => {
+    setSections((prevSections) => {
+      return prevSections.map((section) => {
+        if (section.id !== sectionId) return section;
+
+        const updatedUnits = [...section.units];
+        const [movedUnit] = updatedUnits.splice(oldIndex, 1);
+        updatedUnits.splice(newIndex, 0, movedUnit);
+
+        return {
+          ...section,
+          units: updatedUnits,
+        };
+      });
+    });
+  };
+
+  const reorderStep = (sectionId: string, unitId: string, oldIndex: number, newIndex: number) => {
+    setSections((prev) => {
+      return prev.map((section) => {
+        if (section.id !== sectionId) return section;
+
+        const units = section.units.map((unit) => {
+          if (unit.id !== unitId) return unit;
+          if (!unit?.steps) return unit;
+
+          const updatedSteps = [...unit.steps];
+          const [moved] = updatedSteps.splice(oldIndex, 1);
+          updatedSteps.splice(newIndex, 0, moved);
+
+          return { ...unit, steps: updatedSteps };
+        });
+
+        return { ...section, units };
+      });
+    });
   };
 
   return (
@@ -310,10 +206,7 @@ export default function CourseContentPage() {
 
       {/* Chapters List */}
       <ChapterList
-        chapters={chapters}
-        onToggleChapter={toggleChapter}
-        onToggleChapterEdit={toggleChapterEdit}
-        onToggleLessonEdit={toggleLessonEdit}
+        sections={sections}
         onUpdateChapter={updateChapter}
         onUpdateLesson={updateLesson}
         onAddLesson={addNewLesson}
@@ -321,10 +214,10 @@ export default function CourseContentPage() {
         onDeleteChapter={deleteChapter}
         onDeleteUnit={deleteUnit}
         onOpenContentEditor={openContentEditor}
+        onReorderSection={reorderSection}
+        onReorderUnit={reorderUnit}
+        onReorderStep={reorderStep}
       />
-
-      {/* Edit Content Modal */}
-      <EditContentModal open={isModalOpen} onClose={() => {}} onUpdate={updateStep} step={selectedStep} />
     </Box>
   );
 }

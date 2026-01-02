@@ -13,47 +13,85 @@ import QuizIcon from '@mui/icons-material/Quiz';
 import CloseIcon from '@mui/icons-material/Close';
 import MenuBookOutlined from '@mui/icons-material/MenuBookOutlined';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
-import { Chapter, Lesson, LessonStep } from '../../types';
+import { Section, Lesson, LessonStep } from '../../types';
 import ContentStep from '../contentStep';
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import {
+  closestCenter,
+  DndContext,
+  DragEndEvent,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import { restrictToVerticalAxis, restrictToWindowEdges } from '@dnd-kit/modifiers';
 
 interface LessonItemProps {
   lesson: Lesson;
-  chapter: Chapter;
-  onToggleLessonEdit: (chapterId: string, lessonId: string) => void;
+  section: Section;
   onUpdateLesson: (chapterId: string, lessonId: string, updates: Partial<Lesson>) => void;
   onDeleteUnit: (chapterId: string, lessonId: string) => void;
   onOpenContentEditor: (lessonId: string) => void;
+  onReorderStep: (sectionId: string, unitId: string, oldIndex: number, newIndex: number) => void;
 }
 
 export default function LessonItem({
   lesson,
-  chapter,
-  onToggleLessonEdit,
+  section,
   onUpdateLesson,
   onDeleteUnit,
   onOpenContentEditor,
+  onReorderStep,
 }: LessonItemProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+
   const [localTitle, setLocalTitle] = useState(lesson.title);
   const [localDescription, setLocalDescription] = useState(lesson.description);
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: lesson.id });
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
   const handleSave = () => {
-    onUpdateLesson(chapter.id, lesson.id, {
+    onUpdateLesson(section.id, lesson.id, {
       title: localTitle,
       description: localDescription,
     });
-    onToggleLessonEdit(chapter.id, lesson.id);
+    setIsEditing(false);
   };
 
   const handleAddStep = (title: string) => {
     const steps = lesson.steps;
     const lecture: LessonStep = {
       id: crypto.randomUUID(),
+      lessonId: lesson.id,
       title,
       order: Math.max(...steps.map((step) => step.order)) + 1,
       blocks: [],
     };
-    onUpdateLesson(chapter.id, lesson.id, {
+    onUpdateLesson(section.id, lesson.id, {
       steps: [...steps, lecture],
     });
   };
@@ -62,13 +100,32 @@ export default function LessonItem({
     const steps = lesson.steps;
     const updatedSteps = steps.filter((step) => step.id !== stepId);
 
-    onUpdateLesson(chapter.id, lesson.id, {
+    onUpdateLesson(section.id, lesson.id, {
       steps: updatedSteps,
     });
   };
 
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    console.log('active', active);
+    console.log('over', over);
+
+    if (over && active.id !== over.id) {
+      // Xử lý sắp xếp lại chapters
+      const oldIndex = lesson.steps.findIndex((step) => step.id === active.id);
+      const newIndex = lesson.steps.findIndex((step) => step.id === over.id);
+
+      // Trong thực tế, sẽ gọi API để cập nhật order
+      console.log('Drag from', oldIndex, 'to', newIndex);
+      onReorderStep(section.id, lesson.id, oldIndex, newIndex);
+    }
+  };
+
   return (
     <Paper
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
       elevation={0}
       sx={{
         border: 1,
@@ -90,7 +147,7 @@ export default function LessonItem({
           {isExpanded ? <ArrowDropDownIcon /> : <ArrowRightIcon />}
         </IconButton>
 
-        <Box sx={{ cursor: 'grab', mr: 2, display: 'flex', alignItems: 'center' }}>
+        <Box {...listeners} sx={{ cursor: 'grab', mr: 2, display: 'flex', alignItems: 'center' }}>
           <DragIndicatorIcon sx={{ color: 'text.disabled', fontSize: 18 }} />
         </Box>
 
@@ -100,7 +157,7 @@ export default function LessonItem({
           <Typography variant='body2' color='text.secondary'>
             Bài {lesson.order}:
           </Typography>
-          {lesson.isEditing ? (
+          {isEditing ? (
             <TextField
               value={localTitle}
               onChange={(e) => setLocalTitle(e.target.value)}
@@ -120,10 +177,10 @@ export default function LessonItem({
           <IconButton size='small' onClick={() => handleAddStep('Bài giảng không tiêu đề')} title='Thêm bước'>
             <AddIcon fontSize='small' />
           </IconButton>
-          <IconButton size='small' onClick={() => onToggleLessonEdit(chapter.id, lesson.id)} title='Chỉnh sửa bài học'>
+          <IconButton size='small' onClick={() => setIsEditing((prev) => !prev)} title='Chỉnh sửa bài học'>
             <EditIcon fontSize='small' />
           </IconButton>
-          <IconButton size='small' onClick={() => onDeleteUnit(chapter.id, lesson.id)} title='Xóa bài học'>
+          <IconButton size='small' onClick={() => onDeleteUnit(section.id, lesson.id)} title='Xóa bài học'>
             <DeleteIcon fontSize='small' />
           </IconButton>
         </Box>
@@ -144,7 +201,7 @@ export default function LessonItem({
       </Collapse> */}
 
       {/* Lesson Edit Form */}
-      <Collapse in={lesson.isEditing}>
+      <Collapse in={isEditing}>
         <Box sx={{ borderTop: 1, borderColor: 'divider', p: 3 }}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
             <Box>
@@ -200,7 +257,7 @@ export default function LessonItem({
             </Box>
 
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, pt: 1 }}>
-              <Button variant='outlined' onClick={() => onToggleLessonEdit(chapter.id, lesson.id)}>
+              <Button variant='outlined' onClick={() => setIsEditing(false)}>
                 Hủy
               </Button>
               <Button variant='contained' onClick={handleSave}>
@@ -213,11 +270,25 @@ export default function LessonItem({
 
       {/* Steps List */}
       <Collapse in={isExpanded}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, p: 2, pt: 0 }}>
-          {lesson.steps.map((step) => (
-            <ContentStep key={step.id} step={step} onEditContent={onOpenContentEditor} onDelete={handleDeleteStep} />
-          ))}
-        </Box>
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+          modifiers={[restrictToVerticalAxis, restrictToWindowEdges]}
+        >
+          <SortableContext items={lesson.steps.map((step) => step.id)} strategy={verticalListSortingStrategy}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, p: 2, pt: 0 }}>
+              {lesson.steps.map((step) => (
+                <ContentStep
+                  key={step.id}
+                  step={step}
+                  onEditContent={onOpenContentEditor}
+                  onDelete={handleDeleteStep}
+                />
+              ))}
+            </Box>
+          </SortableContext>
+        </DndContext>
       </Collapse>
     </Paper>
   );

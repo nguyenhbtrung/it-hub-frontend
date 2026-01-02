@@ -9,7 +9,7 @@ import QuizIcon from '@mui/icons-material/Quiz';
 import CodeIcon from '@mui/icons-material/Code';
 import ContentBlockEditor from '../contentBlockEditor';
 import { useEffect, useState } from 'react';
-import { Chapter, ContentBlock, ContentBlockType, LessonStep } from '../../types';
+import { Section, ContentBlock, ContentBlockType, LessonStep } from '../../types';
 
 interface EditContentModalProps {
   open: boolean;

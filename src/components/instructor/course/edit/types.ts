@@ -12,6 +12,7 @@ export interface ContentBlock {
 
 export interface LessonStep {
   id: string;
+  lessonId: string;
   title: string;
   content?: string;
   order: number;
@@ -20,7 +21,7 @@ export interface LessonStep {
 
 export interface Lesson {
   id: string;
-  chapterId: string;
+  sectionId: string;
   title: string;
   description: string;
   order: number;
@@ -37,24 +38,21 @@ export interface Excercise {
 
 export interface Unit {
   id: string;
-  chapterId: string;
+  sectionId: string;
   title: string;
   description?: string;
   steps?: LessonStep[];
   excercise?: Excercise;
   order: number;
   type: UnitType;
-  isEditing?: boolean;
 }
 
-export interface Chapter {
+export interface Section {
   id: string;
   courseId: string;
   title: string;
   description: string;
-  objectives: string;
+  objectives: string[];
   order: number;
   units: Unit[];
-  isExpanded?: boolean;
-  isEditing?: boolean;
 }

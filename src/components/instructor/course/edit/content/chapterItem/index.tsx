@@ -2,7 +2,12 @@
 
 import { useState } from 'react';
 import { Box, Paper, Typography, IconButton, Collapse, TextField, TextareaAutosize, Button } from '@mui/material';
-import { useSortable } from '@dnd-kit/sortable';
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
@@ -12,28 +17,34 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LessonItem from '../lessonItem';
 import CloseIcon from '@mui/icons-material/Close';
-import { Chapter, Lesson } from '../../types';
+import { Section, Lesson } from '../../types';
 import ExcerciseItem from '../excerciseItem';
+import {
+  closestCenter,
+  DndContext,
+  DragEndEvent,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import { restrictToVerticalAxis, restrictToWindowEdges } from '@dnd-kit/modifiers';
 
 interface ChapterItemProps {
-  chapter: Chapter;
-  onToggleChapter: (chapterId: string) => void;
-  onToggleChapterEdit: (chapterId: string) => void;
-  onToggleLessonEdit: (chapterId: string, lessonId: string) => void;
-  onUpdateChapter: (chapterId: string, updates: Partial<Chapter>) => void;
-  onUpdateLesson: (chapterId: string, lessonId: string, updates: Partial<Chapter>) => void;
+  section: Section;
+  onUpdateChapter: (chapterId: string, updates: Partial<Section>) => void;
+  onUpdateLesson: (chapterId: string, lessonId: string, updates: Partial<Section>) => void;
   onAddLesson: (chapterId: string) => void;
   onAddExcercise: (chapterId: string) => void;
   onDeleteChapter: (chapterId: string) => void;
   onDeleteUnit: (chapterId: string, lessonId: string) => void;
   onOpenContentEditor: (lessonId: string) => void;
+  onReorderUnit: (sectionId: string, oldIndex: number, newIndex: number) => void;
+  onReorderStep: (sectionId: string, unitId: string, oldIndex: number, newIndex: number) => void;
 }
 
 export default function ChapterItem({
-  chapter,
-  onToggleChapter,
-  onToggleChapterEdit,
-  onToggleLessonEdit,
+  section,
   onUpdateChapter,
   onUpdateLesson,
   onAddLesson,
@@ -41,8 +52,10 @@ export default function ChapterItem({
   onDeleteChapter,
   onDeleteUnit,
   onOpenContentEditor,
+  onReorderUnit,
+  onReorderStep,
 }: ChapterItemProps) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: chapter.id });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: section.id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -50,18 +63,61 @@ export default function ChapterItem({
     opacity: isDragging ? 0.5 : 1,
   };
 
-  const [localTitle, setLocalTitle] = useState(chapter.title);
-  const [localDescription, setLocalDescription] = useState(chapter.description);
-  const [localObjectives, setLocalObjectives] = useState(chapter.objectives);
+  const [localTitle, setLocalTitle] = useState(section.title);
+  const [localDescription, setLocalDescription] = useState(section.description);
+  const [localObjectives, setLocalObjectives] = useState<string[]>([]);
   const [isAddingUnit, setIsAddingUnit] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   const handleSave = () => {
-    onUpdateChapter(chapter.id, {
+    onUpdateChapter(section.id, {
       title: localTitle,
       description: localDescription,
       objectives: localObjectives,
     });
-    onToggleChapterEdit(chapter.id);
+    setIsEditing(false);
+  };
+
+  const addObjective = () => {
+    setLocalObjectives([...localObjectives, '']);
+  };
+
+  const removeObjective = (index: number) => {
+    setLocalObjectives(localObjectives.filter((_, i) => i !== index));
+  };
+
+  const updateObjective = (index: number, value: string) => {
+    const newObjectives = [...localObjectives];
+    newObjectives[index] = value;
+    setLocalObjectives(newObjectives);
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    console.log('active', active);
+    console.log('over', over);
+
+    if (over && active.id !== over.id) {
+      // Xử lý sắp xếp lại chapters
+      const oldIndex = section.units.findIndex((unit) => unit.id === active.id);
+      const newIndex = section.units.findIndex((unit) => unit.id === over.id);
+
+      // Trong thực tế, sẽ gọi API để cập nhật order
+      console.log('Drag from', oldIndex, 'to', newIndex);
+      onReorderUnit(section.id, oldIndex, newIndex);
+    }
   };
 
   return (
@@ -86,8 +142,8 @@ export default function ChapterItem({
           cursor: 'pointer',
         }}
       >
-        <IconButton size='small' onClick={() => onToggleChapter(chapter.id)} sx={{ mr: 1 }}>
-          {chapter.isExpanded ? <ArrowDropDownIcon /> : <ArrowRightIcon />}
+        <IconButton size='small' onClick={() => setIsExpanded((prev) => !prev)} sx={{ mr: 1 }}>
+          {isExpanded ? <ArrowDropDownIcon /> : <ArrowRightIcon />}
         </IconButton>
 
         <Box {...listeners} sx={{ cursor: 'grab', mr: 2, display: 'flex', alignItems: 'center' }}>
@@ -96,9 +152,9 @@ export default function ChapterItem({
 
         <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', gap: 2 }}>
           <Typography variant='body2' fontWeight='bold' color='text.secondary'>
-            Chương {chapter.order}
+            Chương {section.order}
           </Typography>
-          {chapter.isEditing ? (
+          {isEditing ? (
             <TextField
               value={localTitle}
               onChange={(e) => setLocalTitle(e.target.value)}
@@ -109,7 +165,7 @@ export default function ChapterItem({
             />
           ) : (
             <Typography variant='subtitle1' fontWeight='semibold'>
-              {chapter.title}
+              {section.title}
             </Typography>
           )}
         </Box>
@@ -118,10 +174,10 @@ export default function ChapterItem({
           <IconButton size='small' onClick={() => setIsAddingUnit((prev) => !prev)} title='Thêm đơn vị học tập'>
             <AddIcon />
           </IconButton>
-          <IconButton size='small' onClick={() => onToggleChapterEdit(chapter.id)} title='Chỉnh sửa chương'>
+          <IconButton size='small' onClick={() => setIsEditing((prev) => !prev)} title='Chỉnh sửa chương'>
             <EditIcon />
           </IconButton>
-          <IconButton size='small' onClick={() => onDeleteChapter(chapter.id)} title='Xóa chương'>
+          <IconButton size='small' onClick={() => onDeleteChapter(section.id)} title='Xóa chương'>
             <DeleteIcon />
           </IconButton>
         </Box>
@@ -132,17 +188,17 @@ export default function ChapterItem({
           <IconButton onClick={() => setIsAddingUnit(false)}>
             <CloseIcon />
           </IconButton>
-          <Button variant='contained' onClick={() => onAddLesson(chapter.id)}>
+          <Button variant='contained' onClick={() => onAddLesson(section.id)}>
             Bài giảng
           </Button>
-          <Button variant='contained' onClick={() => onAddExcercise(chapter.id)} color='warning'>
+          <Button variant='contained' onClick={() => onAddExcercise(section.id)} color='warning'>
             Bài tập
           </Button>
         </Box>
       </Collapse>
 
       {/* Chapter Edit Form */}
-      <Collapse in={chapter.isEditing}>
+      <Collapse in={isEditing}>
         <Box sx={{ borderTop: 1, borderColor: 'divider', p: 3 }}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
             <Box>
@@ -169,27 +225,42 @@ export default function ChapterItem({
               <Typography variant='subtitle2' gutterBottom>
                 Mục tiêu học tập
               </Typography>
-              <TextareaAutosize
-                value={localObjectives}
-                onChange={(e) => setLocalObjectives(e.target.value)}
-                placeholder='Nhập các mục tiêu học tập, mỗi mục tiêu trên một dòng...'
-                style={{
-                  width: '100%',
-                  borderRadius: 8,
-                  padding: 12,
-                  borderColor: 'rgba(0, 0, 0, 0.23)',
-                  fontFamily: 'inherit',
-                  fontSize: '0.875rem',
-                  minHeight: 100,
-                }}
-              />
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                {localObjectives.map((obj, index) => (
+                  <Box key={index} sx={{ display: 'flex', gap: 1 }}>
+                    <TextField
+                      fullWidth
+                      value={obj}
+                      onChange={(e) => updateObjective(index, e.target.value)}
+                      size='small'
+                      sx={{ '& .MuiInputBase-root': { backgroundColor: 'background.default' } }}
+                    />
+                    <IconButton onClick={() => removeObjective(index)} size='small'>
+                      <DeleteIcon />
+                    </IconButton>
+                  </Box>
+                ))}
+                <Button
+                  variant='outlined'
+                  startIcon={<AddIcon />}
+                  onClick={addObjective}
+                  sx={{
+                    borderStyle: 'dashed',
+                    borderWidth: 2,
+                    color: 'text.secondary',
+                    '&:hover': { bgcolor: 'action.hover' },
+                  }}
+                >
+                  Thêm yêu cầu
+                </Button>
+              </Box>
               <Typography variant='caption' color='text.secondary' sx={{ mt: 1, display: 'block' }}>
                 Sau khi hoàn thành chương này, học viên có thể...
               </Typography>
             </Box>
 
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, pt: 1 }}>
-              <Button variant='outlined' onClick={() => onToggleChapterEdit(chapter.id)}>
+              <Button variant='outlined' onClick={() => setIsEditing((prev) => !prev)}>
                 Hủy
               </Button>
               <Button variant='contained' onClick={handleSave}>
@@ -201,26 +272,35 @@ export default function ChapterItem({
       </Collapse>
 
       {/* Unit List */}
-      <Collapse in={chapter.isExpanded}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, p: 2, pt: 0 }}>
-          {chapter.units.map((unit) => {
-            if (unit.type === 'lesson') {
-              return (
-                <LessonItem
-                  key={unit.id}
-                  lesson={unit as Lesson}
-                  chapter={chapter}
-                  onToggleLessonEdit={onToggleLessonEdit}
-                  onUpdateLesson={onUpdateLesson}
-                  onDeleteUnit={onDeleteUnit}
-                  onOpenContentEditor={onOpenContentEditor}
-                />
-              );
-            } else {
-              return <ExcerciseItem key={unit.id} excercise={unit} chapter={chapter} onDeleteUnit={onDeleteUnit} />;
-            }
-          })}
-        </Box>
+      <Collapse in={isExpanded}>
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+          modifiers={[restrictToVerticalAxis, restrictToWindowEdges]}
+        >
+          <SortableContext items={section.units.map((unit) => unit.id)} strategy={verticalListSortingStrategy}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, p: 2, pt: 0 }}>
+              {section.units.map((unit) => {
+                if (unit.type === 'lesson') {
+                  return (
+                    <LessonItem
+                      key={unit.id}
+                      lesson={unit as Lesson}
+                      section={section}
+                      onUpdateLesson={onUpdateLesson}
+                      onDeleteUnit={onDeleteUnit}
+                      onOpenContentEditor={onOpenContentEditor}
+                      onReorderStep={onReorderStep}
+                    />
+                  );
+                } else {
+                  return <ExcerciseItem key={unit.id} excercise={unit} chapter={section} onDeleteUnit={onDeleteUnit} />;
+                }
+              })}
+            </Box>
+          </SortableContext>
+        </DndContext>
       </Collapse>
     </Paper>
   );

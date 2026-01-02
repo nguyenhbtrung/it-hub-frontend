@@ -9,6 +9,8 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { LessonStep } from '../../types';
 import { useParams, useRouter } from 'next/navigation';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 interface ContentStepProps {
   step: LessonStep;
@@ -17,6 +19,14 @@ interface ContentStepProps {
 }
 
 export default function ContentStep({ step, onEditContent, onDelete }: ContentStepProps) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: step.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
   const router = useRouter();
   const params = useParams();
   const handleEditClick = (stepId: string) => {
@@ -25,6 +35,9 @@ export default function ContentStep({ step, onEditContent, onDelete }: ContentSt
 
   return (
     <Box
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
       sx={{
         display: 'flex',
         alignItems: 'center',
@@ -36,7 +49,7 @@ export default function ContentStep({ step, onEditContent, onDelete }: ContentSt
         pr: 1,
       }}
     >
-      <Box sx={{ cursor: 'grab', mr: 1 }}>
+      <Box {...listeners} sx={{ cursor: 'grab', mr: 1 }}>
         <DragIndicatorIcon sx={{ color: 'text.disabled' }} />
       </Box>
 

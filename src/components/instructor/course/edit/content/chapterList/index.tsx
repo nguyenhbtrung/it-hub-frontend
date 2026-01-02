@@ -13,27 +13,24 @@ import {
 import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { restrictToVerticalAxis, restrictToWindowEdges } from '@dnd-kit/modifiers';
 import ChapterItem from '../chapterItem';
-import { Chapter } from '../../types';
+import { Section } from '../../types';
 
 interface ChapterListProps {
-  chapters: Chapter[];
-  onToggleChapter: (chapterId: string) => void;
-  onToggleChapterEdit: (chapterId: string) => void;
-  onToggleLessonEdit: (chapterId: string, lessonId: string) => void;
-  onUpdateChapter: (chapterId: string, updates: Partial<Chapter>) => void;
-  onUpdateLesson: (chapterId: string, lessonId: string, updates: Partial<Chapter>) => void;
+  sections: Section[];
+  onUpdateChapter: (chapterId: string, updates: Partial<Section>) => void;
+  onUpdateLesson: (chapterId: string, lessonId: string, updates: Partial<Section>) => void;
   onAddLesson: (chapterId: string) => void;
   onAddExcercise: (chapterId: string) => void;
   onDeleteChapter: (chapterId: string) => void;
   onDeleteUnit: (chapterId: string, lessonId: string) => void;
   onOpenContentEditor: (lessonId: string) => void;
+  onReorderSection: (oldIndex: number, newIndex: number) => void;
+  onReorderUnit: (sectionId: string, oldIndex: number, newIndex: number) => void;
+  onReorderStep: (sectionId: string, unitId: string, oldIndex: number, newIndex: number) => void;
 }
 
 export default function ChapterList({
-  chapters,
-  onToggleChapter,
-  onToggleChapterEdit,
-  onToggleLessonEdit,
+  sections,
   onUpdateChapter,
   onUpdateLesson,
   onAddLesson,
@@ -41,6 +38,9 @@ export default function ChapterList({
   onDeleteChapter,
   onDeleteUnit,
   onOpenContentEditor,
+  onReorderSection,
+  onReorderUnit,
+  onReorderStep,
 }: ChapterListProps) {
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -55,14 +55,17 @@ export default function ChapterList({
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
+    console.log('active', active);
+    console.log('over', over);
 
     if (over && active.id !== over.id) {
       // Xử lý sắp xếp lại chapters
-      const oldIndex = chapters.findIndex((chapter) => chapter.id === active.id);
-      const newIndex = chapters.findIndex((chapter) => chapter.id === over.id);
+      const oldIndex = sections.findIndex((chapter) => chapter.id === active.id);
+      const newIndex = sections.findIndex((chapter) => chapter.id === over.id);
 
       // Trong thực tế, sẽ gọi API để cập nhật order
       console.log('Drag from', oldIndex, 'to', newIndex);
+      onReorderSection(oldIndex, newIndex);
     }
   };
 
@@ -73,15 +76,12 @@ export default function ChapterList({
       onDragEnd={handleDragEnd}
       modifiers={[restrictToVerticalAxis, restrictToWindowEdges]}
     >
-      <SortableContext items={chapters.map((chapter) => chapter.id)} strategy={verticalListSortingStrategy}>
+      <SortableContext items={sections.map((chapter) => chapter.id)} strategy={verticalListSortingStrategy}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          {chapters.map((chapter) => (
+          {sections.map((chapter) => (
             <ChapterItem
               key={chapter.id}
-              chapter={chapter}
-              onToggleChapter={onToggleChapter}
-              onToggleChapterEdit={onToggleChapterEdit}
-              onToggleLessonEdit={onToggleLessonEdit}
+              section={chapter}
               onUpdateChapter={onUpdateChapter}
               onUpdateLesson={onUpdateLesson}
               onAddLesson={onAddLesson}
@@ -89,6 +89,8 @@ export default function ChapterList({
               onDeleteChapter={onDeleteChapter}
               onDeleteUnit={onDeleteUnit}
               onOpenContentEditor={onOpenContentEditor}
+              onReorderUnit={onReorderUnit}
+              onReorderStep={onReorderStep}
             />
           ))}
         </div>

@@ -55,6 +55,28 @@ export async function getCourseDetail(id: string, view: 'instructor' | 'student'
   }
 }
 
+export async function getCourseContent(id: string, view: 'instructor' | 'student' = 'student'): Promise<any> {
+  try {
+    return await apiFetch(`/api/courses/${id}/content`, {
+      query: {
+        view,
+      },
+      auth: true,
+    });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      return {
+        success: false,
+        error: {
+          message: 'Có lỗi xảy ra',
+          code: err.code,
+        },
+      };
+    }
+    throw err;
+  }
+}
+
 export async function createCourse(payload: {
   title: string;
   categoryId: string;
