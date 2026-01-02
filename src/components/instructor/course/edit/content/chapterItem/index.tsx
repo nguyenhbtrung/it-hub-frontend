@@ -32,7 +32,7 @@ import { restrictToVerticalAxis, restrictToWindowEdges } from '@dnd-kit/modifier
 
 interface ChapterItemProps {
   section: Section;
-  onUpdateChapter: (chapterId: string, updates: Partial<Section>) => void;
+  onUpdateSection: (chapterId: string, updates: Partial<Section>) => void;
   onUpdateLesson: (chapterId: string, lessonId: string, updates: Partial<Section>) => void;
   onAddLesson: (chapterId: string) => void;
   onAddExcercise: (chapterId: string) => void;
@@ -45,7 +45,7 @@ interface ChapterItemProps {
 
 export default function ChapterItem({
   section,
-  onUpdateChapter,
+  onUpdateSection,
   onUpdateLesson,
   onAddLesson,
   onAddExcercise,
@@ -65,7 +65,7 @@ export default function ChapterItem({
 
   const [localTitle, setLocalTitle] = useState(section.title);
   const [localDescription, setLocalDescription] = useState(section.description);
-  const [localObjectives, setLocalObjectives] = useState<string[]>([]);
+  const [localObjectives, setLocalObjectives] = useState<string[]>(section.objectives || []);
   const [isAddingUnit, setIsAddingUnit] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -82,7 +82,7 @@ export default function ChapterItem({
   );
 
   const handleSave = () => {
-    onUpdateChapter(section.id, {
+    onUpdateSection(section.id, {
       title: localTitle,
       description: localDescription,
       objectives: localObjectives,

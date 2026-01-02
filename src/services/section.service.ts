@@ -23,3 +23,31 @@ export async function deleteSection(sectionId: string): Promise<any> {
     throw err;
   }
 }
+
+export interface UpdateSectionPayload {
+  title: string;
+  description: string;
+  objectives: string[];
+}
+
+export async function updateSection(sectionId: string, payload: UpdateSectionPayload): Promise<any> {
+  try {
+    return await apiFetch(`/api/sections/${sectionId}`, {
+      auth: true,
+      credentials: 'include',
+      method: 'PATCH',
+      body: JSON.stringify(payload),
+    });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      return {
+        success: false,
+        error: {
+          message: 'Có lỗi xảy ra',
+          code: err.code,
+        },
+      };
+    }
+    throw err;
+  }
+}

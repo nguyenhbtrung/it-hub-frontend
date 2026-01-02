@@ -8,7 +8,7 @@ import { Section, Lesson, Unit } from '../../types';
 import dynamic from 'next/dynamic';
 import { addSection } from '@/services/course.service';
 import { useNotification } from '@/contexts/notificationContext';
-import { deleteSection } from '@/services/section.service';
+import { deleteSection, updateSection, UpdateSectionPayload } from '@/services/section.service';
 
 const ChapterList = dynamic(() => import('../chapterList'), { ssr: false });
 
@@ -21,9 +21,14 @@ export default function CourseContentPage({ initialSections, courseId }: CourseC
   const [sections, setSections] = useState<Section[]>(initialSections || []);
   const { notify } = useNotification();
 
-  const updateChapter = (chapterId: string, updates: Partial<Section>) => {
-    setSections(sections.map((chapter) => (chapter.id === chapterId ? { ...chapter, ...updates } : chapter)));
-    console.log('chapter', sections);
+  const handleUpdateSection = async (sectionId: string, updates: Partial<Section>) => {
+    const res = await updateSection(sectionId, updates as UpdateSectionPayload);
+    if (res?.success) {
+      setSections(sections.map((chapter) => (chapter.id === sectionId ? { ...chapter, ...updates } : chapter)));
+      console.log('chapter', sections);
+    } else {
+      notify('error', 'Lưu chương thất bại', { vertical: 'top', horizontal: 'right' });
+    }
   };
 
   const updateLesson = (chapterId: string, lessonId: string, updates: Partial<Lesson>) => {
@@ -217,7 +222,7 @@ export default function CourseContentPage({ initialSections, courseId }: CourseC
       {/* Chapters List */}
       <ChapterList
         sections={sections}
-        onUpdateChapter={updateChapter}
+        onUpdateSection={handleUpdateSection}
         onUpdateLesson={updateLesson}
         onAddLesson={addNewLesson}
         onAddExcercise={addNewExcercise}

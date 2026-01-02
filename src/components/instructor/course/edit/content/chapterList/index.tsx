@@ -17,7 +17,7 @@ import { Section } from '../../types';
 
 interface ChapterListProps {
   sections: Section[];
-  onUpdateChapter: (chapterId: string, updates: Partial<Section>) => void;
+  onUpdateSection: (chapterId: string, updates: Partial<Section>) => void;
   onUpdateLesson: (chapterId: string, lessonId: string, updates: Partial<Section>) => void;
   onAddLesson: (chapterId: string) => void;
   onAddExcercise: (chapterId: string) => void;
@@ -31,7 +31,7 @@ interface ChapterListProps {
 
 export default function ChapterList({
   sections,
-  onUpdateChapter,
+  onUpdateSection,
   onUpdateLesson,
   onAddLesson,
   onAddExcercise,
@@ -82,7 +82,7 @@ export default function ChapterList({
             <ChapterItem
               key={chapter.id}
               section={chapter}
-              onUpdateChapter={onUpdateChapter}
+              onUpdateSection={onUpdateSection}
               onUpdateLesson={onUpdateLesson}
               onAddLesson={onAddLesson}
               onAddExcercise={onAddExcercise}
