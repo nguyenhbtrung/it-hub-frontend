@@ -10,7 +10,7 @@ import { addSection } from '@/services/course.service';
 import { useNotification } from '@/contexts/notificationContext';
 import { addUnit, deleteSection, updateSection, UpdateSectionPayload } from '@/services/section.service';
 import { UnitType } from '@/types/course';
-import { updateUnit, UpdateUnitPayload } from '@/services/unit.service';
+import { addStep, deleteUnit, updateUnit, UpdateUnitPayload } from '@/services/unit.service';
 
 const ChapterList = dynamic(() => import('../chapterList'), { ssr: false });
 
@@ -88,6 +88,38 @@ export default function CourseContentPage({ initialSections, courseId }: CourseC
     }
   };
 
+  const addNewStep = async (sectionId: string, unitId: string) => {
+    const payload = {
+      title: 'Nội dung mới',
+    };
+
+    const res = await addStep(unitId, payload);
+    if (res?.success && res?.data) {
+      setSections(
+        sections.map((section) => {
+          if (section.id !== sectionId) return section;
+
+          return {
+            ...section,
+            units: section.units.map((unit) => {
+              if (unit.id !== unitId) return unit;
+
+              return {
+                ...unit,
+                steps: [...(unit.steps ?? []), res.data],
+              };
+            }),
+          };
+        })
+      );
+    } else {
+      notify('error', 'Thêm nội dung mới thất bại, vui lòng thử lại', {
+        vertical: 'top',
+        horizontal: 'right',
+      });
+    }
+  };
+
   const addNewExcercise = async (sectionId: string) => {
     const payload = {
       title: 'Bài tập mới',
@@ -121,18 +153,23 @@ export default function CourseContentPage({ initialSections, courseId }: CourseC
     }
   };
 
-  const deleteUnit = async (sectionId: string, unitId: string) => {
-    setSections(
-      sections.map((chapter) => {
-        if (chapter.id === sectionId) {
-          return {
-            ...chapter,
-            units: chapter.units.filter((unit) => unit.id !== unitId),
-          };
-        }
-        return chapter;
-      })
-    );
+  const handleDeleteUnit = async (sectionId: string, unitId: string) => {
+    const res = await deleteUnit(unitId);
+    if (res?.success) {
+      setSections(
+        sections.map((section) => {
+          if (section.id === sectionId) {
+            return {
+              ...section,
+              units: section.units.filter((unit) => unit.id !== unitId),
+            };
+          }
+          return section;
+        })
+      );
+    } else {
+      notify('error', 'Xoá nội dung thất bại, vui lòng thử lại', { vertical: 'top', horizontal: 'right' });
+    }
   };
 
   const openContentEditor = (stepId: string) => {
@@ -228,8 +265,9 @@ export default function CourseContentPage({ initialSections, courseId }: CourseC
         onUpdateUnit={handleUpdateUnit}
         onAddLesson={addNewLesson}
         onAddExcercise={addNewExcercise}
+        onAddStep={addNewStep}
         onDeleteChapter={handleDeleteSection}
-        onDeleteUnit={deleteUnit}
+        onDeleteUnit={handleDeleteUnit}
         onOpenContentEditor={openContentEditor}
         onReorderSection={reorderSection}
         onReorderUnit={reorderUnit}

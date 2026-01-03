@@ -36,6 +36,7 @@ interface ChapterItemProps {
   onUpdateUnit: (chapterId: string, lessonId: string, updates: Partial<Section>) => void;
   onAddLesson: (chapterId: string) => void;
   onAddExcercise: (chapterId: string) => void;
+  onAddStep: (sectionId: string, unitId: string) => void;
   onDeleteChapter: (chapterId: string) => void;
   onDeleteUnit: (chapterId: string, lessonId: string) => void;
   onOpenContentEditor: (lessonId: string) => void;
@@ -49,6 +50,7 @@ export default function ChapterItem({
   onUpdateUnit,
   onAddLesson,
   onAddExcercise,
+  onAddStep,
   onDeleteChapter,
   onDeleteUnit,
   onOpenContentEditor,
@@ -295,6 +297,7 @@ export default function ChapterItem({
                       key={unit.id}
                       lesson={unit as Lesson}
                       section={section}
+                      onAddStep={onAddStep}
                       onUpdateUnit={onUpdateUnit}
                       onDeleteUnit={onDeleteUnit}
                       onOpenContentEditor={onOpenContentEditor}

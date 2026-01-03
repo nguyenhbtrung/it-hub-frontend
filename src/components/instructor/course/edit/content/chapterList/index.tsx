@@ -21,6 +21,7 @@ interface ChapterListProps {
   onUpdateUnit: (chapterId: string, lessonId: string, updates: Partial<Section>) => void;
   onAddLesson: (chapterId: string) => void;
   onAddExcercise: (chapterId: string) => void;
+  onAddStep: (sectionId: string, unitId: string) => void;
   onDeleteChapter: (chapterId: string) => void;
   onDeleteUnit: (chapterId: string, lessonId: string) => void;
   onOpenContentEditor: (lessonId: string) => void;
@@ -35,6 +36,7 @@ export default function ChapterList({
   onUpdateUnit,
   onAddLesson,
   onAddExcercise,
+  onAddStep,
   onDeleteChapter,
   onDeleteUnit,
   onOpenContentEditor,
@@ -86,6 +88,7 @@ export default function ChapterList({
               onUpdateUnit={onUpdateUnit}
               onAddLesson={onAddLesson}
               onAddExcercise={onAddExcercise}
+              onAddStep={onAddStep}
               onDeleteChapter={onDeleteChapter}
               onDeleteUnit={onDeleteUnit}
               onOpenContentEditor={onOpenContentEditor}

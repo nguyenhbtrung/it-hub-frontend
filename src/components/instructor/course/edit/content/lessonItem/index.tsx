@@ -36,6 +36,7 @@ import { restrictToVerticalAxis, restrictToWindowEdges } from '@dnd-kit/modifier
 interface LessonItemProps {
   lesson: Lesson;
   section: Section;
+  onAddStep: (sectionId: string, unitId: string) => void;
   onUpdateUnit: (sectionId: string, lessonId: string, updates: Partial<Lesson>) => void;
   onDeleteUnit: (sectionId: string, lessonId: string) => void;
   onOpenContentEditor: (lessonId: string) => void;
@@ -45,6 +46,7 @@ interface LessonItemProps {
 export default function LessonItem({
   lesson,
   section,
+  onAddStep,
   onUpdateUnit,
   onDeleteUnit,
   onOpenContentEditor,
@@ -80,20 +82,6 @@ export default function LessonItem({
       description: localDescription,
     });
     setIsEditing(false);
-  };
-
-  const handleAddStep = (title: string) => {
-    const steps = lesson.steps;
-    const lecture: LessonStep = {
-      id: crypto.randomUUID(),
-      lessonId: lesson.id,
-      title,
-      order: Math.max(...steps.map((step) => step.order)) + 1,
-      blocks: [],
-    };
-    onUpdateUnit(section.id, lesson.id, {
-      steps: [...steps, lecture],
-    });
   };
 
   const handleDeleteStep = (stepId: string) => {
@@ -174,7 +162,7 @@ export default function LessonItem({
         </Box>
 
         <Box sx={{ display: 'flex', gap: 0.5 }}>
-          <IconButton size='small' onClick={() => handleAddStep('Bài giảng không tiêu đề')} title='Thêm bước'>
+          <IconButton size='small' onClick={() => onAddStep(section.id, lesson.id)} title='Thêm nội dung'>
             <AddIcon fontSize='small' />
           </IconButton>
           <IconButton size='small' onClick={() => setIsEditing((prev) => !prev)} title='Chỉnh sửa bài học'>

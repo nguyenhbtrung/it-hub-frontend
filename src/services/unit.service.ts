@@ -29,3 +29,50 @@ export async function updateUnit(unitId: string, payload: UpdateUnitPayload): Pr
     throw err;
   }
 }
+
+export async function deleteUnit(unitId: string): Promise<any> {
+  try {
+    return await apiFetch(`/api/units/${unitId}`, {
+      auth: true,
+      credentials: 'include',
+      method: 'DELETE',
+    });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      return {
+        success: false,
+        error: {
+          message: 'Có lỗi xảy ra',
+          code: err.code,
+        },
+      };
+    }
+    throw err;
+  }
+}
+
+interface AddStepPayload {
+  title: string;
+}
+
+export async function addStep(unitId: string, payload: AddStepPayload): Promise<any> {
+  try {
+    return await apiFetch(`/api/units/${unitId}/step`, {
+      auth: true,
+      credentials: 'include',
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      return {
+        success: false,
+        error: {
+          message: 'Có lỗi xảy ra',
+          code: err.code,
+        },
+      };
+    }
+    throw err;
+  }
+}
