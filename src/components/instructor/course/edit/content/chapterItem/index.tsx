@@ -39,6 +39,7 @@ interface ChapterItemProps {
   onAddStep: (sectionId: string, unitId: string) => void;
   onDeleteChapter: (chapterId: string) => void;
   onDeleteUnit: (chapterId: string, lessonId: string) => void;
+  onDeleteStep: (sectionId: string, unitId: string, stepId: string) => void;
   onOpenContentEditor: (lessonId: string) => void;
   onReorderUnit: (sectionId: string, oldIndex: number, newIndex: number) => void;
   onReorderStep: (sectionId: string, unitId: string, oldIndex: number, newIndex: number) => void;
@@ -53,6 +54,7 @@ export default function ChapterItem({
   onAddStep,
   onDeleteChapter,
   onDeleteUnit,
+  onDeleteStep,
   onOpenContentEditor,
   onReorderUnit,
   onReorderStep,
@@ -300,6 +302,7 @@ export default function ChapterItem({
                       onAddStep={onAddStep}
                       onUpdateUnit={onUpdateUnit}
                       onDeleteUnit={onDeleteUnit}
+                      onDeleteStep={onDeleteStep}
                       onOpenContentEditor={onOpenContentEditor}
                       onReorderStep={onReorderStep}
                     />

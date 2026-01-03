@@ -39,6 +39,7 @@ interface LessonItemProps {
   onAddStep: (sectionId: string, unitId: string) => void;
   onUpdateUnit: (sectionId: string, lessonId: string, updates: Partial<Lesson>) => void;
   onDeleteUnit: (sectionId: string, lessonId: string) => void;
+  onDeleteStep: (sectionId: string, unitId: string, stepId: string) => void;
   onOpenContentEditor: (lessonId: string) => void;
   onReorderStep: (sectionId: string, unitId: string, oldIndex: number, newIndex: number) => void;
 }
@@ -49,6 +50,7 @@ export default function LessonItem({
   onAddStep,
   onUpdateUnit,
   onDeleteUnit,
+  onDeleteStep,
   onOpenContentEditor,
   onReorderStep,
 }: LessonItemProps) {
@@ -85,12 +87,14 @@ export default function LessonItem({
   };
 
   const handleDeleteStep = (stepId: string) => {
-    const steps = lesson.steps;
-    const updatedSteps = steps.filter((step) => step.id !== stepId);
+    onDeleteStep(section.id, lesson.id, stepId);
 
-    onUpdateUnit(section.id, lesson.id, {
-      steps: updatedSteps,
-    });
+    // const steps = lesson.steps;
+    // const updatedSteps = steps.filter((step) => step.id !== stepId);
+
+    // onUpdateUnit(section.id, lesson.id, {
+    //   steps: updatedSteps,
+    // });
   };
 
   const handleDragEnd = (event: DragEndEvent) => {

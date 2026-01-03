@@ -23,6 +23,7 @@ interface ChapterListProps {
   onAddExcercise: (chapterId: string) => void;
   onAddStep: (sectionId: string, unitId: string) => void;
   onDeleteChapter: (chapterId: string) => void;
+  onDeleteStep: (sectionId: string, unitId: string, stepId: string) => void;
   onDeleteUnit: (chapterId: string, lessonId: string) => void;
   onOpenContentEditor: (lessonId: string) => void;
   onReorderSection: (oldIndex: number, newIndex: number) => void;
@@ -39,6 +40,7 @@ export default function ChapterList({
   onAddStep,
   onDeleteChapter,
   onDeleteUnit,
+  onDeleteStep,
   onOpenContentEditor,
   onReorderSection,
   onReorderUnit,
@@ -91,6 +93,7 @@ export default function ChapterList({
               onAddStep={onAddStep}
               onDeleteChapter={onDeleteChapter}
               onDeleteUnit={onDeleteUnit}
+              onDeleteStep={onDeleteStep}
               onOpenContentEditor={onOpenContentEditor}
               onReorderUnit={onReorderUnit}
               onReorderStep={onReorderStep}

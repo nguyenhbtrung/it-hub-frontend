@@ -11,6 +11,7 @@ import { useNotification } from '@/contexts/notificationContext';
 import { addUnit, deleteSection, updateSection, UpdateSectionPayload } from '@/services/section.service';
 import { UnitType } from '@/types/course';
 import { addStep, deleteUnit, updateUnit, UpdateUnitPayload } from '@/services/unit.service';
+import { deleteStep } from '@/services/step.service';
 
 const ChapterList = dynamic(() => import('../chapterList'), { ssr: false });
 
@@ -172,6 +173,34 @@ export default function CourseContentPage({ initialSections, courseId }: CourseC
     }
   };
 
+  const handleDeleteStep = async (sectionId: string, unitId: string, stepId: string) => {
+    const res = await deleteStep(stepId);
+    if (res?.success) {
+      setSections(
+        sections.map((section) => {
+          if (section.id !== sectionId) return section;
+
+          return {
+            ...section,
+            units: section.units.map((unit) => {
+              if (unit.id !== unitId) return unit;
+
+              return {
+                ...unit,
+                steps: (unit.steps ?? []).filter((step) => step.id !== stepId),
+              };
+            }),
+          };
+        })
+      );
+    } else {
+      notify('error', 'Xoá nội dung thất bại, vui lòng thử lại', {
+        vertical: 'top',
+        horizontal: 'right',
+      });
+    }
+  };
+
   const openContentEditor = (stepId: string) => {
     for (const chapter of sections) {
       for (const lesson of chapter.units) {
@@ -268,6 +297,7 @@ export default function CourseContentPage({ initialSections, courseId }: CourseC
         onAddStep={addNewStep}
         onDeleteChapter={handleDeleteSection}
         onDeleteUnit={handleDeleteUnit}
+        onDeleteStep={handleDeleteStep}
         onOpenContentEditor={openContentEditor}
         onReorderSection={reorderSection}
         onReorderUnit={reorderUnit}
