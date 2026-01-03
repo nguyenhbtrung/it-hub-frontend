@@ -81,7 +81,7 @@ export const Figure = Node.create<FigureOptions>({
         mergeAttributes(HTMLAttributes, {
           draggable: false,
           contentEditable: false,
-          style: 'width: 70%; height: auto; display: block; margin: 0 auto;',
+          style: 'width: 100%; height: auto; display: block; margin: 0 auto;',
         }),
       ],
       ['figcaption', 0],

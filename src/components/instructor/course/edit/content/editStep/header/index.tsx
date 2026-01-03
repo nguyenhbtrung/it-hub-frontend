@@ -5,7 +5,12 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SaveIcon from '@mui/icons-material/Save';
 import { useParams, useRouter } from 'next/navigation';
 
-export default function EditStepHeader() {
+interface EditStepHeaderProps {
+  title: string;
+  onSave: () => void;
+}
+
+export default function EditStepHeader({ title, onSave }: EditStepHeaderProps) {
   const { id } = useParams();
   const router = useRouter();
   const handleGoBack = () => {
@@ -42,13 +47,14 @@ export default function EditStepHeader() {
               Chỉnh sửa bài giảng
             </Typography>
             <Typography variant='subtitle1' fontWeight='semibold'>
-              Lập trình Web Frontend Nâng cao
+              {title}
             </Typography>
           </Box>
         </Box>
 
         <Box sx={{ ml: 'auto', display: 'flex', gap: 2 }}>
           <Button
+            onClick={onSave}
             variant='contained'
             endIcon={<SaveIcon />}
             sx={{

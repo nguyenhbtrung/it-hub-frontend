@@ -1,18 +1,31 @@
-import LectureEditor from '@/components/common/richText/editor/lectureEditor';
 import EditStepHeader from '@/components/instructor/course/edit/content/editStep/header';
+import LectureEditor from '@/components/instructor/course/edit/content/editStep/lectureEditor';
+import { getStepById } from '@/services/step.service';
 
 import { Container, Grid, Box, Paper } from '@mui/material';
+import { Suspense } from 'react';
 
-export default function EditStepPage() {
+interface EditStepPageProps {
+  params: Promise<{ stepId: string }>;
+}
+
+export default function EditStepPage({ params }: EditStepPageProps) {
   return (
     <Box sx={{ bgcolor: 'customBackground.4', display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      <EditStepHeader />
-
-      <Box sx={{ flexGrow: 1, overflowY: 'auto', p: 6 }}>
-        <Container maxWidth='lg'>
-          <LectureEditor />
-        </Container>
-      </Box>
+      <Suspense>
+        <EditStepPageWrapper params={params} />
+      </Suspense>
     </Box>
+  );
+}
+
+async function EditStepPageWrapper({ params }: EditStepPageProps) {
+  const { stepId } = await params;
+  const res = await getStepById(stepId);
+  const step = res?.data;
+  return (
+    <>
+      <LectureEditor step={step} />
+    </>
   );
 }
