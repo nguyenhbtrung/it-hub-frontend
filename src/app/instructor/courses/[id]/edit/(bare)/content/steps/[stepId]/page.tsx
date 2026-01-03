@@ -6,7 +6,7 @@ import { Container, Grid, Box, Paper } from '@mui/material';
 import { Suspense } from 'react';
 
 interface EditStepPageProps {
-  params: Promise<{ stepId: string }>;
+  params: Promise<{ stepId: string; id: string }>;
 }
 
 export default function EditStepPage({ params }: EditStepPageProps) {
@@ -20,7 +20,8 @@ export default function EditStepPage({ params }: EditStepPageProps) {
 }
 
 async function EditStepPageWrapper({ params }: EditStepPageProps) {
-  const { stepId } = await params;
+  const { stepId, id } = await params;
+  console.log('id', id);
   const res = await getStepById(stepId);
   const step = res?.data;
   return (

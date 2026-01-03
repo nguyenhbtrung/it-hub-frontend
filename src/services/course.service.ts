@@ -143,6 +143,27 @@ interface UpdateCourseDetailPayload {
   tags: string[];
 }
 
+export async function updateCourseTotalDuration(courseId: string): Promise<any> {
+  try {
+    return await apiFetch(`/api/courses/${courseId}/duration`, {
+      auth: true,
+      credentials: 'include',
+      method: 'PATCH',
+    });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      return {
+        success: false,
+        error: {
+          message: 'Có lỗi xảy ra',
+          code: err.code,
+        },
+      };
+    }
+    throw err;
+  }
+}
+
 export async function updateCourseDetail(courseId: string, payload: UpdateCourseDetailPayload): Promise<any> {
   if (typeof payload.description === 'string') payload.description = JSON.parse(payload.description) as JSONContent;
   try {
