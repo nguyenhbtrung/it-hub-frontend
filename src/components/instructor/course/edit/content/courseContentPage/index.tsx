@@ -4,14 +4,14 @@ import { useState } from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 // import ChapterList from '../chapterList';
-import { Section, Lesson, Unit } from '../../types';
+import { Section, Lesson, Unit, LessonStep } from '../../types';
 import dynamic from 'next/dynamic';
 import { addSection } from '@/services/course.service';
 import { useNotification } from '@/contexts/notificationContext';
 import { addUnit, deleteSection, updateSection, UpdateSectionPayload } from '@/services/section.service';
 import { UnitType } from '@/types/course';
 import { addStep, deleteUnit, updateUnit, UpdateUnitPayload } from '@/services/unit.service';
-import { deleteStep } from '@/services/step.service';
+import { deleteStep, updateStep, UpdateStepPayload } from '@/services/step.service';
 
 const ChapterList = dynamic(() => import('../chapterList'), { ssr: false });
 
@@ -49,6 +49,34 @@ export default function CourseContentPage({ initialSections, courseId }: CourseC
       );
     } else {
       notify('error', 'Lưu thất bại', { vertical: 'top', horizontal: 'right' });
+    }
+  };
+
+  const handleUpdateStep = async (sectionId: string, unitId: string, stepId: string, updates: Partial<LessonStep>) => {
+    const res = await updateStep(stepId, updates as UpdateStepPayload);
+    if (res?.success) {
+      setSections(
+        sections.map((section) => {
+          if (section.id !== sectionId) return section;
+
+          return {
+            ...section,
+            units: section.units.map((unit) => {
+              if (unit.id !== unitId) return unit;
+
+              return {
+                ...unit,
+                steps: (unit.steps ?? []).map((step) => (step.id === stepId ? { ...step, ...updates } : step)),
+              };
+            }),
+          };
+        })
+      );
+    } else {
+      notify('error', 'Lưu nội dung thất bại', {
+        vertical: 'top',
+        horizontal: 'right',
+      });
     }
   };
 
@@ -292,6 +320,7 @@ export default function CourseContentPage({ initialSections, courseId }: CourseC
         sections={sections}
         onUpdateSection={handleUpdateSection}
         onUpdateUnit={handleUpdateUnit}
+        onUpdateStep={handleUpdateStep}
         onAddLesson={addNewLesson}
         onAddExcercise={addNewExcercise}
         onAddStep={addNewStep}

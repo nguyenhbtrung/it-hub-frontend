@@ -17,7 +17,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LessonItem from '../lessonItem';
 import CloseIcon from '@mui/icons-material/Close';
-import { Section, Lesson } from '../../types';
+import { Section, Lesson, LessonStep } from '../../types';
 import ExcerciseItem from '../excerciseItem';
 import {
   closestCenter,
@@ -34,6 +34,7 @@ interface ChapterItemProps {
   section: Section;
   onUpdateSection: (chapterId: string, updates: Partial<Section>) => void;
   onUpdateUnit: (chapterId: string, lessonId: string, updates: Partial<Section>) => void;
+  onUpdateStep: (sectionId: string, unitId: string, stepId: string, updates: Partial<LessonStep>) => void;
   onAddLesson: (chapterId: string) => void;
   onAddExcercise: (chapterId: string) => void;
   onAddStep: (sectionId: string, unitId: string) => void;
@@ -49,6 +50,7 @@ export default function ChapterItem({
   section,
   onUpdateSection,
   onUpdateUnit,
+  onUpdateStep,
   onAddLesson,
   onAddExcercise,
   onAddStep,
@@ -301,6 +303,7 @@ export default function ChapterItem({
                       section={section}
                       onAddStep={onAddStep}
                       onUpdateUnit={onUpdateUnit}
+                      onUpdateStep={onUpdateStep}
                       onDeleteUnit={onDeleteUnit}
                       onDeleteStep={onDeleteStep}
                       onOpenContentEditor={onOpenContentEditor}

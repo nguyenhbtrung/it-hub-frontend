@@ -13,12 +13,13 @@ import {
 import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { restrictToVerticalAxis, restrictToWindowEdges } from '@dnd-kit/modifiers';
 import ChapterItem from '../chapterItem';
-import { Section } from '../../types';
+import { LessonStep, Section } from '../../types';
 
 interface ChapterListProps {
   sections: Section[];
   onUpdateSection: (chapterId: string, updates: Partial<Section>) => void;
   onUpdateUnit: (chapterId: string, lessonId: string, updates: Partial<Section>) => void;
+  onUpdateStep: (sectionId: string, unitId: string, stepId: string, updates: Partial<LessonStep>) => void;
   onAddLesson: (chapterId: string) => void;
   onAddExcercise: (chapterId: string) => void;
   onAddStep: (sectionId: string, unitId: string) => void;
@@ -35,6 +36,7 @@ export default function ChapterList({
   sections,
   onUpdateSection,
   onUpdateUnit,
+  onUpdateStep,
   onAddLesson,
   onAddExcercise,
   onAddStep,
@@ -88,6 +90,7 @@ export default function ChapterList({
               section={chapter}
               onUpdateSection={onUpdateSection}
               onUpdateUnit={onUpdateUnit}
+              onUpdateStep={onUpdateStep}
               onAddLesson={onAddLesson}
               onAddExcercise={onAddExcercise}
               onAddStep={onAddStep}
