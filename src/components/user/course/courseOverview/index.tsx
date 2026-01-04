@@ -4,20 +4,40 @@ import CheckIcon from '@mui/icons-material/Check';
 import { fetchCourse } from '@/lib/utils/fakeApi';
 import CourseIncludes from '../courseIncludes';
 import ReadMoreDescription from './readMoreDescription';
+import { getCourseDetail } from '@/services/course.service';
+import { Key } from 'react';
+import { notFound } from 'next/navigation';
+import { JSONContent } from '@tiptap/core';
 
-export default async function CourseOverview() {
-  const course = await fetchCourse('');
+export default async function CourseOverview({ courseId }: { courseId: string }) {
+  const res = await getCourseDetail(courseId, 'student');
+  if (!res.success) {
+    notFound();
+  }
+  const course = res?.data;
+
+  const stats = {
+    level: course?.level,
+    totalDuration: course?.totalDuration,
+    lessons: course?.lessons,
+    materials: course?.materials,
+  };
+
+  const EMPTY_DOC: JSONContent = {
+    type: 'doc',
+    content: [],
+  };
   return (
     <Section id='overview'>
       {/* <Typography variant='body1' color='text.secondary' sx={{ my: 3 }}>
         {course.description}
       </Typography> */}
 
-      <ReadMoreDescription text={course.description} maxHeight={100} />
+      <ReadMoreDescription content={course?.description || EMPTY_DOC} maxHeight={100} />
 
       <Box display={{ xs: 'flex', lg: 'none' }} flexDirection='row' alignItems='center' justifyContent='center'>
         <Card sx={{ maxWidth: 600, flex: 1, mb: 4 }}>
-          <CourseIncludes courseStats={course.stats} />
+          <CourseIncludes courseStats={stats} />
         </Card>
       </Box>
 
@@ -27,7 +47,7 @@ export default async function CourseOverview() {
             Bạn sẽ học được
           </Typography>
           <List sx={{ color: 'text.secondary' }}>
-            {course.keyTakeaways.map((item, index) => (
+            {course?.keyTakeaways?.map((item: string[], index: Key | null | undefined) => (
               <ListItem key={index} sx={{ py: 0.5 }}>
                 <ListItemIcon sx={{ minWidth: 32 }}>
                   <CheckIcon color='secondary' fontSize='small' />
@@ -50,7 +70,7 @@ export default async function CourseOverview() {
             Yêu cầu
           </Typography>
           <List sx={{ color: 'text.secondary' }}>
-            {course.requirements?.map((req, index) => (
+            {course?.requirements?.map((req: string[], index: Key | null | undefined) => (
               <ListItem key={index} sx={{ py: 0.5 }}>
                 <ListItemIcon sx={{ minWidth: 32 }}>
                   <CheckIcon color='secondary' fontSize='small' />

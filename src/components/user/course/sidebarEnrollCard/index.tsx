@@ -10,11 +10,17 @@ import PromoVideo from '../promoVideo';
 import CourseIncludes from '../courseIncludes';
 import Link from '@/components/common/Link';
 
-export default function SidebarEnrollCard({ course }: { course: CourseDetail }) {
+export default function SidebarEnrollCard({ course }: { course: any }) {
+  const stats = {
+    level: course?.level,
+    totalDuration: course?.totalDuration,
+    lessons: course?.lessons,
+    materials: course?.materials,
+  };
   return (
     <Box>
       <Card sx={{ borderRadius: 3, mb: 2 }}>
-        <PromoVideo />
+        <PromoVideo src={course?.promoVideo?.url} thumb={course?.promoVideo?.metadata?.thumbnails?.[0]} />
 
         <CardContent>
           <Stack direction='row' spacing={1} sx={{ my: 2 }}>
@@ -32,7 +38,7 @@ export default function SidebarEnrollCard({ course }: { course: CourseDetail }) 
             </Button>
           </Stack>
           <Stack direction='row' spacing={1} sx={{ mt: 1 }}></Stack>
-          <CourseIncludes courseStats={course.stats} />
+          <CourseIncludes courseStats={stats} />
         </CardContent>
       </Card>
     </Box>

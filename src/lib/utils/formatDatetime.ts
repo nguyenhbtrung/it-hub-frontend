@@ -31,3 +31,22 @@ export const toShortLocaleDateString = (date: Date) =>
     month: 'short',
     year: 'numeric',
   });
+
+export const formatDuration = (seconds: number): string => {
+  const minute = 60;
+  const hour = 60 * minute;
+  const day = 24 * hour;
+  const week = 7 * day;
+
+  if (seconds >= 2 * week) {
+    const weeks = Math.floor(seconds / week);
+    return `${weeks} tuần`;
+  } else if (seconds >= hour) {
+    const hours = Math.floor(seconds / hour);
+    const minutes = Math.floor((seconds % hour) / minute);
+    return minutes > 0 ? `${hours} giờ ${minutes} phút` : `${hours} giờ`;
+  } else {
+    const minutes = Math.floor(seconds / minute);
+    return `${minutes} phút`;
+  }
+};

@@ -4,14 +4,16 @@ import LeaderboardOutlined from '@mui/icons-material/LeaderboardOutlined';
 import MenuBookOutlinedIcon from '@mui/icons-material/MenuBookOutlined';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import { CourseStats } from '@/types/course';
+import { levelLabelsMap } from '@/lib/const/course';
+import { formatDuration } from '@/lib/utils/formatDatetime';
 
 interface CourseIncludesProps {
   courseStats: CourseStats;
 }
 
 export default function CourseIncludes({ courseStats }: CourseIncludesProps) {
-  const hrs = Math.floor(courseStats.totalDurationMinutes / 60);
-  const mins = courseStats.totalDurationMinutes % 60;
+  const hrs = Math.floor(courseStats.totalDuration / 60);
+  const mins = courseStats.totalDuration % 60;
   return (
     <>
       <Typography variant='h6'>Khoá học bao gồm</Typography>
@@ -23,7 +25,7 @@ export default function CourseIncludes({ courseStats }: CourseIncludesProps) {
               Cấp độ:
             </Typography>
           </Box>
-          <Typography variant='body2'>{courseStats.level}</Typography>
+          <Typography variant='body2'>{levelLabelsMap[courseStats.level]}</Typography>
         </ListItem>
 
         <Divider />
@@ -35,9 +37,7 @@ export default function CourseIncludes({ courseStats }: CourseIncludesProps) {
               Thời lượng:
             </Typography>
           </Box>
-          <Typography variant='body2'>
-            {hrs} giờ {mins} phút
-          </Typography>
+          <Typography variant='body2'>{formatDuration(courseStats.totalDuration)}</Typography>
         </ListItem>
 
         <Divider />

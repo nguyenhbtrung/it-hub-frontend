@@ -1,6 +1,6 @@
 // CourseContent component - Phiên bản cải tiến
 'use client';
-import React, { useState } from 'react';
+import React, { use, useState } from 'react';
 import {
   Accordion,
   AccordionSummary,
@@ -18,17 +18,28 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { CourseDetailSection } from '@/types/course';
+import { formatDuration } from '@/lib/utils/formatDatetime';
 
-export default function CourseContent({ sections }: { sections: CourseDetailSection[] }) {
+interface CourseContentProps {
+  courseContentOulinePromise: Promise<any>;
+}
+
+export default function CourseContent({ courseContentOulinePromise }: CourseContentProps) {
   const [expanded, setExpanded] = useState<string | false>(false);
+
+  const res = use(courseContentOulinePromise);
+  const courseContent = res?.data;
 
   const handleChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
     setExpanded(isExpanded ? panel : false);
   };
 
-  const totalLessons = sections.reduce((acc, section) => acc + section.lessons.length, 0);
-  const totalDuration = sections.reduce(
-    (acc, section) => acc + section.lessons.reduce((sum, lesson) => sum + lesson.durationMinutes, 0),
+  const totalLessons = courseContent.sections.reduce(
+    (acc: number, section: { units: any[] }) => acc + section.units.filter((u) => u.type === 'lesson').length,
+    0
+  );
+  const totalExercises = courseContent.sections.reduce(
+    (acc: number, section: { units: any[] }) => acc + section.units.filter((u) => u.type === 'excercise').length,
     0
   );
 
@@ -46,19 +57,19 @@ export default function CourseContent({ sections }: { sections: CourseDetailSect
         </Typography>
         <Stack direction='row' spacing={3}>
           <Typography variant='body2' color='text.secondary'>
-            {sections.length} chương • {totalLessons} bài học
+            {courseContent?.sections?.length} chương • {totalLessons} bài học • {totalExercises} bài tập
           </Typography>
           <Typography variant='body2' color='text.secondary'>
-            {Math.floor(totalDuration / 60)}h {totalDuration % 60}m
+            {formatDuration(courseContent?.totalDuration || 0)}
           </Typography>
         </Stack>
       </Stack>
 
-      {sections.map((section, index) => (
+      {courseContent?.sections?.map((section: any, index: number) => (
         <Accordion
-          key={section.id}
-          expanded={expanded === section.id}
-          onChange={handleChange(section.id)}
+          key={section?.id}
+          expanded={expanded === section?.id}
+          onChange={handleChange(section?.id)}
           sx={{
             mb: 2,
             borderRadius: '12px !important',
@@ -69,7 +80,7 @@ export default function CourseContent({ sections }: { sections: CourseDetailSect
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
             sx={{
-              backgroundColor: expanded === section.id ? 'action.hover' : 'background.paper',
+              backgroundColor: expanded === section?.id ? 'action.hover' : 'background.paper',
               borderRadius: '12px',
               '&.Mui-expanded': { borderRadius: '12px 12px 0 0' },
             }}
@@ -77,12 +88,11 @@ export default function CourseContent({ sections }: { sections: CourseDetailSect
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', pr: 2 }}>
               <Box>
                 <Typography variant='subtitle1' fontWeight={600}>
-                  {section.title}
+                  {section?.title}
                 </Typography>
                 <Typography variant='body2' color='text.secondary'>
-                  {section.lessons.length} bài học •{' '}
-                  {Math.floor(section.lessons.reduce((sum, lesson) => sum + lesson.durationMinutes, 0) / 60)}h{' '}
-                  {section.lessons.reduce((sum, lesson) => sum + lesson.durationMinutes, 0) % 60}m
+                  {section?.units?.filter((u: { type: string }) => u.type === 'lesson')?.length} bài học •{' '}
+                  {section?.units?.filter((u: { type: string }) => u.type === 'excercise')?.length} bài tập
                 </Typography>
               </Box>
               <Chip label={`Chương ${index + 1}`} size='small' color='primary' variant='outlined' />
@@ -91,9 +101,9 @@ export default function CourseContent({ sections }: { sections: CourseDetailSect
 
           <AccordionDetails sx={{ p: 0, borderRadius: '0 0 12px 12px' }}>
             <List disablePadding>
-              {section.lessons.map((lesson, lessonIndex) => (
+              {section?.units?.map((unit: any, unitIndex: number) => (
                 <ListItem
-                  key={lesson.id}
+                  key={unit?.id}
                   sx={{
                     borderBottom: '1px solid',
                     borderColor: 'divider',
@@ -104,24 +114,24 @@ export default function CourseContent({ sections }: { sections: CourseDetailSect
                   secondaryAction={
                     <Stack direction='row' spacing={1} alignItems='center'>
                       <Typography variant='body2' color='text.secondary' sx={{ minWidth: 60 }}>
-                        {lesson.durationMinutes} phút
+                        {formatDuration(unit?.totalDuration || 0)}
                       </Typography>
-                      <IconButton
+                      {/* <IconButton
                         edge='end'
                         size='small'
                         aria-label='preview'
-                        color={lesson.isPreview ? 'primary' : 'default'}
+                        color={unit.isPreview ? 'primary' : 'default'}
                       >
-                        {lesson.isPreview ? <PlayCircleOutlineIcon /> : <LockOpenIcon />}
-                      </IconButton>
+                        {unit.isPreview ? <PlayCircleOutlineIcon /> : <LockOpenIcon />}
+                      </IconButton> */}
                     </Stack>
                   }
                 >
                   <ListItemText
                     primary={
-                      <Typography component='span' variant='body1' sx={{ fontWeight: lesson.isPreview ? 600 : 400 }}>
-                        {lessonIndex + 1}. {lesson.title}
-                        {lesson.isPreview && (
+                      <Typography component='span' variant='body1' sx={{ fontWeight: 400 }}>
+                        {unitIndex + 1}. {unit?.title}
+                        {/* {unit.isPreview && (
                           <Chip
                             label='Xem trước'
                             size='small'
@@ -129,7 +139,7 @@ export default function CourseContent({ sections }: { sections: CourseDetailSect
                             variant='filled'
                             sx={{ ml: 1, height: 20, fontSize: '0.7rem' }}
                           />
-                        )}
+                        )} */}
                       </Typography>
                     }
                   />

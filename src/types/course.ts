@@ -1,3 +1,4 @@
+import { JSONContent } from '@tiptap/core';
 import { StepContent, StepProgress } from './content';
 
 export interface CourseSummary {
@@ -87,12 +88,8 @@ export interface Instructor {
 }
 
 export interface CourseStats {
-  rating: number;
-  ratingCount: number;
-  students: number;
-  lastUpdated: string; // ISO date
-  level: 'Cơ bản' | 'Trung cấp' | 'Nâng cao' | string;
-  totalDurationMinutes: number;
+  level: CourseLevel;
+  totalDuration: number;
   lessons: number;
   materials: number;
 }
@@ -116,10 +113,18 @@ export interface CourseDetail {
   slug: string;
   title: string;
   shortDescription: string;
-  description: string;
-  category: string;
-  tags: string[];
-  stats: CourseStats;
+  description: JSONContent;
+  category: { id: string; name: string; slug: string } | undefined | null;
+  subCategory: { id: string; name: string; slug: string } | undefined | null;
+  tags: { id: string; name: string; slug: string }[];
+  avgRating: number;
+  reviewCount: number;
+  students: number;
+  updatedAt: string;
+  level: CourseLevel;
+  totalDuration: number;
+  lessons: number;
+  materials: number;
   instructor: Instructor;
   sections: CourseDetailSection[];
   keyTakeaways: string[];
@@ -164,4 +169,4 @@ export interface LearningCourse {
 }
 
 export type CourseStatus = 'draft' | 'pending' | 'published' | 'hidden' | 'suspended';
-export type CourseLevel = 'beginner' | 'intermediate' | 'advanced';
+export type CourseLevel = 'beginner' | 'intermediate' | 'advanced' | 'expert';

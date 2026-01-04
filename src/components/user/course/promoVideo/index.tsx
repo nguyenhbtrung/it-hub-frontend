@@ -3,7 +3,12 @@ import ReactPlayer from 'react-player';
 import Image from 'next/image';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 
-export default function PromoVideo() {
+interface PromoVideoProps {
+  src: string;
+  thumb: string;
+}
+
+export default function PromoVideo({ src, thumb }: PromoVideoProps) {
   return (
     <Box
       sx={{
@@ -41,13 +46,13 @@ export default function PromoVideo() {
         controls
       /> */}
       <ReactPlayer
-        src='http://localhost:8080/uploads/permanent/8a2ee5c8-5d09-43d2-b37b-289c467573dd.mp4'
+        src={src}
         width='100%'
         height='100%'
         style={{ objectFit: 'cover' }}
         controls
         autoPlay
-        light='http://localhost:8080/uploads/thumbnails/thumb_8a2ee5c8-5d09-43d2-b37b-289c467573dd_0.jpg' // ảnh thumbnail
+        light={thumb}
       />
     </Box>
   );

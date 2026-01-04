@@ -33,6 +33,23 @@ export async function getMyCreatedCourse({
   }
 }
 
+export async function getCourseIdBySlug(slug: string): Promise<any> {
+  try {
+    return await apiFetch(`/api/courses/slug/${slug}/courseId`);
+  } catch (err) {
+    if (err instanceof ApiError) {
+      return {
+        success: false,
+        error: {
+          message: 'Có lỗi xảy ra',
+          code: err.code,
+        },
+      };
+    }
+    throw err;
+  }
+}
+
 export async function getCourseDetail(id: string, view: 'instructor' | 'student' = 'student'): Promise<any> {
   try {
     return await apiFetch(`/api/courses/${id}`, {
@@ -61,6 +78,25 @@ export async function getCourseContent(id: string, view: 'instructor' | 'student
       query: {
         view,
       },
+      auth: true,
+    });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      return {
+        success: false,
+        error: {
+          message: 'Có lỗi xảy ra',
+          code: err.code,
+        },
+      };
+    }
+    throw err;
+  }
+}
+
+export async function getCourseContentOutline(id: string): Promise<any> {
+  try {
+    return await apiFetch(`/api/courses/${id}/content/outline`, {
       auth: true,
     });
   } catch (err) {

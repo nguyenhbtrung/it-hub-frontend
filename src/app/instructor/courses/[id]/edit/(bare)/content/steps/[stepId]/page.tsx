@@ -21,12 +21,11 @@ export default function EditStepPage({ params }: EditStepPageProps) {
 
 async function EditStepPageWrapper({ params }: EditStepPageProps) {
   const { stepId, id } = await params;
-  console.log('id', id);
   const res = await getStepById(stepId);
   const step = res?.data;
   return (
     <>
-      <LectureEditor step={step} />
+      <LectureEditor step={step} courseId={id} />
     </>
   );
 }

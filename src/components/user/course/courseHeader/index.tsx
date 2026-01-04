@@ -10,12 +10,19 @@ import SidebarEnrollCard from '../sidebarEnrollCard';
 import PromoVideo from '../promoVideo';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import NextLink from '@/components/common/Link';
+import { getCourseDetail } from '@/services/course.service';
+import { toLocaleDateString } from '@/lib/utils/formatDatetime';
+import { notFound } from 'next/navigation';
 
-export default function CourseHeader({ course }: { course: CourseDetail }) {
+export default async function CourseHeader({ courseId }: { courseId: string }) {
+  const res = await getCourseDetail(courseId, 'student');
+  if (!res.success) {
+    notFound();
+  }
+  const course = res?.data;
   return (
     <Box
       sx={{
-        // background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
         bgcolor: 'hero.light',
         p: 4,
       }}
@@ -32,31 +39,39 @@ export default function CourseHeader({ course }: { course: CourseDetail }) {
               <Link
                 color='inherit'
                 underline='hover'
-                href={`/category/${course.category}`}
+                href={`/category/${course?.category?.slug}`}
                 sx={{ opacity: 0.9, '&:hover': { opacity: 1 } }}
               >
-                {course.category}
+                {course?.category?.name}
+              </Link>
+              <Link
+                color='inherit'
+                underline='hover'
+                href={`/category/${course?.subCategory?.slug}`}
+                sx={{ opacity: 0.9, '&:hover': { opacity: 1 } }}
+              >
+                {course?.subCategory?.name}
               </Link>
             </Breadcrumbs>
             <Typography variant='h3' fontWeight={800} gutterBottom sx={{ fontSize: { xs: '2rem', md: '2.5rem' } }}>
-              {course.title}
+              {course?.title}
             </Typography>
 
             <Typography variant='body1' sx={{ mb: 2, opacity: 0.9 }}>
-              {course.shortDescription}
+              {course?.shortDescription}
             </Typography>
 
             <Stack direction='row' spacing={1} alignItems='center' mb={3}>
               <Avatar
-                alt={course.instructor.name}
-                src={course.instructor.avatarUrl || ''}
+                alt={course?.instructor?.fullname}
+                src={course?.instructor?.avatarUrl || ''}
                 sx={{ width: 32, height: 32 }}
               />
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <Typography variant='body1'>Giảng viên: </Typography>
               </Box>
               <Typography variant='body1' sx={{ opacity: 0.9 }}>
-                {course.instructor.name}
+                {course?.instructor?.fullname}
               </Typography>
             </Stack>
 
@@ -70,27 +85,27 @@ export default function CourseHeader({ course }: { course: CourseDetail }) {
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <StarIcon sx={{ color: '#FFD700', mr: 0.5 }} />
                   <Typography variant='body1' fontWeight={600}>
-                    {course.stats.rating}
+                    {course?.avgRating}
                   </Typography>
                 </Box>
                 <Typography variant='body2' sx={{ opacity: 0.9 }}>
-                  ({course.stats.ratingCount} đánh giá)
+                  ({course?.reviewCount} đánh giá)
                 </Typography>
               </Stack>
 
               <Stack direction='row' spacing={1} alignItems='center'>
                 <PersonIcon fontSize='small' />
-                <Typography variant='body2'>{course.stats.students.toLocaleString()} học viên</Typography>
+                <Typography variant='body2'>{course?.students.toLocaleString()} học viên</Typography>
               </Stack>
 
               <Stack direction='row' spacing={1} alignItems='center'>
                 <UpdateIcon fontSize='small' />
-                <Typography variant='body2'>Cập nhật: {course.stats.lastUpdated}</Typography>
+                <Typography variant='body2'>Cập nhật: {toLocaleDateString(new Date(course?.updatedAt))}</Typography>
               </Stack>
             </Stack>
 
             <Box my={4} display={{ xs: 'block', lg: 'none' }}>
-              <PromoVideo />
+              <PromoVideo src={course?.promoVideo?.url} thumb={course?.promoVideo?.metadata?.thumbnails?.[0]} />
             </Box>
 
             <Stack direction='row' display={{ xs: 'flex', lg: 'none' }} spacing={1} sx={{ my: 2 }}>

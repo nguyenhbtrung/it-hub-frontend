@@ -7,18 +7,33 @@ import NavTabs from '@/components/user/course/navTabs';
 import Section from '@/components/common/section';
 import { fetchCourse } from '@/lib/utils/fakeApi';
 import CourseOverview from '@/components/user/course/courseOverview';
+import { Suspense } from 'react';
+import { getCourseContentOutline, getCourseIdBySlug } from '@/services/course.service';
 
 type Props = { params: Promise<{ slug: string }> };
 
-export default async function CoursePage({ params }: Props) {
-  const slug = (await params).slug;
-  const course = await fetchCourse(slug);
-
+export default function CoursePage({ params }: Props) {
   return (
     <Box sx={{ py: { xs: 7, sm: 8 } }}>
+      <Suspense>
+        <CoursePageWrapper params={params} />
+      </Suspense>
+    </Box>
+  );
+}
+
+async function CoursePageWrapper({ params }: Props) {
+  const slug = (await params).slug;
+  const idRes = await getCourseIdBySlug(slug);
+  const course = await fetchCourse(slug);
+  const courseContentOutlinePromise = getCourseContentOutline(idRes?.data || '');
+  return (
+    <>
       {/* Header Section */}
       <Box sx={{ mb: 6 }}>
-        <CourseHeader course={course} />
+        <Suspense>
+          <CourseHeader courseId={idRes?.data || ''} />
+        </Suspense>
       </Box>
       <Container
         maxWidth='lg'
@@ -31,13 +46,15 @@ export default async function CoursePage({ params }: Props) {
               <NavTabs />
 
               {/* Course Overview */}
-              <CourseOverview />
+              <Suspense>
+                <CourseOverview courseId={idRes?.data || ''} />
+              </Suspense>
 
               {/* Course Content Section */}
               <Section id='content'>
-                {/* <Box sx={{ p: 3 }}> */}
-                <CourseContent sections={course.sections} />
-                {/* </Box> */}
+                <Suspense>
+                  <CourseContent courseContentOulinePromise={courseContentOutlinePromise} />
+                </Suspense>
               </Section>
 
               {/* Tags Section */}
@@ -49,8 +66,8 @@ export default async function CoursePage({ params }: Props) {
                 <Stack direction='row' flexWrap='wrap' gap={1}>
                   {course.tags.map((tag) => (
                     <Chip
-                      key={tag}
-                      label={`#${tag}`}
+                      key={tag.id}
+                      label={`#${tag.name}`}
                       variant='outlined'
                       sx={{
                         borderRadius: 2,
@@ -72,6 +89,6 @@ export default async function CoursePage({ params }: Props) {
           </Grid>
         </Grid>
       </Container>
-    </Box>
+    </>
   );
 }
