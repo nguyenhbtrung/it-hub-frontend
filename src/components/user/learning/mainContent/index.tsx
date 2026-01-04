@@ -32,6 +32,11 @@ import { stepApi } from '@/lib/mockApi/leanring';
 import RteViewer from '@/components/common/richTextEditor/rteViewer';
 import MarkdownViewer from '@/components/common/markdownViewer';
 import CodeViewer from '@/components/common/codeViewer';
+import { getCourseContentBreadcrumb } from '@/services/course.service';
+import { getStepById } from '@/services/step.service';
+import { notFound } from 'next/navigation';
+import { formatDuration } from '@/lib/utils/formatDatetime';
+import StepContentRenderer from '@/components/common/richText/renderer/stepContentRenderer';
 
 // Helper component để render các loại block khác nhau
 const BlockRenderer = ({ block }: { block: ContentBlock }) => {
@@ -364,10 +369,20 @@ const BlockRenderer = ({ block }: { block: ContentBlock }) => {
   }
 };
 
-// Main Component
-export default async function MainContent({ stepId }: { stepId: string }) {
-  // Fetch step details từ API
-  const stepDetails = await stepApi.getStepDetails(stepId);
+interface MainContentProps {
+  params: Promise<{ slug: string; id: string }>;
+}
+
+export default async function MainContent({ params }: MainContentProps) {
+  const { slug, id: stepId } = await params;
+  const stepDetails = await stepApi.getStepDetails('step-2-1-2');
+  const breadcrumbRes = await getCourseContentBreadcrumb(stepId, 'step');
+  const breadcrumb = breadcrumbRes?.data;
+  const stepRes = await getStepById(stepId);
+  if (!stepRes.success) {
+    notFound();
+  }
+  const step = stepRes?.data;
 
   if (!stepDetails) {
     return (
@@ -377,7 +392,7 @@ export default async function MainContent({ stepId }: { stepId: string }) {
     );
   }
 
-  const { step, lesson, section, content } = stepDetails;
+  const { step: stepss, lesson, section, content } = stepDetails;
 
   // Sort blocks theo order
   const sortedBlocks = content.blocks.sort((a, b) => a.order - b.order);
@@ -407,7 +422,7 @@ export default async function MainContent({ stepId }: { stepId: string }) {
                 '&:hover': { color: 'primary.main' },
               }}
             >
-              Phần {section.order}: {section.title}
+              Phần {breadcrumb?.section?.order}: {breadcrumb?.section?.title}
             </Link>
             <Link
               href='#'
@@ -419,7 +434,7 @@ export default async function MainContent({ stepId }: { stepId: string }) {
                 '&:hover': { color: 'primary.main' },
               }}
             >
-              Bài {section.order}.{lesson.order}: {lesson.title}
+              Bài {breadcrumb?.section?.order}.{breadcrumb?.unit?.order}: {breadcrumb?.unit?.title}
             </Link>
             <Typography
               sx={{
@@ -428,7 +443,7 @@ export default async function MainContent({ stepId }: { stepId: string }) {
                 color: 'text.primary',
               }}
             >
-              Bước {step.order}: {step.title}
+              Bước {breadcrumb?.step?.order}: {breadcrumb?.step?.title}
             </Typography>
           </Breadcrumbs>
 
@@ -444,9 +459,9 @@ export default async function MainContent({ stepId }: { stepId: string }) {
                     mb: 1,
                   }}
                 >
-                  {content.title}
+                  {step?.title}
                 </Typography>
-                <Typography
+                {/* <Typography
                   variant='h6'
                   sx={{
                     color: 'text.secondary',
@@ -456,12 +471,12 @@ export default async function MainContent({ stepId }: { stepId: string }) {
                   }}
                 >
                   {content.description}
-                </Typography>
+                </Typography> */}
               </Box>
 
               {/* Metadata */}
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                {content.difficulty && (
+                {/* {content.difficulty && (
                   <Chip
                     label={
                       content.difficulty === 'beginner'
@@ -479,12 +494,12 @@ export default async function MainContent({ stepId }: { stepId: string }) {
                           : 'error'
                     }
                   />
-                )}
-                {content.estimatedTime && (
+                )} */}
+                {step?.duration && (
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                     <AccessTime fontSize='small' />
                     <Typography color='text.primary' variant='caption'>
-                      ~{content.estimatedTime} phút
+                      ~{formatDuration(step.duration)}
                     </Typography>
                   </Box>
                 )}
@@ -492,7 +507,7 @@ export default async function MainContent({ stepId }: { stepId: string }) {
             </Box>
 
             {/* Mục tiêu học tập */}
-            {content.objectives && content.objectives.length > 0 && (
+            {/* {content.objectives && content.objectives.length > 0 && (
               <Paper sx={{ p: 2, bgcolor: 'customBackground.2', mb: 3 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
                   <School fontSize='small' />
@@ -508,18 +523,20 @@ export default async function MainContent({ stepId }: { stepId: string }) {
                   ))}
                 </List>
               </Paper>
-            )}
+            )} */}
           </Box>
 
+          {step?.content && <StepContentRenderer content={step?.content} />}
+
           {/* Content Blocks */}
-          <Box>
+          {/* <Box>
             {sortedBlocks.map((block) => (
               <BlockRenderer key={block.id} block={block} />
             ))}
-          </Box>
+          </Box> */}
 
           {/* Thông tin tác giả */}
-          {content.author && (
+          {/* {content.author && (
             <Paper sx={{ p: 3, mt: 6, bgcolor: 'customBackground.3' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                 {content.author.avatar && (
@@ -543,7 +560,7 @@ export default async function MainContent({ stepId }: { stepId: string }) {
                 </Box>
               </Box>
             </Paper>
-          )}
+          )} */}
 
           {/* Navigation Buttons */}
           <Divider sx={{ my: 6 }} />

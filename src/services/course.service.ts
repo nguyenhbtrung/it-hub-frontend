@@ -113,6 +113,28 @@ export async function getCourseContentOutline(id: string): Promise<any> {
   }
 }
 
+export async function getCourseContentBreadcrumb(contentId: string, type: 'section' | 'lesson' | 'step'): Promise<any> {
+  try {
+    return await apiFetch(`/api/courses/content/${contentId}/breadcrumb`, {
+      query: {
+        type,
+      },
+      auth: true,
+    });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      return {
+        success: false,
+        error: {
+          message: 'Có lỗi xảy ra',
+          code: err.code,
+        },
+      };
+    }
+    throw err;
+  }
+}
+
 export async function createCourse(payload: {
   title: string;
   categoryId: string;

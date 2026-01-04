@@ -115,7 +115,7 @@ export default async function CourseHeader({ courseId }: { courseId: string }) {
               <Button
                 variant='contained'
                 LinkComponent={Link}
-                href='/courses/1/learn/units/lesson-1-1'
+                href={`/courses/${course?.slug}/learn/units/lesson-1-1`}
                 sx={{ width: { xs: '100%', sm: 200 } }}
               >
                 Tiếp tục học

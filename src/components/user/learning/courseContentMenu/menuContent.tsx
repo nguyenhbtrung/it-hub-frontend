@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import { Book, ExpandMore, CheckCircle, PlayCircle, RadioButtonUnchecked, ChevronRight } from '@mui/icons-material';
 import Link from '@/components/common/Link';
-import { CompletionStatus, LearningCourse } from '@/types/course';
+import { CompletionStatus, LearningCourse } from './types';
 
 interface MenuContentProps {
   course: LearningCourse;
@@ -25,15 +25,9 @@ interface OpenState {
 }
 
 export default function MenuContent({ course }: MenuContentProps) {
-  const [openSections, setOpenSections] = useState<OpenState>({
-    'section-1': false,
-    'section-2': true,
-    'section-3': false,
-  });
+  const [openSections, setOpenSections] = useState<OpenState>({});
 
-  const [openLessons, setOpenLessons] = useState<OpenState>({
-    'lesson-2-1': true,
-  });
+  const [openLessons, setOpenLessons] = useState<OpenState>({});
 
   const handleSectionClick = (sectionId: string) => {
     setOpenSections((prev) => ({
@@ -57,8 +51,6 @@ export default function MenuContent({ course }: MenuContentProps) {
     switch (status) {
       case 'completed':
         return <CheckCircle {...iconProps} sx={{ color: 'primary.main' }} />;
-      case 'in-progress':
-        return <PlayCircle {...iconProps} sx={{ color: 'primary.main' }} />;
       case 'not-started':
         return <RadioButtonUnchecked {...iconProps} />;
       default:
@@ -69,6 +61,8 @@ export default function MenuContent({ course }: MenuContentProps) {
   const isLessonActive = (lessonId: string) => {
     return openLessons[lessonId] || false;
   };
+
+  const handleStepClick = (id: string) => {};
 
   return (
     <>
@@ -82,7 +76,7 @@ export default function MenuContent({ course }: MenuContentProps) {
             <Typography variant='body2' color='text.secondary'>
               Khoá học
             </Typography>
-            <Link href='/courses/1' passHref>
+            <Link href={`/courses/${course?.slug}`} passHref>
               <Typography
                 variant='subtitle1'
                 sx={{
@@ -116,7 +110,7 @@ export default function MenuContent({ course }: MenuContentProps) {
                 ]}
               >
                 <Typography variant='body2' sx={{ fontWeight: 500, flex: 1 }}>
-                  Phần {section.order}: {section.title}
+                  Chương {section.order}: {section.title}
                 </Typography>
                 <ExpandMore
                   sx={{
@@ -181,26 +175,31 @@ export default function MenuContent({ course }: MenuContentProps) {
                               {unit.steps.map((step) => (
                                 <ListItemButton
                                   key={step.id}
+                                  // onClick={() => handleStepClick(step?.id)}
+                                  LinkComponent={Link}
+                                  href={`/courses/${course?.slug}/learn/steps/${step?.id}`}
                                   sx={[
                                     {
                                       borderRadius: 1,
                                       py: 0.75,
-                                      backgroundColor: step.status === 'in-progress' ? 'grey.200' : 'transparent',
+                                      backgroundColor: step.id === course?.contentId ? 'grey.200' : 'transparent',
                                       '&:hover': { backgroundColor: 'grey.100' },
                                     },
                                     (theme) =>
                                       theme.applyStyles('dark', {
-                                        backgroundColor: step.status === 'in-progress' ? 'grey.700' : 'transparent',
+                                        backgroundColor: step.id === course?.contentId ? 'grey.700' : 'transparent',
+
                                         '&:hover': { backgroundColor: 'grey.800' },
                                       }),
                                   ]}
                                 >
                                   <ListItemIcon sx={{ minWidth: 32 }}>{getStatusIcon(step.status)}</ListItemIcon>
                                   <ListItemText
-                                    primary={`Bước ${step.order}: ${step.title}`}
+                                    primary={`${step.title}`}
                                     primaryTypographyProps={{
                                       fontSize: '0.875rem',
-                                      fontWeight: step.status === 'in-progress' ? 500 : 400,
+                                      fontWeight: step.id === course?.contentId ? 500 : 400,
+                                      // fontWeight: 400,
                                       color: 'text.secondary',
                                     }}
                                   />
@@ -245,7 +244,7 @@ export default function MenuContent({ course }: MenuContentProps) {
       </Box>
 
       {/* Progress */}
-      <Box sx={{ p: 2, borderTop: '1px solid', borderColor: 'divider' }}>
+      {/* <Box sx={{ p: 2, borderTop: '1px solid', borderColor: 'divider' }}>
         <Paper
           elevation={0}
           sx={{
@@ -277,7 +276,7 @@ export default function MenuContent({ course }: MenuContentProps) {
             }}
           />
         </Paper>
-      </Box>
+      </Box> */}
     </>
   );
 }

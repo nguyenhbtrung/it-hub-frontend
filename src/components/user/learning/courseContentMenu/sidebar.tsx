@@ -5,7 +5,7 @@ import { Paper, IconButton } from '@mui/material';
 import { ChevronLeft } from '@mui/icons-material';
 import { SidebarToggle } from './sidebarToggle';
 import MenuContent from './menuContent';
-import { LearningCourse } from '@/types/course';
+import { LearningCourse } from './types';
 
 interface SidebarProps {
   course: LearningCourse;

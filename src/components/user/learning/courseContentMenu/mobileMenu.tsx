@@ -5,7 +5,7 @@ import { Drawer, Box, IconButton } from '@mui/material';
 import ArrowForwardIos from '@mui/icons-material/ArrowForwardIos';
 
 import MenuContent from './menuContent';
-import { LearningCourse } from '@/types/course';
+import { LearningCourse } from './types';
 
 interface MobileMenuProps {
   course: LearningCourse;

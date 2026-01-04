@@ -27,7 +27,12 @@ export default function SidebarEnrollCard({ course }: { course: any }) {
             {/* <Button variant='contained' fullWidth>
               Đăng ký
             </Button> */}
-            <Button LinkComponent={Link} href='/courses/1/learn/units/lesson-1-1' variant='contained' fullWidth>
+            <Button
+              LinkComponent={Link}
+              href={`/courses/${course?.slug}/learn/units/lesson-1-1`}
+              variant='contained'
+              fullWidth
+            >
               Tiếp tục học
             </Button>
             <Button variant='outlined' sx={{ width: 42, height: 42, minWidth: 42, p: 0 }}>
