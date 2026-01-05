@@ -3,6 +3,27 @@
 import { ApiError } from '@/lib/errors/ApiError';
 import { apiFetch } from '@/lib/fetcher/apiFetch';
 
+export async function getUnitById(unitId: string): Promise<any> {
+  try {
+    return await apiFetch(`/api/units/${unitId}`, {
+      auth: true,
+      credentials: 'include',
+      method: 'GET',
+    });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      return {
+        success: false,
+        error: {
+          message: 'Có lỗi xảy ra',
+          code: err.code,
+        },
+      };
+    }
+    throw err;
+  }
+}
+
 export interface UpdateUnitPayload {
   title: string;
   description: string;

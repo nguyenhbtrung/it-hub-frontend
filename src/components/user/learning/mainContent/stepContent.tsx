@@ -59,7 +59,7 @@ export default async function MainContent({ params }: MainContentProps) {
           {/* Breadcrumb */}
           <Breadcrumbs separator={<ChevronRight fontSize='small' />} sx={{ mb: 3 }}>
             <Link
-              href='#'
+              href={`/courses/${slug}/learn/sections/${breadcrumb?.section?.id}`}
               color='text.secondary'
               sx={{
                 fontSize: '0.875rem',
@@ -68,10 +68,10 @@ export default async function MainContent({ params }: MainContentProps) {
                 '&:hover': { color: 'primary.main' },
               }}
             >
-              Phần {breadcrumb?.section?.order}: {breadcrumb?.section?.title}
+              Chương {breadcrumb?.section?.order}: {breadcrumb?.section?.title}
             </Link>
             <Link
-              href='#'
+              href={`/courses/${slug}/learn/lessons/${breadcrumb?.unit?.id}`}
               color='text.secondary'
               sx={{
                 fontSize: '0.875rem',

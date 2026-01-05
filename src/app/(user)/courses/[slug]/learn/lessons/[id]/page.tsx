@@ -1,4 +1,4 @@
-import MainContent from '@/components/user/learning/mainContent/stepContent';
+import MainContent from '@/components/user/learning/mainContent/lessonContent';
 import CourseContentMenu from '@/components/user/learning/courseContentMenu';
 import { Box } from '@mui/material';
 import ElevationScrollConfig from '@/components/user/learning/elevationScrollConfig';

@@ -62,8 +62,6 @@ export default function MenuContent({ course }: MenuContentProps) {
     return openLessons[lessonId] || false;
   };
 
-  const handleStepClick = (id: string) => {};
-
   return (
     <>
       {/* Course Header */}
@@ -104,14 +102,30 @@ export default function MenuContent({ course }: MenuContentProps) {
                 sx={[
                   {
                     borderRadius: 1,
+                    justifyContent: 'space-between',
+                    backgroundColor: section.id === course?.contentId ? 'grey.200' : 'transparent',
                     '&:hover': { backgroundColor: 'grey.100' },
                   },
                   (theme) => theme.applyStyles('dark', { '&:hover': { backgroundColor: 'grey.800' } }),
                 ]}
               >
-                <Typography variant='body2' sx={{ fontWeight: 500, flex: 1 }}>
-                  Chương {section.order}: {section.title}
-                </Typography>
+                <Link href={`/courses/${course?.slug}/learn/sections/${section?.id}`} passHref>
+                  <Typography
+                    variant='body2'
+                    sx={{
+                      fontWeight: 500,
+                      flex: 1,
+                      cursor: 'pointer',
+                      '&:hover': { textDecoration: 'underline' }, // underline khi hover
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation(); // ngăn không cho chạy onClick của ListItemButton
+                    }}
+                  >
+                    Chương {section.order}: {section.title}
+                  </Typography>
+                </Link>
+
                 <ExpandMore
                   sx={{
                     transform: openSections[section.id] ? 'rotate(180deg)' : 'none',
@@ -133,41 +147,58 @@ export default function MenuContent({ course }: MenuContentProps) {
                               {
                                 borderRadius: 1,
                                 py: 1,
-                                backgroundColor: isLessonActive(unit.id) ? 'hero.light' : 'transparent',
+                                backgroundColor: unit.id === course?.contentId ? 'hero.light' : 'transparent',
                                 '&:hover': {
-                                  backgroundColor: isLessonActive(unit.id) ? 'primary.light' : 'grey.100',
+                                  backgroundColor: unit.id === course?.contentId ? 'hero.light' : 'grey.100',
                                 },
                               },
                               (theme) =>
                                 theme.applyStyles('dark', {
-                                  backgroundColor: isLessonActive(unit.id) ? '#223843' : 'transparent',
+                                  backgroundColor: unit.id === course?.contentId ? '#223843' : 'transparent',
                                   '&:hover': {
-                                    backgroundColor: isLessonActive(unit.id) ? '#223843' : 'grey.800',
+                                    backgroundColor: unit.id === course?.contentId ? '#223843' : 'grey.800',
                                   },
                                 }),
                             ]}
                           >
                             <ListItemIcon sx={{ minWidth: 32 }}>{getStatusIcon(unit.status)}</ListItemIcon>
-                            <ListItemText
-                              primary={
-                                unit.type === 'lesson'
-                                  ? `Bài ${section.order}.${unit.order}: ${unit.title}`
-                                  : `Bài tập: ${unit.title}`
-                              }
-                              primaryTypographyProps={{
-                                fontSize: '0.875rem',
-                                fontWeight: isLessonActive(unit.id) ? 500 : 400,
-                                color: isLessonActive(unit.id) ? 'primary.main' : 'text.secondary',
-                              }}
-                            />
-                            <ChevronRight
-                              fontSize='small'
-                              sx={{
-                                transform: openLessons[unit.id] ? 'rotate(90deg)' : 'none',
-                                transition: 'transform 0.2s',
-                                color: 'text.secondary',
-                              }}
-                            />
+                            <Box
+                              display={'flex'}
+                              flexDirection={'row'}
+                              flex={1}
+                              justifyContent={'space-between'}
+                              alignItems={'center'}
+                            >
+                              <Link href={`/courses/${course?.slug}/learn/lessons/${unit?.id}`} passHref>
+                                <ListItemText
+                                  primary={
+                                    unit.type === 'lesson'
+                                      ? `Bài ${section.order}.${unit.order}: ${unit.title}`
+                                      : `Bài tập: ${unit.title}`
+                                  }
+                                  primaryTypographyProps={{
+                                    fontSize: '0.875rem',
+                                    fontWeight: unit.id === course?.contentId ? 500 : 400,
+                                    color: unit.id === course?.contentId ? 'primary.main' : 'text.secondary',
+                                    sx: {
+                                      cursor: 'pointer',
+                                      '&:hover': { textDecoration: 'underline' },
+                                    },
+                                  }}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                  }}
+                                />
+                              </Link>
+                              <ChevronRight
+                                fontSize='small'
+                                sx={{
+                                  transform: openLessons[unit.id] ? 'rotate(90deg)' : 'none',
+                                  transition: 'transform 0.2s',
+                                  color: 'text.secondary',
+                                }}
+                              />
+                            </Box>
                           </ListItemButton>
 
                           <Collapse in={openLessons[unit.id]}>

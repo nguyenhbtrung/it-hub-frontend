@@ -130,7 +130,7 @@ export async function getCourseContentOutline(id: string): Promise<any> {
   }
 }
 
-export async function getCourseContentBreadcrumb(contentId: string, type: 'section' | 'lesson' | 'step'): Promise<any> {
+export async function getCourseContentBreadcrumb(contentId: string, type: 'section' | 'unit' | 'step'): Promise<any> {
   try {
     return await apiFetch(`/api/courses/content/${contentId}/breadcrumb`, {
       query: {

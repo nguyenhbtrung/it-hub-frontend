@@ -26,9 +26,8 @@ import {
   Quiz,
   Terminal,
 } from '@mui/icons-material';
-import { stepApi } from '@/lib/mockApi/leanring';
+
 import { getCourseContentBreadcrumb } from '@/services/course.service';
-import { getStepById } from '@/services/step.service';
 import { notFound } from 'next/navigation';
 import { formatDuration } from '@/lib/utils/formatDatetime';
 import StepContentRenderer from '@/components/common/richText/renderer/stepContentRenderer';
@@ -36,22 +35,23 @@ import SelectToAskAI from './selectToAskAI';
 import { auth } from '@/auth';
 import AiChatButton from './aiChatButton';
 import { getSectionById } from '@/services/section.service';
+import { getUnitById } from '@/services/unit.service';
 
 interface MainContentProps {
   params: Promise<{ slug: string; id: string }>;
 }
 
 export default async function MainContent({ params }: MainContentProps) {
-  const { slug, id: sectionId } = await params;
-  const breadcrumbRes = await getCourseContentBreadcrumb(sectionId, 'section');
+  const { slug, id: lessonId } = await params;
+  const breadcrumbRes = await getCourseContentBreadcrumb(lessonId, 'unit');
   const breadcrumb = breadcrumbRes?.data;
-  const sectionRes = await getSectionById(sectionId);
+  const lessonRes = await getUnitById(lessonId);
   const session = await auth();
   const accessToken = session?.accessToken || '';
-  if (!sectionRes.success) {
+  if (!lessonRes.success) {
     notFound();
   }
-  const section = sectionRes?.data;
+  const lesson = lessonRes?.data;
 
   return (
     <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
@@ -71,6 +71,18 @@ export default async function MainContent({ params }: MainContentProps) {
             >
               Chương {breadcrumb?.section?.order}: {breadcrumb?.section?.title}
             </Link>
+            <Link
+              href={`/courses/${slug}/learn/lessons/${breadcrumb?.unit?.id}`}
+              color='text.secondary'
+              sx={{
+                fontSize: '0.875rem',
+                fontWeight: 500,
+                textDecoration: 'none',
+                '&:hover': { color: 'primary.main' },
+              }}
+            >
+              Bài {breadcrumb?.section?.order}.{breadcrumb?.unit?.order}: {breadcrumb?.unit?.title}
+            </Link>
           </Breadcrumbs>
 
           {/* Header với thông tin chi tiết */}
@@ -85,7 +97,7 @@ export default async function MainContent({ params }: MainContentProps) {
                     mb: 1,
                   }}
                 >
-                  {section?.title}
+                  {lesson?.title}
                 </Typography>
                 <Typography
                   variant='h6'
@@ -96,17 +108,17 @@ export default async function MainContent({ params }: MainContentProps) {
                     mb: 2,
                   }}
                 >
-                  {section?.description}
+                  {lesson?.description}
                 </Typography>
               </Box>
 
               {/* Metadata */}
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, alignItems: 'center' }}>
-                {section?.duration && (
+                {lesson?.duration && (
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                     <AccessTime fontSize='small' />
                     <Typography color='text.primary' variant='caption'>
-                      ~{formatDuration(section.duration)}
+                      ~{formatDuration(lesson.duration)}
                     </Typography>
                   </Box>
                 )}
@@ -115,7 +127,7 @@ export default async function MainContent({ params }: MainContentProps) {
             </Box>
 
             {/* Mục tiêu học tập */}
-            {section.objectives && section.objectives.length > 0 && (
+            {lesson.objectives && lesson.objectives.length > 0 && (
               <Paper sx={{ p: 2, bgcolor: 'customBackground.2', mb: 3 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
                   <School fontSize='small' />
@@ -124,7 +136,7 @@ export default async function MainContent({ params }: MainContentProps) {
                   </Typography>
                 </Box>
                 <List sx={{ pl: 2 }}>
-                  {section.objectives.map((objective: any, index: number) => (
+                  {lesson.objectives.map((objective: any, index: number) => (
                     <ListItem key={index} sx={{ display: 'list-item', p: 0, mb: 0.5 }}>
                       <Typography variant='body2'>{objective}</Typography>
                     </ListItem>
@@ -134,9 +146,9 @@ export default async function MainContent({ params }: MainContentProps) {
             )}
           </Box>
 
-          {section?.content && (
-            <SelectToAskAI accessToken={accessToken} stepId={section?.id || ''}>
-              <StepContentRenderer content={section?.content} />
+          {lesson?.content && (
+            <SelectToAskAI accessToken={accessToken} stepId={lesson?.id || ''}>
+              <StepContentRenderer content={lesson?.content} />
             </SelectToAskAI>
           )}
 
