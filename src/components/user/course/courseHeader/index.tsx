@@ -10,7 +10,7 @@ import SidebarEnrollCard from '../sidebarEnrollCard';
 import PromoVideo from '../promoVideo';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import NextLink from '@/components/common/Link';
-import { getCourseDetail } from '@/services/course.service';
+import { getCourseDetail, getUserEnrollmentStatus } from '@/services/course.service';
 import { toLocaleDateString } from '@/lib/utils/formatDatetime';
 import { notFound } from 'next/navigation';
 
@@ -20,6 +20,8 @@ export default async function CourseHeader({ courseId }: { courseId: string }) {
     notFound();
   }
   const course = res?.data;
+  const enrollmentRes = await getUserEnrollmentStatus(courseId);
+  console.log(enrollmentRes);
   return (
     <Box
       sx={{
@@ -130,7 +132,7 @@ export default async function CourseHeader({ courseId }: { courseId: string }) {
           </Box>
           <Box width={350} position='relative' display={{ xs: 'none', lg: 'flex' }}>
             <Box position='absolute' width={350} top={104}>
-              <SidebarEnrollCard course={course} />
+              <SidebarEnrollCard course={course} enrollmentStatus={enrollmentRes?.data} />
             </Box>
           </Box>
         </Box>

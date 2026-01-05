@@ -33,6 +33,23 @@ export async function getMyCreatedCourse({
   }
 }
 
+export async function getUserEnrollmentStatus(courseId: string): Promise<any> {
+  try {
+    return await apiFetch(`/api/courses/${courseId}/user-enrollment-status`, { auth: true });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      return {
+        success: false,
+        error: {
+          message: 'Có lỗi xảy ra',
+          code: err.code,
+        },
+      };
+    }
+    throw err;
+  }
+}
+
 export async function getCourseIdBySlug(slug: string): Promise<any> {
   try {
     return await apiFetch(`/api/courses/slug/${slug}/courseId`);

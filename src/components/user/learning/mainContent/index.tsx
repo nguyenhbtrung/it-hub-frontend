@@ -61,20 +61,6 @@ export default async function MainContent({ params }: MainContentProps) {
     );
   }
 
-  const { step: stepss, lesson, section, content } = stepDetails;
-
-  // Sort blocks theo order
-  const sortedBlocks = content.blocks.sort((a, b) => a.order - b.order);
-
-  // Tính thời gian ước tính
-  const totalEstimatedTime =
-    content.blocks.reduce((total, block) => {
-      if (block.type === 'video' && block.duration) {
-        return total + block.duration;
-      }
-      return total;
-    }, 0) / 60; // Chuyển sang phút
-
   return (
     <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
       <Box sx={{ flex: 1, overflowY: 'auto' }}>
