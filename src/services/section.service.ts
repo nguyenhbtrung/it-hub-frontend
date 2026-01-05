@@ -4,6 +4,27 @@ import { ApiError } from '@/lib/errors/ApiError';
 import { apiFetch } from '@/lib/fetcher/apiFetch';
 import { UnitType } from '@/types/course';
 
+export async function getSectionById(sectionId: string): Promise<any> {
+  try {
+    return await apiFetch(`/api/sections/${sectionId}`, {
+      auth: true,
+      credentials: 'include',
+      method: 'GET',
+    });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      return {
+        success: false,
+        error: {
+          message: 'Có lỗi xảy ra',
+          code: err.code,
+        },
+      };
+    }
+    throw err;
+  }
+}
+
 export async function deleteSection(sectionId: string): Promise<any> {
   try {
     return await apiFetch(`/api/sections/${sectionId}`, {

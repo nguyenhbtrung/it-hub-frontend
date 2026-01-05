@@ -1,11 +1,14 @@
-import MainContent from '@/components/user/learning/mainContent';
+import MainContent from '@/components/user/learning/mainContent/stepContent';
 import CourseContentMenu from '@/components/user/learning/courseContentMenu';
 import { Box } from '@mui/material';
 import ElevationScrollConfig from '@/components/user/learning/elevationScrollConfig';
 import { Suspense } from 'react';
 
-export default function LearningPage() {
-  const currentStepId = 'step-2-1-2';
+interface LearningPageProps {
+  params: Promise<{ slug: string; id: string }>;
+}
+
+export default function LearningPage({ params }: LearningPageProps) {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
       <Box sx={{ height: { xs: 56, sm: 64 }, borderBottom: 1, borderColor: 'divider' }} />
@@ -14,10 +17,10 @@ export default function LearningPage() {
           <ElevationScrollConfig />
         </Suspense>
         <Suspense>
-          <CourseContentMenu />
+          <CourseContentMenu params={params} />
         </Suspense>
         <Suspense>
-          <MainContent stepId={currentStepId} />
+          <MainContent params={params} />
         </Suspense>
       </Box>
     </Box>

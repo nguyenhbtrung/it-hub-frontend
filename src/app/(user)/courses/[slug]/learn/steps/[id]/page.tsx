@@ -1,4 +1,4 @@
-import MainContent from '@/components/user/learning/mainContent';
+import MainContent from '@/components/user/learning/mainContent/stepContent';
 import CourseContentMenu from '@/components/user/learning/courseContentMenu';
 import { Box } from '@mui/material';
 import ElevationScrollConfig from '@/components/user/learning/elevationScrollConfig';
@@ -9,7 +9,6 @@ interface LearningPageProps {
 }
 
 export default function LearningPage({ params }: LearningPageProps) {
-  const currentStepId = 'step-2-1-2';
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
       <Box sx={{ height: { xs: 56, sm: 64 }, borderBottom: 1, borderColor: 'divider' }} />

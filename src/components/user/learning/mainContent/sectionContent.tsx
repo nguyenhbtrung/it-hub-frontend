@@ -35,34 +35,26 @@ import StepContentRenderer from '@/components/common/richText/renderer/stepConte
 import SelectToAskAI from './selectToAskAI';
 import { auth } from '@/auth';
 import AiChatButton from './aiChatButton';
+import { getSectionById } from '@/services/section.service';
 
 interface MainContentProps {
   params: Promise<{ slug: string; id: string }>;
 }
 
 export default async function MainContent({ params }: MainContentProps) {
-  const { slug, id: stepId } = await params;
-  const stepDetails = await stepApi.getStepDetails('step-2-1-2');
-  const breadcrumbRes = await getCourseContentBreadcrumb(stepId, 'step');
+  const { slug, id: sectionId } = await params;
+  const breadcrumbRes = await getCourseContentBreadcrumb(sectionId, 'section');
   const breadcrumb = breadcrumbRes?.data;
-  const stepRes = await getStepById(stepId);
+  const sectionRes = await getSectionById(sectionId);
   const session = await auth();
   const accessToken = session?.accessToken || '';
-  if (!stepRes.success) {
+  if (!sectionRes.success) {
     notFound();
   }
-  const step = stepRes?.data;
-
-  if (!stepDetails) {
-    return (
-      <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <Typography>Không tìm thấy nội dung bài học</Typography>
-      </Box>
-    );
-  }
+  const section = sectionRes?.data;
 
   return (
-    <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+    <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Box sx={{ flex: 1, overflowY: 'auto' }}>
         <Box sx={{ maxWidth: 800, mx: 'auto', p: { xs: 3, md: 6 } }}>
           {/* Breadcrumb */}
@@ -79,7 +71,7 @@ export default async function MainContent({ params }: MainContentProps) {
             >
               Phần {breadcrumb?.section?.order}: {breadcrumb?.section?.title}
             </Link>
-            <Link
+            {/* <Link
               href='#'
               color='text.secondary'
               sx={{
@@ -99,7 +91,7 @@ export default async function MainContent({ params }: MainContentProps) {
               }}
             >
               Bước {breadcrumb?.step?.order}: {breadcrumb?.step?.title}
-            </Typography>
+            </Typography> */}
           </Breadcrumbs>
 
           {/* Header với thông tin chi tiết */}
@@ -114,9 +106,9 @@ export default async function MainContent({ params }: MainContentProps) {
                     mb: 1,
                   }}
                 >
-                  {step?.title}
+                  {section?.title}
                 </Typography>
-                {/* <Typography
+                <Typography
                   variant='h6'
                   sx={{
                     color: 'text.secondary',
@@ -125,46 +117,26 @@ export default async function MainContent({ params }: MainContentProps) {
                     mb: 2,
                   }}
                 >
-                  {content.description}
-                </Typography> */}
+                  {section?.description}
+                </Typography>
               </Box>
 
               {/* Metadata */}
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, alignItems: 'center' }}>
-                {/* {content.difficulty && (
-                  <Chip
-                    label={
-                      content.difficulty === 'beginner'
-                        ? 'Cơ bản'
-                        : content.difficulty === 'intermediate'
-                          ? 'Trung cấp'
-                          : 'Nâng cao'
-                    }
-                    size='small'
-                    color={
-                      content.difficulty === 'beginner'
-                        ? 'success'
-                        : content.difficulty === 'intermediate'
-                          ? 'warning'
-                          : 'error'
-                    }
-                  />
-                )} */}
-
-                {step?.duration && (
+                {section?.duration && (
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                     <AccessTime fontSize='small' />
                     <Typography color='text.primary' variant='caption'>
-                      ~{formatDuration(step.duration)}
+                      ~{formatDuration(section.duration)}
                     </Typography>
                   </Box>
                 )}
-                <AiChatButton />
+                {/* <AiChatButton /> */}
               </Box>
             </Box>
 
             {/* Mục tiêu học tập */}
-            {/* {content.objectives && content.objectives.length > 0 && (
+            {section.objectives && section.objectives.length > 0 && (
               <Paper sx={{ p: 2, bgcolor: 'customBackground.2', mb: 3 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
                   <School fontSize='small' />
@@ -173,26 +145,26 @@ export default async function MainContent({ params }: MainContentProps) {
                   </Typography>
                 </Box>
                 <List sx={{ pl: 2 }}>
-                  {content.objectives.map((objective, index) => (
+                  {section.objectives.map((objective: any, index: number) => (
                     <ListItem key={index} sx={{ display: 'list-item', p: 0, mb: 0.5 }}>
                       <Typography variant='body2'>{objective}</Typography>
                     </ListItem>
                   ))}
                 </List>
               </Paper>
-            )} */}
+            )}
           </Box>
 
-          {step?.content && (
-            <SelectToAskAI accessToken={accessToken} stepId={step?.id || ''}>
-              <StepContentRenderer content={step?.content} />
+          {section?.content && (
+            <SelectToAskAI accessToken={accessToken} stepId={section?.id || ''}>
+              <StepContentRenderer content={section?.content} />
             </SelectToAskAI>
           )}
 
           {/* Navigation Buttons */}
           <Divider sx={{ my: 6 }} />
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Button
+            {/* <Button
               variant='outlined'
               startIcon={<ArrowBack />}
               sx={{
@@ -205,16 +177,17 @@ export default async function MainContent({ params }: MainContentProps) {
               }}
             >
               Bước trước
-            </Button>
+            </Button> */}
             <Button
               variant='contained'
               endIcon={<ArrowForward />}
+              size='large'
               sx={{
                 backgroundColor: 'primary.main',
                 '&:hover': { backgroundColor: 'primary.dark' },
               }}
             >
-              Hoàn thành và tiếp tục
+              Bắt đầu
             </Button>
           </Box>
         </Box>
