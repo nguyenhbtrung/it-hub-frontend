@@ -5,6 +5,29 @@ import { ApiError } from '@/lib/errors/ApiError';
 import { CourseLevel, CourseStatus } from '@/types/course';
 import { JSONContent } from '@tiptap/react';
 
+export async function getFeaturedCourses({ page = 1, limit = 4 }: { page?: number; limit?: number }): Promise<any> {
+  try {
+    return await apiFetch(`/api/courses/featured`, {
+      query: {
+        page,
+        limit,
+      },
+      credentials: 'include',
+    });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      return {
+        success: false,
+        error: {
+          message: 'Có lỗi xảy ra',
+          code: err.code,
+        },
+      };
+    }
+    throw err;
+  }
+}
+
 export async function getMyCreatedCourse({
   page = 1,
   limit = 4,

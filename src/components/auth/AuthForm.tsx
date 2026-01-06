@@ -4,6 +4,9 @@ import { signIn } from 'next-auth/react';
 import { AuthFormProps } from '@/types/auth';
 import { Box, TextField, Button, Link, Stack } from '@mui/material';
 import { useState } from 'react';
+import { useNotification } from '@/contexts/notificationContext';
+import { SignUp } from '@/services/auth.service';
+import { useRouter } from 'next/navigation';
 
 export default function AuthForm({ type }: AuthFormProps) {
   const [form, setForm] = useState({
@@ -11,6 +14,9 @@ export default function AuthForm({ type }: AuthFormProps) {
     password: '',
     confirmPassword: '',
   });
+
+  const { notify } = useNotification();
+  const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -23,6 +29,23 @@ export default function AuthForm({ type }: AuthFormProps) {
         password: form.password,
         callbackUrl: '/',
       });
+    }
+    if (type === 'signup') {
+      if (form.password !== form.confirmPassword) {
+        notify('error', 'Mật khẩu không khớp', { vertical: 'top', horizontal: 'right' });
+        return;
+      }
+      const res = await SignUp({
+        email: form.email,
+        password: form.password,
+      });
+      if (res?.success) {
+        notify('success', 'Đăng ký tài khoản thành công', { vertical: 'top', horizontal: 'right' });
+        router.push('/auth/login');
+      } else {
+        notify('error', res?.error?.message || 'Đăng ký tài khoản thất bại', { vertical: 'top', horizontal: 'right' });
+        console.log('res', res);
+      }
     }
   };
 

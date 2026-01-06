@@ -1,6 +1,7 @@
 import { Grid } from '@mui/material';
 import { CourseCardVertical, CourseCardSkeleton } from '../../common/courseCard/CourseCardVertical';
 import { CourseSummary } from '@/types/course';
+import { getFeaturedCourses } from '@/services/course.service';
 
 const courses: CourseSummary[] = [
   {
@@ -53,21 +54,24 @@ const courses: CourseSummary[] = [
   },
 ];
 
-const getFeaturedCourses = async () => {
-  await new Promise((resolve) => setTimeout(resolve, 3000));
-  return courses;
-};
+// const getFeaturedCourses = async () => {
+//   await new Promise((resolve) => setTimeout(resolve, 3000));
+//   return courses;
+// };
 
 export async function FeaturedCourseList() {
-  const courses = await getFeaturedCourses();
+  const res = await getFeaturedCourses({ page: 1, limit: 4 });
+  const courses = res?.data || [];
+  // const courses = await getFeaturedCourses();
 
   return (
     <Grid container spacing={2} px={{ xs: 3, md: 8 }}>
-      {courses.map((course) => (
-        <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={course.id}>
-          <CourseCardVertical course={course} />
-        </Grid>
-      ))}
+      {courses &&
+        courses.map((course: any) => (
+          <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={course.id}>
+            <CourseCardVertical course={course} />
+          </Grid>
+        ))}
     </Grid>
   );
 }

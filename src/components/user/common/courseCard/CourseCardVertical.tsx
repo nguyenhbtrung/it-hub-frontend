@@ -17,8 +17,10 @@ import StarIcon from '@mui/icons-material/Star';
 import Link from '@/components/common/Link';
 import Image from 'next/image';
 import { CourseCardProps } from './types';
+import { levelLabelsMap } from '@/lib/const/course';
 
 export function CourseCardVertical({ course }: CourseCardProps) {
+  console.log('course img', course?.img?.url);
   return (
     <Card
       elevation={0}
@@ -40,7 +42,7 @@ export function CourseCardVertical({ course }: CourseCardProps) {
     >
       <CardActionArea
         component='a'
-        href={`/courses/${course.id}`}
+        href={`/courses/${course?.slug}`}
         target='_blank'
         rel='noopener noreferrer'
         sx={{
@@ -59,7 +61,20 @@ export function CourseCardVertical({ course }: CourseCardProps) {
             overflow: 'hidden',
           }}
         >
-          <Image src={course.image} alt={course.title} fill style={{ objectFit: 'cover' }} />
+          {/* <Image src={course?.img?.url || ''} alt={course?.title} fill style={{ objectFit: 'cover' }} /> */}
+          <Box
+            component='img'
+            src={course?.img?.url || ''}
+            alt={course?.title}
+            // onError={handleImgError}
+            sx={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              display: 'block',
+              backgroundColor: '#f3f4f6',
+            }}
+          />
         </div>
 
         <CardContent
@@ -78,15 +93,15 @@ export function CourseCardVertical({ course }: CourseCardProps) {
               {course.title}
             </Typography>
             <Typography variant='subtitle2' fontWeight={400} color='text.secondary' gutterBottom>
-              {course.instructor}
+              {course?.instructor?.fullname}
             </Typography>
           </Box>
 
           <Box sx={{ py: 1 }}>
             <Stack direction='row' gap={1} mb={2} sx={{ flexWrap: 'wrap' }}>
-              <Chip label={course.category} size='small' color='secondary' sx={{ fontWeight: 500 }} />
+              <Chip label={course?.subCategory?.name} size='small' color='secondary' sx={{ fontWeight: 500 }} />
               <Chip
-                label={course.level}
+                label={course?.level ? levelLabelsMap[course?.level] : ''}
                 size='small'
                 variant='outlined'
                 sx={{
@@ -99,15 +114,15 @@ export function CourseCardVertical({ course }: CourseCardProps) {
             <Stack direction='row' gap={2} alignItems='center' color='text.secondary' sx={{ flexWrap: 'wrap' }}>
               <Stack direction='row' alignItems='center' spacing={0.5} sx={{ flexShrink: 0 }}>
                 <GroupIcon fontSize='small' />
-                <Typography variant='body2'>{course.students.toLocaleString()}</Typography>
+                <Typography variant='body2'>{course?._count?.enrollments?.toLocaleString()}</Typography>
               </Stack>
               <Stack direction='row' alignItems='center' spacing={0.5} sx={{ flexShrink: 0 }}>
                 <StarIcon fontSize='small' sx={{ color: '#FFD700', fill: '#FFD700' }} />
-                <Typography variant='body2'>{course.rating}</Typography>
+                <Typography variant='body2'>{course?.avgRating}</Typography>
               </Stack>
               <Stack direction='row' alignItems='center' spacing={0.5} sx={{ flexShrink: 0 }}>
                 <AccessTimeIcon fontSize='small' />
-                <Typography variant='body2'>{course.duration}</Typography>
+                <Typography variant='body2'>{course?.totalDuration}</Typography>
               </Stack>
             </Stack>
           </Box>

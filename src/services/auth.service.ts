@@ -51,3 +51,57 @@ export async function signInUser(payload: any): Promise<any> {
     };
   }
 }
+
+interface SignUpPayload {
+  email: string;
+  password: string;
+}
+
+export async function SignUp(payload: SignUpPayload): Promise<any> {
+  try {
+    return await apiFetch(`/api/auth/register`, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      let message = 'Có lỗi xảy ra';
+      if (err.code === 'VALIDATION_ERROR') {
+        switch (err.errors?.[0]?.message) {
+          case 'Invalid email format':
+            message = 'Định dạng email không hợp lệ';
+            break;
+          case 'Password must be at least 8 characters':
+            message = 'Mật khẩu phải có ít nhất 8 ký tự';
+            break;
+          case 'Password must contain at least one uppercase letter':
+            message = 'Mật khẩu phải chứa ít nhất một chữ cái viết hoa';
+            break;
+          case 'Password must contain at least one lowercase letter':
+            message = 'Mật khẩu phải chứa ít nhất một chữ cái viết thường';
+            break;
+          case 'Password must contain at least one number':
+            message = 'Mật khẩu phải chứa ít nhất một chữ số';
+            break;
+          case 'Name must be at least 2 characters':
+            message = 'Tên phải có ít nhất 2 ký tự';
+            break;
+          default:
+            message = 'Có lỗi xảy ra trong quá trình xác thực';
+            break;
+        }
+      }
+      if (err.code === 'CONFLICT') {
+        message = 'Email này đã được sử dụng, vui lòng dùng email khác';
+      }
+      return {
+        success: false,
+        error: {
+          message: message,
+          code: err.code,
+        },
+      };
+    }
+    throw err;
+  }
+}

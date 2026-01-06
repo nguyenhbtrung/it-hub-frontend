@@ -128,20 +128,23 @@ export function AIChatDialog({ open, onClose, selectedText, accessToken, stepId 
         </Box>
 
         {/* Chat */}
-        <Box sx={{ flex: 1, overflowY: 'auto', p: 3, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          {messages.length === 0 ? (
+
+        {messages.length === 0 ? (
+          <Box
+            sx={{ flex: 1, overflowY: 'auto', p: 3, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          >
             <Typography variant='h5' color='text.secondary' align='center'>
               Xin chào, hãy hỏi bất cứ thứ gì về bài giảng này
             </Typography>
-          ) : (
-            <Box sx={{ width: '100%' }}>
-              {messages.map((msg, idx) => (
-                <ChatMessageRow key={idx} message={msg} />
-              ))}
-              <div ref={bottomRef} />
-            </Box>
-          )}
-        </Box>
+          </Box>
+        ) : (
+          <Box sx={{ flex: 1, overflowY: 'auto', p: 3 }}>
+            {messages.map((msg, idx) => (
+              <ChatMessageRow key={idx} message={msg} />
+            ))}
+            <div ref={bottomRef} />
+          </Box>
+        )}
 
         {/* Bottom area */}
         <Box sx={{ borderTop: '1px solid #eee', p: 2 }}>
