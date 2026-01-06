@@ -3,6 +3,25 @@
 import { apiFetch } from '@/lib/fetcher/apiFetch';
 import { ApiError } from '@/lib/errors/ApiError';
 
+export async function getCategoryTree(): Promise<any> {
+  try {
+    return await apiFetch(`/api/categories/tree`, {
+      credentials: 'include',
+    });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      return {
+        success: false,
+        error: {
+          message: 'Có lỗi xảy ra',
+          code: err.code,
+        },
+      };
+    }
+    throw err;
+  }
+}
+
 export async function getCategories({
   page = 1,
   limit = 10,

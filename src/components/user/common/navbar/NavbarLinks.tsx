@@ -221,9 +221,16 @@ export default function NavbarLinks({ navItems, session }: NavbarLinksProps) {
             <Stack direction='row' gap={6} flexWrap='wrap'>
               {currentItem.submenu.map((cat) => (
                 <Box key={cat.label} minWidth={200}>
-                  <Typography variant='body1' fontWeight='600' gutterBottom>
-                    {cat.label}
-                  </Typography>
+                  <Link href={cat.href || '/'} passHref>
+                    <Typography
+                      variant='body1'
+                      fontWeight='600'
+                      gutterBottom
+                      sx={{ '&:hover': { textDecoration: 'underline' } }}
+                    >
+                      {cat.label}
+                    </Typography>
+                  </Link>
                   <Stack spacing={1}>
                     {cat.submenu?.map((sub) => (
                       <Link key={sub.label} href={sub.href || '/'} passHref>

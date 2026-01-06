@@ -53,6 +53,23 @@ export const userNavItems: NavItem[] = [
   { label: 'Diễn đàn', href: '/forum' },
 ];
 
+export const mapCategoryTreeToNavItems = (categoryTree: any[]): NavItem[] => {
+  return [
+    {
+      label: 'Khám phá',
+      submenu: categoryTree.map((category) => ({
+        label: category.name,
+        href: `/categories/${category.slug}`,
+        submenu: category.children?.map((child: any) => ({
+          label: child.name,
+          href: `/categories/${child.slug}`,
+        })),
+      })),
+    },
+    { label: 'Diễn đàn', href: '/forum' },
+  ];
+};
+
 export const instructorNavItems: NavItem[] = [{ label: 'Giảng dạy', href: '/instructor' }];
 
 export const studentNavItems: NavItem[] = [];

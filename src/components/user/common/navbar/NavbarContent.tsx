@@ -3,10 +3,16 @@ import SearchBar from './SearchBar';
 import NavbarLinks from './NavbarLinks';
 import MobileMenu from './MobileMenu';
 import Logo from '@/components/common/Logo';
-import { instructorNavItems, studentNavItems, userNavItems } from '@/data/navigation/userNavItems';
+import { instructorNavItems, mapCategoryTreeToNavItems, studentNavItems } from '@/data/navigation/userNavItems';
 import { auth } from '@/auth';
+import { getCategoryTree } from '@/services/category.service';
 
 export default async function NavbarContent() {
+  const res = await getCategoryTree();
+  const categoryTree = res?.data;
+
+  const userNavItems = mapCategoryTreeToNavItems(categoryTree);
+
   let navItems = userNavItems;
   const session = await auth();
 
