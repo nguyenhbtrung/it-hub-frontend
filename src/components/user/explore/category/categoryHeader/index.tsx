@@ -4,6 +4,8 @@ import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import Star from '@mui/icons-material/Star';
+import { getCategorySummary } from '@/services/category.service';
+import { notFound } from 'next/navigation';
 
 const categoryData: Record<
   string,
@@ -65,15 +67,15 @@ const categoryData: Record<
 };
 
 interface CategoryHeaderProps {
-  slugPromise: Promise<string>;
+  id: string;
 }
 
-export default async function CategoryHeader({ slugPromise }: CategoryHeaderProps) {
-  const slug = await slugPromise;
-  const data = categoryData[slug] || {
-    description: 'Không tìm thấy dữ liệu cho danh mục này.',
-    courses: 0,
-  };
+export default async function CategoryHeader({ id }: CategoryHeaderProps) {
+  const res = await getCategorySummary(id);
+  if (!res?.success || !res?.data) {
+    notFound();
+  }
+  const data = res.data;
   return (
     <Box sx={{ pt: 8, bgcolor: 'customBackground.4' }}>
       <Container maxWidth='xl'>
@@ -85,7 +87,7 @@ export default async function CategoryHeader({ slugPromise }: CategoryHeaderProp
               mb: 2,
             }}
           >
-            {data.title ? `Các khoá học về ${data.title}` : 'Các khoá học theo danh mục'}
+            {data.name ? `Các khoá học về ${data.name}` : 'Các khoá học theo danh mục'}
           </Typography>
           <Typography
             variant='body1'
@@ -94,7 +96,7 @@ export default async function CategoryHeader({ slugPromise }: CategoryHeaderProp
               mb: 2,
             }}
           >
-            {data.description}
+            {data?.description}
           </Typography>
           <Stack direction='row' spacing={2}>
             <Stack
@@ -120,7 +122,7 @@ export default async function CategoryHeader({ slugPromise }: CategoryHeaderProp
                   color: 'text.primary',
                 }}
               >
-                {data.courses.toLocaleString()}
+                {data?._count?.courses.toLocaleString()}
               </Typography>
             </Stack>
 
@@ -179,7 +181,7 @@ export default async function CategoryHeader({ slugPromise }: CategoryHeaderProp
                     color: 'text.primary',
                   }}
                 >
-                  {data.rating}
+                  {data?.avgRating || 0}
                 </Typography>
                 <Star sx={{ color: 'warning.main' }} />
               </Stack>

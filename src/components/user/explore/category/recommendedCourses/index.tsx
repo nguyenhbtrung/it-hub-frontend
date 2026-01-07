@@ -2,7 +2,11 @@ import { Box, Typography, Button } from '@mui/material';
 import { Suspense } from 'react';
 import { CourseList, CourseListSkeleton } from './courseList';
 
-export default function RecommendedCourses() {
+interface RecommendedCoursesProps {
+  id: string;
+}
+
+export default function RecommendedCourses({ id }: RecommendedCoursesProps) {
   return (
     <Box
       component='section'
@@ -19,7 +23,7 @@ export default function RecommendedCourses() {
 
       {/* List */}
       <Suspense fallback={<CourseListSkeleton />}>
-        <CourseList />
+        <CourseList id={id} />
       </Suspense>
     </Box>
   );

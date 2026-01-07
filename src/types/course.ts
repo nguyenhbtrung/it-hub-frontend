@@ -170,3 +170,4 @@ export interface LearningCourse {
 
 export type CourseStatus = 'draft' | 'pending' | 'published' | 'hidden' | 'suspended';
 export type CourseLevel = 'beginner' | 'intermediate' | 'advanced' | 'expert';
+export type CourseDuration = 'extraShort' | 'short' | 'medium' | 'long' | 'extraLong';

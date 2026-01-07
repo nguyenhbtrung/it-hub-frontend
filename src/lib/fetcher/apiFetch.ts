@@ -56,7 +56,15 @@ function buildQueryString(query?: ApiFetchOptions['query']) {
   const params = new URLSearchParams();
 
   Object.entries(query).forEach(([key, value]) => {
-    if (value !== undefined && value !== null) {
+    if (value === undefined || value === null) return;
+
+    if (Array.isArray(value)) {
+      value.forEach((v) => {
+        if (v !== undefined && v !== null) {
+          params.append(key, String(v));
+        }
+      });
+    } else {
       params.append(key, String(value));
     }
   });

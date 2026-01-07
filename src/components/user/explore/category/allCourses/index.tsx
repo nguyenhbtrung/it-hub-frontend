@@ -4,9 +4,11 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { Suspense } from 'react';
 import CourseList from './courseList';
+import { getCategorySummary } from '@/services/category.service';
+import { notFound } from 'next/navigation';
 
 interface AllCoursesProps {
-  slugPromise: Promise<string>;
+  id: string;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
@@ -20,14 +22,16 @@ const courseTitle: Record<string, string> = {
   os: 'Hệ điều hành',
 };
 
-export default async function AllCourses({ slugPromise, searchParams }: AllCoursesProps) {
-  const slug = await slugPromise;
-  const title = courseTitle[slug];
+export default async function AllCourses({ id, searchParams }: AllCoursesProps) {
+  const res = await getCategorySummary(id);
+  if (!res?.success || !res?.data) {
+    notFound();
+  }
   return (
     <>
       <Box mb={3}>
         <Typography variant='h4' fontWeight={700} gutterBottom>
-          Tất cả khoá học về {title}
+          Tất cả khoá học về {res.data.name}
         </Typography>
       </Box>
       <Grid container spacing={3}>
@@ -39,7 +43,7 @@ export default async function AllCourses({ slugPromise, searchParams }: AllCours
 
         <Grid size={{ xs: 12, lg: 9 }}>
           <Suspense>
-            <CourseList searchParams={searchParams} />
+            <CourseList id={id} searchParams={searchParams} />
           </Suspense>
         </Grid>
       </Grid>

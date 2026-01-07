@@ -18,6 +18,7 @@ import Link from '@/components/common/Link';
 import Image from 'next/image';
 import { CourseCardProps } from './types';
 import { levelLabelsMap } from '@/lib/const/course';
+import { formatDuration } from '@/lib/utils/formatDatetime';
 
 export function CourseCardVertical({ course }: CourseCardProps) {
   console.log('course img', course?.img?.url);
@@ -64,7 +65,7 @@ export function CourseCardVertical({ course }: CourseCardProps) {
           {/* <Image src={course?.img?.url || ''} alt={course?.title} fill style={{ objectFit: 'cover' }} /> */}
           <Box
             component='img'
-            src={course?.img?.url || ''}
+            src={course?.img?.url || null}
             alt={course?.title}
             // onError={handleImgError}
             sx={{
@@ -122,7 +123,7 @@ export function CourseCardVertical({ course }: CourseCardProps) {
               </Stack>
               <Stack direction='row' alignItems='center' spacing={0.5} sx={{ flexShrink: 0 }}>
                 <AccessTimeIcon fontSize='small' />
-                <Typography variant='body2'>{course?.totalDuration}</Typography>
+                <Typography variant='body2'>{formatDuration(course?.totalDuration || 0)}</Typography>
               </Stack>
             </Stack>
           </Box>

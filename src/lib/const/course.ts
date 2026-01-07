@@ -10,7 +10,7 @@ export const durationLabelsMap: Record<string, string> = {
   short: '2 - 5 giờ',
   medium: '5 - 10 giờ',
   long: '10 - 17 giờ',
-  extraLong: 'Trên 10 giờ',
+  extraLong: 'Trên 17 giờ',
 };
 
 export const ratingLabelsMap: Record<string, string> = {

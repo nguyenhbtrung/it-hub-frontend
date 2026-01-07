@@ -1,6 +1,7 @@
 import { Grid } from '@mui/material';
 import { CourseSummary } from '@/types/course';
 import { CourseCardSkeleton, CourseCardVertical } from '@/components/user/common/courseCard/CourseCardVertical';
+import { getRecommendedCourses } from '@/services/course.service';
 
 const courses: CourseSummary[] = [
   {
@@ -53,17 +54,18 @@ const courses: CourseSummary[] = [
   },
 ];
 
-const getRecommendedCourses = async () => {
-  await new Promise((resolve) => setTimeout(resolve, 3000));
-  return courses;
-};
+interface CourseListProps {
+  id: string;
+}
 
-export async function CourseList() {
-  const courses = await getRecommendedCourses();
+export async function CourseList({ id }: CourseListProps) {
+  const res = await getRecommendedCourses({ categoryId: id });
+
+  const courses = res?.data || [];
 
   return (
     <Grid container spacing={2}>
-      {courses.map((course) => (
+      {courses.map((course: any) => (
         <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={course.id}>
           <CourseCardVertical course={course} />
         </Grid>

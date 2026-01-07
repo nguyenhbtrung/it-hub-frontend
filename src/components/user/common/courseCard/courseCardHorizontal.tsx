@@ -5,10 +5,12 @@ import StarIcon from '@mui/icons-material/Star';
 import ArrowForward from '@mui/icons-material/ArrowForward';
 import Link from '@/components/common/Link';
 import { CourseCardProps } from './types';
+import { levelLabelsMap } from '@/lib/const/course';
+import { formatDuration } from '@/lib/utils/formatDatetime';
 
 export function CourseCardHorizontal({ course }: CourseCardProps) {
   return (
-    <Link href={`/courses/${course.id}`} target='_blank' style={{ textDecoration: 'none' }}>
+    <Link href={`/courses/${course.slug}`} target='_blank' style={{ textDecoration: 'none' }}>
       <Paper
         elevation={0}
         sx={{
@@ -27,24 +29,38 @@ export function CourseCardHorizontal({ course }: CourseCardProps) {
           },
         }}
       >
-        <Avatar
+        {/* <Avatar
           variant='rounded'
-          src={course.image}
-          alt={course.title}
+          src={course?.img?.url || null}
+          alt={course?.title}
           sx={{
             width: { xs: '100%', md: '33.33%' },
             height: { xs: 192, md: 'auto' },
             borderRadius: 1,
           }}
+        /> */}
+        <Box
+          component='img'
+          src={course?.img?.url || null}
+          alt={course?.title}
+          // onError={handleImgError}
+          sx={{
+            width: { xs: '100%', md: '33.33%' },
+            height: { xs: 192, md: 'auto' },
+            borderRadius: 1,
+            objectFit: 'cover',
+            display: 'block',
+            backgroundColor: '#f3f4f6',
+          }}
         />
 
         <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
           <Typography variant='h6' fontWeight={600} gutterBottom>
-            {course.title}
+            {course?.title}
           </Typography>
 
           <Typography variant='body2' color='text.secondary' gutterBottom>
-            Giảng viên: {course.instructor}
+            Giảng viên: {course?.instructor?.fullname}
           </Typography>
 
           <Typography
@@ -58,41 +74,41 @@ export function CourseCardHorizontal({ course }: CourseCardProps) {
               overflow: 'hidden',
             }}
           >
-            {course.description}
+            {course?.shortDescription}
           </Typography>
 
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
               <StarIcon sx={{ fontSize: 16, color: 'warning.main' }} />
               <Typography variant='body2' fontWeight={500} color='warning.main'>
-                {course.rating}
+                {(course?.avgRating || 0).toLocaleString()}
               </Typography>
             </Box>
 
             <Divider orientation='vertical' flexItem />
 
             <Typography variant='body2' color='text.secondary'>
-              {(course.reviewCount || 0).toLocaleString()} đánh giá
+              {(course?.reviewCount || 0).toLocaleString()} đánh giá
             </Typography>
 
             <Divider orientation='vertical' flexItem />
 
             <Typography variant='body2' color='text.secondary'>
-              {course.students} học viên
+              {course?._count?.enrollments} học viên
             </Typography>
 
             <Divider orientation='vertical' flexItem />
 
             <Typography variant='body2' color='text.secondary'>
-              {course.duration}
+              {formatDuration(course?.totalDuration || 0)}
             </Typography>
           </Box>
 
           <Box sx={{ mt: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Box sx={{ display: 'flex', gap: 1 }}>
               <Chip
-                key={course.category}
-                label={course.category}
+                key={course?.subCategory?.name}
+                label={course?.subCategory?.name}
                 size='small'
                 sx={{
                   fontSize: '0.75rem',
@@ -102,8 +118,8 @@ export function CourseCardHorizontal({ course }: CourseCardProps) {
                 }}
               />
               <Chip
-                key={course.level}
-                label={course.level}
+                key={course?.level}
+                label={levelLabelsMap[course?.level]}
                 size='small'
                 sx={{
                   fontSize: '0.75rem',
