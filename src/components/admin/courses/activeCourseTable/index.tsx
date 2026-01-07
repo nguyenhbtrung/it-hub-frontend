@@ -15,7 +15,8 @@ import { FieldType, FilterItem } from '@/types/filter';
 import CustomColumnMenu from '@/components/common/customDataGrid/customColumnMenu';
 import { getDefaultFilter } from '@/lib/utils/filter';
 import { useMounted } from '@/hooks/useMounted';
-import { getCourses } from '@/services/course.service';
+import { getCourses, updateCourseStatus } from '@/services/course.service';
+import { useNotification } from '@/contexts/notificationContext';
 
 interface ActiveCourse {
   id: number;
@@ -92,49 +93,51 @@ export default function ActiveCourseTable() {
     initFilters.length > 0 ? initFilters : [getDefaultFilter<ActiveCourse>(activeCourseSchema)]
   );
   const isMounted = useMounted();
+  const { notify } = useNotification();
+
+  const fetchActiveCourses = async () => {
+    setLoading(true);
+    try {
+      const sortField = sortModel[0]?.field;
+      const sortOrder = sortModel[0]?.sort || 'asc';
+      const search = filterModel.quickFilterValues?.join(' ');
+
+      const res = await getCourses({
+        view: 'admin',
+        page: paginationModel.page + 1,
+        limit: paginationModel.pageSize,
+        sortBy: sortField,
+        sortOrder,
+        q: search ? search : undefined,
+        status: 'published',
+      });
+
+      setData(res?.data || []);
+      setTotal(res?.meta?.total || 0);
+
+      // const response = await fakeApi.getActiveCourses(
+      //   paginationModel.page + 1,
+      //   paginationModel.pageSize,
+      //   sortField,
+      //   sortOrder,
+      //   search,
+      //   filters
+      // );
+
+      // setData(response.activeCourses);
+      // setTotal(response.total);
+    } catch (error) {
+      console.error('Lỗi khi tải dữ liệu:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchActiveCourses = async () => {
-      setLoading(true);
-      try {
-        const sortField = sortModel[0]?.field;
-        const sortOrder = sortModel[0]?.sort || 'asc';
-        const search = filterModel.quickFilterValues?.join(' ');
-
-        const res = await getCourses({
-          view: 'admin',
-          page: paginationModel.page + 1,
-          limit: paginationModel.pageSize,
-          sortBy: sortField,
-          sortOrder,
-          q: search ? search : undefined,
-          status: 'published',
-        });
-        console.log('>>>>>>>', res?.data);
-
-        setData(res?.data || []);
-        setTotal(res?.meta?.total || 0);
-
-        // const response = await fakeApi.getActiveCourses(
-        //   paginationModel.page + 1,
-        //   paginationModel.pageSize,
-        //   sortField,
-        //   sortOrder,
-        //   search,
-        //   filters
-        // );
-
-        // setData(response.activeCourses);
-        // setTotal(response.total);
-      } catch (error) {
-        console.error('Lỗi khi tải dữ liệu:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
     if (isMounted) {
       fetchActiveCourses();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paginationModel, sortModel, filterModel, filters, isMounted]);
 
   useEffect(() => {
@@ -168,6 +171,16 @@ export default function ActiveCourseTable() {
     updateURL();
   }, [paginationModel, sortModel, filterModel, filters, isMounted, router]);
 
+  const handleSuspendClick = async (id: string) => {
+    const res = await updateCourseStatus(id, { status: 'suspended' });
+    if (res?.success) {
+      notify('success', 'Đã đình chỉ khoá học', { vertical: 'top', horizontal: 'right' });
+    } else {
+      notify('error', 'Có lỗi xảy ra, vui lòng thử lại', { vertical: 'top', horizontal: 'right' });
+    }
+    fetchActiveCourses();
+  };
+
   const columns: GridColDef[] = [
     // { field: 'id', headerName: 'ID', width: 70 },
     {
@@ -181,7 +194,7 @@ export default function ActiveCourseTable() {
           <Box display='flex' alignItems='center' gap={1}>
             <Box
               component='img'
-              src={img?.url || null}
+              src={img?.url || `https://picsum.photos/300/200?random=${params.row?.id}`}
               alt={title}
               sx={{ width: 48, height: 48, borderRadius: 0.5, objectFit: 'cover' }}
             />
@@ -201,7 +214,10 @@ export default function ActiveCourseTable() {
         const { instructor } = params.row;
         return (
           <Box height='100%' display='flex' alignItems='center' gap={1}>
-            <Avatar src={instructor?.avatar?.url || null} alt={instructor?.fullname} />
+            <Avatar
+              src={instructor?.avatar?.url || `https://picsum.photos/200?random=${params.row?.id}`}
+              alt={instructor?.fullname}
+            />
             <Typography variant='body2' noWrap>
               {instructor?.fullname}
             </Typography>
@@ -232,7 +248,7 @@ export default function ActiveCourseTable() {
       renderCell: (params) => (
         <Box>
           <Tooltip title='Đình chỉ'>
-            <IconButton color='error'>
+            <IconButton color='error' onClick={() => handleSuspendClick(params.row?.id)}>
               <CancelOutlined />
             </IconButton>
           </Tooltip>

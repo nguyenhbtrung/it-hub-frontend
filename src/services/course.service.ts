@@ -332,6 +332,34 @@ export async function updateCourseTotalDuration(courseId: string): Promise<any> 
   }
 }
 
+export async function updateCourseStatus(courseId: string, payload: { status: string }): Promise<any> {
+  try {
+    return await apiFetch(`/api/courses/${courseId}/status`, {
+      auth: true,
+      credentials: 'include',
+      method: 'PATCH',
+      body: JSON.stringify(payload),
+    });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      const res = {
+        success: false,
+        error: {
+          message: 'Có lỗi xảy ra',
+          code: err.code,
+        },
+      };
+      if (err.code === 'FORBIDDEN') {
+        res.error.message = 'Bạn không có quyền cập nhật khoá học này';
+      } else if (err.code === 'NOT_FOUND') {
+        res.error.message = 'Khoá học không tồn tại';
+      }
+      return res;
+    }
+    throw err;
+  }
+}
+
 export async function updateCourseDetail(courseId: string, payload: UpdateCourseDetailPayload): Promise<any> {
   if (typeof payload.description === 'string') payload.description = JSON.parse(payload.description) as JSONContent;
   try {

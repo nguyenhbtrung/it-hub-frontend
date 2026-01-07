@@ -15,6 +15,8 @@ import { FieldType, FilterItem } from '@/types/filter';
 import CustomColumnMenu from '@/components/common/customDataGrid/customColumnMenu';
 import { getDefaultFilter } from '@/lib/utils/filter';
 import { useMounted } from '@/hooks/useMounted';
+import { getCourses, updateCourseStatus } from '@/services/course.service';
+import { useNotification } from '@/contexts/notificationContext';
 
 interface Course {
   id: number;
@@ -198,7 +200,7 @@ export default function PendingCourseTable() {
     }
   });
 
-  const [registrations, setRegistrations] = useState<Course[]>([]);
+  const [data, setData] = useState<Course[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
 
@@ -219,35 +221,38 @@ export default function PendingCourseTable() {
     initFilters.length > 0 ? initFilters : [getDefaultFilter<Course>(courseSchema)]
   );
   const isMounted = useMounted();
+  const { notify } = useNotification();
 
+  const fetchPendingCourses = async () => {
+    setLoading(true);
+    try {
+      const sortField = sortModel[0]?.field;
+      const sortOrder = sortModel[0]?.sort || 'asc';
+      const search = filterModel.quickFilterValues?.join(' ');
+
+      const res = await getCourses({
+        view: 'admin',
+        page: paginationModel.page + 1,
+        limit: paginationModel.pageSize,
+        sortBy: sortField,
+        sortOrder,
+        q: search ? search : undefined,
+        status: 'pending',
+      });
+
+      setData(res?.data || []);
+      setTotal(res?.meta?.total || 0);
+    } catch (error) {
+      console.error('Lỗi khi tải dữ liệu:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    const fetchPendingCourses = async () => {
-      setLoading(true);
-      try {
-        const sortField = sortModel[0]?.field;
-        const sortOrder = sortModel[0]?.sort;
-        const search = filterModel.quickFilterValues?.join(' ');
-
-        const response = await fakeApi.getPendingCourses(
-          paginationModel.page + 1,
-          paginationModel.pageSize,
-          sortField,
-          sortOrder,
-          search,
-          filters
-        );
-
-        setRegistrations(response.pendingCourses);
-        setTotal(response.total);
-      } catch (error) {
-        console.error('Lỗi khi tải dữ liệu:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
     if (isMounted) {
       fetchPendingCourses();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paginationModel, sortModel, filterModel, filters, isMounted]);
 
   useEffect(() => {
@@ -281,20 +286,39 @@ export default function PendingCourseTable() {
     updateURL();
   }, [paginationModel, sortModel, filterModel, filters, isMounted, router]);
 
+  const handleApproveClick = async (id: string) => {
+    const res = await updateCourseStatus(id, { status: 'published' });
+    if (res?.success) {
+      notify('success', 'Duyệt khoá học thành công', { vertical: 'top', horizontal: 'right' });
+    } else {
+      notify('error', 'Có lỗi xảy ra, vui lòng thử lại', { vertical: 'top', horizontal: 'right' });
+    }
+    fetchPendingCourses();
+  };
+
+  const handleSuspendClick = async (id: string) => {
+    const res = await updateCourseStatus(id, { status: 'suspended' });
+    if (res?.success) {
+      notify('success', 'Đã đình chỉ khoá học', { vertical: 'top', horizontal: 'right' });
+    } else {
+      notify('error', 'Có lỗi xảy ra, vui lòng thử lại', { vertical: 'top', horizontal: 'right' });
+    }
+    fetchPendingCourses();
+  };
+
   const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', width: 70 },
     {
-      field: 'course',
+      field: 'title',
       headerName: 'Khoá học',
       flex: 1,
       minWidth: 200,
       renderCell: (params) => {
-        const { imgUrl, title } = params.row;
+        const { img, title } = params.row;
         return (
           <Box display='flex' alignItems='center' gap={1}>
             <Box
               component='img'
-              src={imgUrl}
+              src={img?.url || `https://picsum.photos/300/200?random=${params.row?.id}`}
               alt={title}
               sx={{ width: 48, height: 48, borderRadius: 0.5, objectFit: 'cover' }}
             />
@@ -311,22 +335,26 @@ export default function PendingCourseTable() {
       flex: 1,
       minWidth: 180,
       renderCell: (params) => {
-        const { avatarUrl, instructor } = params.row;
+        const { instructor } = params.row;
         return (
           <Box height='100%' display='flex' alignItems='center' gap={1}>
-            <Avatar src={avatarUrl} alt={instructor} />
+            <Avatar
+              src={instructor?.avatar?.url || `https://picsum.photos/200?random=${params.row?.id}`}
+              alt={instructor?.fullname}
+            />
             <Typography variant='body2' noWrap>
-              {instructor}
+              {instructor?.fullname}
             </Typography>
           </Box>
         );
       },
     },
     {
-      field: 'category',
+      field: 'subCategory',
       headerName: 'Danh mục',
       flex: 1,
       minWidth: 150,
+      valueGetter: (value: any) => value?.name,
     },
     {
       field: 'status',
@@ -340,20 +368,25 @@ export default function PendingCourseTable() {
       width: 160,
       sortable: false,
       filterable: false,
-      renderCell: () => (
+      renderCell: (params) => (
         <Box>
           <Tooltip title='Duyệt'>
-            <IconButton color='success'>
-              <CancelOutlined />
+            <IconButton color='success' onClick={() => handleApproveClick(params.row?.id)}>
+              <CheckCircleOutline />
             </IconButton>
           </Tooltip>
           <Tooltip title='Đình chỉ'>
-            <IconButton color='error'>
+            <IconButton color='error' onClick={() => handleSuspendClick(params.row?.id)}>
               <CancelOutlined />
             </IconButton>
           </Tooltip>
           <Tooltip title='Xem'>
-            <IconButton>
+            <IconButton
+              onClick={() => {
+                const slug = params.row.slug;
+                window.open(`/courses/${slug}`, '_blank');
+              }}
+            >
               <VisibilityIcon />
             </IconButton>
           </Tooltip>
@@ -368,7 +401,7 @@ export default function PendingCourseTable() {
 
   return (
     <DataGrid
-      rows={registrations}
+      rows={data}
       columns={columns}
       paginationMode='server'
       sortingMode='server'

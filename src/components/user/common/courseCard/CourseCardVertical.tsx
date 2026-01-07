@@ -65,7 +65,7 @@ export function CourseCardVertical({ course }: CourseCardProps) {
           {/* <Image src={course?.img?.url || ''} alt={course?.title} fill style={{ objectFit: 'cover' }} /> */}
           <Box
             component='img'
-            src={course?.img?.url || null}
+            src={course?.img?.url || `https://picsum.photos/300/200?random=${course?.id}`}
             alt={course?.title}
             // onError={handleImgError}
             sx={{

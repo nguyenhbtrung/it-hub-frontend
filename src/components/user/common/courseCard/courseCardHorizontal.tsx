@@ -41,7 +41,7 @@ export function CourseCardHorizontal({ course }: CourseCardProps) {
         /> */}
         <Box
           component='img'
-          src={course?.img?.url || null}
+          src={course?.img?.url || `https://picsum.photos/300/200?random=${course?.id}`}
           alt={course?.title}
           // onError={handleImgError}
           sx={{
