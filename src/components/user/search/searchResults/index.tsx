@@ -4,13 +4,14 @@ import { CourseCardHorizontal } from '../../common/courseCard/courseCardHorizont
 import { CourseSummary } from '@/types/course';
 import AppPagination from '@/components/common/pagination';
 import CourseSortSelect from '../../common/courseSortSelect';
+import { getCourses } from '@/services/course.service';
 
 interface SearchResultsProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 export default async function SearchResults({ searchParams }: SearchResultsProps) {
-  const courses: CourseSummary[] = [
+  const coursess: CourseSummary[] = [
     {
       id: 1,
       title: 'JavaScript Nâng Cao: Từ Con Số 0 đến Chuyên Gia',
@@ -69,19 +70,40 @@ export default async function SearchResults({ searchParams }: SearchResultsProps
     },
   ];
 
-  const { page } = await searchParams;
+  const { page, query, level, duration, rating, sortBy } = await searchParams;
   let currentPage = Number(page);
 
   if (!page || isNaN(currentPage) || currentPage < 1) {
     currentPage = 1;
   }
-  const isEmpty = false;
+
+  const res = await getCourses({
+    page: currentPage,
+    limit: 5,
+    q: query,
+    level,
+    duration,
+    avgRating: rating,
+    sortBy,
+  });
+  let isEmpty = false;
+
+  if (!res?.success || !res?.data) {
+    isEmpty = true;
+  }
+
+  const courses = res?.data;
+  const meta = res?.meta;
+  let count = 0;
+  if (typeof meta?.total === 'number' && typeof meta?.page === 'number' && meta.page > 0) {
+    count = Math.ceil(meta.total / meta.limit);
+  }
 
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant='body2' color='text.secondary'>
-          Hiển thị {courses.length} trên 150 kết quả
+          Hiển thị {courses?.length} trên {meta?.total} kết quả
         </Typography>
 
         <CourseSortSelect />
@@ -92,14 +114,14 @@ export default async function SearchResults({ searchParams }: SearchResultsProps
       ) : (
         <>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-            {courses.map((course) => (
+            {courses.map((course: any) => (
               <CourseCardHorizontal key={course.id} course={course} />
             ))}
           </Box>
 
           {/* Pagination */}
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-            <AppPagination count={10} page={currentPage} />
+            <AppPagination count={count} page={currentPage} />
           </Box>
         </>
       )}

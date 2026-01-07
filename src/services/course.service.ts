@@ -5,6 +5,47 @@ import { ApiError } from '@/lib/errors/ApiError';
 import { CourseLevel, CourseStatus } from '@/types/course';
 import { JSONContent } from '@tiptap/react';
 
+interface GetCoursesQuery {
+  view?: string;
+  page?: number;
+  limit?: number;
+  q?: string | string[];
+  level?: string | string[];
+  duration?: string | string[];
+  avgRating?: string | string[];
+  sortBy?: string | string[];
+}
+
+export async function getCourses(query: GetCoursesQuery): Promise<any> {
+  const { view, page, limit, q, level, duration, avgRating, sortBy } = query;
+  try {
+    return await apiFetch(`/api/courses`, {
+      query: {
+        view,
+        page,
+        limit,
+        q,
+        level,
+        duration,
+        avgRating,
+        sortBy,
+      },
+      credentials: 'include',
+    });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      return {
+        success: false,
+        error: {
+          message: 'Có lỗi xảy ra',
+          code: err.code,
+        },
+      };
+    }
+    throw err;
+  }
+}
+
 interface GetRecommendedCoursesQuery {
   categoryId: string;
 }

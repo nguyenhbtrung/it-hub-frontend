@@ -73,7 +73,6 @@ export default async function CourseList({ id, searchParams }: SearchResultsProp
   ];
 
   const { page, level, duration, rating, sortBy } = await searchParams;
-  console.log('>>>>>>', page, level, duration, rating, sortBy);
   let currentPage = Number(page);
 
   if (!page || isNaN(currentPage) || currentPage < 1) {
@@ -83,6 +82,7 @@ export default async function CourseList({ id, searchParams }: SearchResultsProp
   const res = await getCoursesByCategoryId(id, {
     page: currentPage,
     limit: 5,
+    duration,
     level,
     avgRating: rating,
     sortBy,

@@ -19,7 +19,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         <Grid container spacing={3}>
           <Grid size={{ xs: 12, lg: 3 }}>
             <Suspense>
-              <CourseFilterSidebar />
+              <CourseFilterSidebar disableCategoryFilter />
             </Suspense>
           </Grid>
 
