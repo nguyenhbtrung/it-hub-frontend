@@ -14,10 +14,12 @@ interface GetCoursesQuery {
   duration?: string | string[];
   avgRating?: string | string[];
   sortBy?: string | string[];
+  sortOrder?: string | string[];
+  status?: string | string[];
 }
 
 export async function getCourses(query: GetCoursesQuery): Promise<any> {
-  const { view, page, limit, q, level, duration, avgRating, sortBy } = query;
+  const { view, page, limit, q, level, duration, avgRating, sortBy, sortOrder, status } = query;
   try {
     return await apiFetch(`/api/courses`, {
       query: {
@@ -29,6 +31,8 @@ export async function getCourses(query: GetCoursesQuery): Promise<any> {
         duration,
         avgRating,
         sortBy,
+        sortOrder,
+        status,
       },
       credentials: 'include',
     });

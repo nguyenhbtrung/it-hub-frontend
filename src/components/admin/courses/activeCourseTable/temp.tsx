@@ -50,6 +50,134 @@ const activeCourseFieldsMap: Record<keyof ActiveCourse, string> = {
   createdAt: 'Ngày tạo',
 };
 
+function getRandomElement<T>(arr: T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function generateRandomName(): string {
+  const lastNames = ['Nguyễn', 'Trần', 'Lê', 'Phạm', 'Hoàng', 'Vũ'];
+  const middleNames = ['Văn', 'Thị', 'Hữu', 'Đức', 'Minh', 'Thanh'];
+  const firstNames = ['An', 'Bình', 'Chi', 'Dũng', 'Lan', 'Mai', 'Phong', 'Quang'];
+
+  const lastName = getRandomElement(lastNames);
+  const middleName = getRandomElement(middleNames);
+  const firstName = getRandomElement(firstNames);
+
+  return `${lastName} ${middleName} ${firstName}`;
+}
+
+function generateRandomCategory(): string {
+  const categories = ['Phát triển web', 'Khoa học dữ liệu', 'Trí tuệ nhân tạo', 'Game', 'Mobile', 'Thuật toán'];
+
+  return getRandomElement(categories);
+}
+
+function getSequentialDate(index: number, total: number): Date {
+  const now = new Date();
+  const past = new Date();
+  past.setFullYear(now.getFullYear() - 1);
+
+  const range = now.getTime() - past.getTime();
+
+  const time = past.getTime() + (range / total) * index;
+  return new Date(time);
+}
+
+const fakeApi = {
+  getActiveCourses: async (
+    page: number = 1,
+    pageSize: number = 10,
+    sortBy?: string,
+    sortOrder?: string | null,
+    q?: string,
+    filters?: FilterItem[]
+  ): Promise<{ activeCourses: ActiveCourse[]; total: number }> => {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    const total = 123;
+
+    const allCourses: ActiveCourse[] = Array.from({ length: total }, (_, index) => {
+      const imgUrl = `https://picsum.photos/200?random=${index}`;
+      const title = 'Khoá học ' + index;
+      const instructor = generateRandomName();
+      const avatarUrl = `https://picsum.photos/200?random=${index + total}`;
+      const category = generateRandomCategory();
+      const createdAt = toLocaleDateString(getSequentialDate(index, total));
+
+      return {
+        id: index + 1,
+        imgUrl,
+        title,
+        instructor,
+        avatarUrl,
+        category,
+        status: 'active',
+        createdAt,
+      };
+    });
+
+    let filteredCourses = [...allCourses];
+    if (q) {
+      const searchTerm = q.toLowerCase();
+      filteredCourses = filteredCourses.filter((registration) =>
+        Object.values(registration).some((value) => String(value).toLowerCase().includes(searchTerm))
+      );
+    }
+
+    if (filters && filters.length > 0) {
+      filters.forEach((f) => {
+        if (!f.value) return;
+        filteredCourses = filteredCourses.filter((user) => {
+          const val = String(user[f.field as keyof ActiveCourse]).toLowerCase();
+          const target = f.value.toLowerCase();
+
+          switch (f.operator) {
+            case 'eq':
+              return val === target;
+            case 'ne':
+              return val !== target;
+            case 'like':
+              return val.includes(target);
+            case 'gt':
+              return val > target;
+            case 'lt':
+              return val < target;
+            case 'gte':
+              return val >= target;
+            case 'lte':
+              return val <= target;
+            case 'between': {
+              const [start, end] = target.split(',');
+              return val >= start && val <= end;
+            }
+            default:
+              return true;
+          }
+        });
+      });
+    }
+
+    if (sortBy && sortOrder) {
+      filteredCourses.sort((a, b) => {
+        const aVal = a[sortBy as keyof ActiveCourse];
+        const bVal = b[sortBy as keyof ActiveCourse];
+
+        if (aVal < bVal) return sortOrder === 'asc' ? -1 : 1;
+        if (aVal > bVal) return sortOrder === 'asc' ? 1 : -1;
+        return 0;
+      });
+    }
+
+    const startIndex = (page - 1) * pageSize;
+    const paginatedCourses = filteredCourses.slice(startIndex, startIndex + pageSize);
+
+    return {
+      activeCourses: paginatedCourses,
+      total: filteredCourses.length,
+    };
+  },
+};
+
 export default function ActiveCourseTable() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -71,7 +199,7 @@ export default function ActiveCourseTable() {
     }
   });
 
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<ActiveCourse[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
 
@@ -101,31 +229,28 @@ export default function ActiveCourseTable() {
         const sortOrder = sortModel[0]?.sort || 'asc';
         const search = filterModel.quickFilterValues?.join(' ');
 
-        const res = await getCourses({
-          view: 'admin',
-          page: paginationModel.page + 1,
-          limit: paginationModel.pageSize,
-          sortBy: sortField,
-          sortOrder,
-          q: search ? search : undefined,
-          status: 'published',
-        });
-        console.log('>>>>>>>', res?.data);
-
-        setData(res?.data || []);
-        setTotal(res?.meta?.total || 0);
-
-        // const response = await fakeApi.getActiveCourses(
-        //   paginationModel.page + 1,
-        //   paginationModel.pageSize,
-        //   sortField,
+        // const res = await getCourses({
+        //   page: paginationModel.page + 1,
+        //   limit: paginationModel.pageSize,
+        //   sortBy: sortField,
         //   sortOrder,
-        //   search,
-        //   filters
-        // );
+        //   q: search,
+        // });
 
-        // setData(response.activeCourses);
-        // setTotal(response.total);
+        // setData(res?.data || []);
+        // setTotal(res?.meta?.total || 0);
+
+        const response = await fakeApi.getActiveCourses(
+          paginationModel.page + 1,
+          paginationModel.pageSize,
+          sortField,
+          sortOrder,
+          search,
+          filters
+        );
+
+        setData(response.activeCourses);
+        setTotal(response.total);
       } catch (error) {
         console.error('Lỗi khi tải dữ liệu:', error);
       } finally {
@@ -169,19 +294,19 @@ export default function ActiveCourseTable() {
   }, [paginationModel, sortModel, filterModel, filters, isMounted, router]);
 
   const columns: GridColDef[] = [
-    // { field: 'id', headerName: 'ID', width: 70 },
+    { field: 'id', headerName: 'ID', width: 70 },
     {
-      field: 'title',
+      field: 'course',
       headerName: 'Khoá học',
       flex: 1,
       minWidth: 200,
       renderCell: (params) => {
-        const { img, title } = params.row;
+        const { imgUrl, title } = params.row;
         return (
           <Box display='flex' alignItems='center' gap={1}>
             <Box
               component='img'
-              src={img?.url || null}
+              src={imgUrl}
               alt={title}
               sx={{ width: 48, height: 48, borderRadius: 0.5, objectFit: 'cover' }}
             />
@@ -198,28 +323,26 @@ export default function ActiveCourseTable() {
       flex: 1,
       minWidth: 180,
       renderCell: (params) => {
-        const { instructor } = params.row;
+        const { avatarUrl, instructor } = params.row;
         return (
           <Box height='100%' display='flex' alignItems='center' gap={1}>
-            <Avatar src={instructor?.avatar?.url || null} alt={instructor?.fullname} />
+            <Avatar src={avatarUrl} alt={instructor} />
             <Typography variant='body2' noWrap>
-              {instructor?.fullname}
+              {instructor}
             </Typography>
           </Box>
         );
       },
     },
     {
-      field: 'subCategory',
+      field: 'category',
       headerName: 'Danh mục',
       flex: 1,
       minWidth: 150,
-      valueGetter: (value: any) => value?.name,
     },
     {
       field: 'status',
       headerName: 'Trạng thái',
-      sortable: false,
       width: 150,
       renderCell: () => <Chip label='Đang hoạt động' color='success' variant='outlined' />,
     },
@@ -229,7 +352,7 @@ export default function ActiveCourseTable() {
       width: 160,
       sortable: false,
       filterable: false,
-      renderCell: (params) => (
+      renderCell: () => (
         <Box>
           <Tooltip title='Đình chỉ'>
             <IconButton color='error'>
@@ -237,12 +360,7 @@ export default function ActiveCourseTable() {
             </IconButton>
           </Tooltip>
           <Tooltip title='Xem'>
-            <IconButton
-              onClick={() => {
-                const slug = params.row.slug;
-                window.open(`/courses/${slug}`, '_blank');
-              }}
-            >
+            <IconButton>
               <VisibilityIcon />
             </IconButton>
           </Tooltip>
