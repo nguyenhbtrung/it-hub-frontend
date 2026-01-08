@@ -13,6 +13,7 @@ import NextLink from '@/components/common/Link';
 import { getCourseDetail, getUserEnrollmentStatus } from '@/services/course.service';
 import { toLocaleDateString } from '@/lib/utils/formatDatetime';
 import { notFound } from 'next/navigation';
+import CourseHeaderAction from './action';
 
 export default async function CourseHeader({ courseId }: { courseId: string }) {
   const res = await getCourseDetail(courseId, 'student');
@@ -21,7 +22,7 @@ export default async function CourseHeader({ courseId }: { courseId: string }) {
   }
   const course = res?.data;
   const enrollmentRes = await getUserEnrollmentStatus(courseId);
-  console.log(enrollmentRes);
+  const enrollmentStatus = enrollmentRes?.data;
   return (
     <Box
       sx={{
@@ -111,17 +112,7 @@ export default async function CourseHeader({ courseId }: { courseId: string }) {
             </Box>
 
             <Stack direction='row' display={{ xs: 'flex', lg: 'none' }} spacing={1} sx={{ my: 2 }}>
-              {/* <Button variant='contained' sx={{ width: { xs: '100%', sm: 200 } }}>
-                Đăng ký
-              </Button> */}
-              <Button
-                variant='contained'
-                LinkComponent={Link}
-                href={`/courses/${course?.slug}/learn/units/lesson-1-1`}
-                sx={{ width: { xs: '100%', sm: 200 } }}
-              >
-                Tiếp tục học
-              </Button>
+              <CourseHeaderAction course={course} enrollmentStatus={enrollmentStatus} courseId={courseId} />
               <Button variant='outlined' sx={{ width: 42, height: 42, minWidth: 42, p: 0 }}>
                 <ShareIcon />
               </Button>
@@ -132,7 +123,7 @@ export default async function CourseHeader({ courseId }: { courseId: string }) {
           </Box>
           <Box width={350} position='relative' display={{ xs: 'none', lg: 'flex' }}>
             <Box position='absolute' width={350} top={104}>
-              <SidebarEnrollCard course={course} enrollmentStatus={enrollmentRes?.data} />
+              <SidebarEnrollCard course={course} enrollmentStatus={enrollmentStatus} courseId={courseId} />
             </Box>
           </Box>
         </Box>

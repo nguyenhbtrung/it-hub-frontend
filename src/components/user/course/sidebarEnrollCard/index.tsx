@@ -5,17 +5,20 @@ import { Card, CardContent, Box, Button, Stack } from '@mui/material';
 import ShareIcon from '@mui/icons-material/Share';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 
-import { CourseDetail } from '@/types/course';
 import PromoVideo from '../promoVideo';
 import CourseIncludes from '../courseIncludes';
 import Link from '@/components/common/Link';
+import { useState } from 'react';
+import { createEnrollment, deleteEnrollment } from '@/services/enrollment.service';
 
 interface SidebarEnrollCardProp {
   course: any;
   enrollmentStatus: any;
+  courseId: string;
 }
 
-export default function SidebarEnrollCard({ course, enrollmentStatus }: SidebarEnrollCardProp) {
+export default function SidebarEnrollCard({ course, enrollmentStatus, courseId }: SidebarEnrollCardProp) {
+  const [status, setStatus] = useState(enrollmentStatus?.status);
   const stats = {
     level: course?.level,
     totalDuration: course?.totalDuration,
@@ -28,6 +31,24 @@ export default function SidebarEnrollCard({ course, enrollmentStatus }: SidebarE
     if (lastAccess?.sectionId) return `/learn/sections/${lastAccess.sectionId}`;
     return '';
   };
+
+  const handleRegisterClick = async () => {
+    try {
+      const res = await createEnrollment(courseId, { status: 'pending' });
+      if (res?.success) {
+        setStatus('pending');
+      }
+    } catch (err) {}
+  };
+
+  const handleCancelClick = async () => {
+    try {
+      const res = await deleteEnrollment(courseId);
+      if (res?.success) {
+        setStatus(null);
+      }
+    } catch (err) {}
+  };
   return (
     <Box>
       <Card sx={{ borderRadius: 3, mb: 2 }}>
@@ -35,19 +56,19 @@ export default function SidebarEnrollCard({ course, enrollmentStatus }: SidebarE
 
         <CardContent>
           <Stack direction='row' spacing={1} sx={{ my: 2 }}>
-            {!enrollmentStatus?.status && (
-              <Button variant='contained' fullWidth>
+            {!status && (
+              <Button variant='contained' fullWidth onClick={handleRegisterClick}>
                 Đăng ký
               </Button>
             )}
 
-            {enrollmentStatus?.status === 'pending' && (
-              <Button variant='contained' fullWidth>
+            {status === 'pending' && (
+              <Button variant='outlined' fullWidth onClick={handleCancelClick}>
                 Huỷ đăng ký
               </Button>
             )}
 
-            {(enrollmentStatus?.status === 'active' || enrollmentStatus?.status === 'completed') && (
+            {(status === 'active' || status === 'completed') && (
               <Button
                 LinkComponent={Link}
                 href={`/courses/${course?.slug}${getLassAccessPath(enrollmentStatus?.lastAccess)}`}
