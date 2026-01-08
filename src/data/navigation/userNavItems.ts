@@ -50,7 +50,7 @@ export const userNavItems: NavItem[] = [
       },
     ],
   },
-  { label: 'Diễn đàn', href: '/forum' },
+  // { label: 'Diễn đàn', href: '/forum' },
 ];
 
 export const mapCategoryTreeToNavItems = (categoryTree: any[]): NavItem[] => {
@@ -66,7 +66,7 @@ export const mapCategoryTreeToNavItems = (categoryTree: any[]): NavItem[] => {
         })),
       })),
     },
-    { label: 'Diễn đàn', href: '/forum' },
+    // { label: 'Diễn đàn', href: '/forum' },
   ];
 };
 

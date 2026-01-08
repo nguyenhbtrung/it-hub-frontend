@@ -1,13 +1,15 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams, usePathname } from 'next/navigation';
-import { List, ListItem, ListItemButton, ListItemIcon, ListItemText, Paper } from '@mui/material';
+import { Button, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Paper } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
 import ViewListIcon from '@mui/icons-material/ViewList';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import GroupIcon from '@mui/icons-material/Group';
 import Link from 'next/link';
+import { useNotification } from '@/contexts/notificationContext';
+import { getCourseDetail, updateCourseStatus } from '@/services/course.service';
 
 const rawMenuItems = [
   { icon: <InfoIcon />, text: 'Thông tin tổng quan', href: '/' },
@@ -19,6 +21,8 @@ const rawMenuItems = [
 export default function CourseSidebar() {
   const pathname = usePathname() || '';
   const { id } = useParams();
+  const [status, setStatus] = useState('');
+  const { notify } = useNotification();
 
   const base = id ? `/instructor/courses/${id}/edit` : '/instructor/courses';
 
@@ -31,6 +35,54 @@ export default function CourseSidebar() {
       return { ...item, fullHref, active: isSelected };
     });
   }, [base, pathname]);
+
+  useEffect(() => {
+    const fetchStatus = async () => {
+      const res = await getCourseDetail(id as string, 'instructor');
+      setStatus(res?.data?.status || '');
+    };
+    fetchStatus();
+  }, []);
+
+  const handleSubmitClick = async () => {
+    try {
+      const res = await updateCourseStatus(id as string, { status: 'pending' });
+      if (res?.success) {
+        notify('success', 'Đã gửi yêu cầu phê duyệt khoá học', { vertical: 'top', horizontal: 'right' });
+        setStatus('pending');
+      } else {
+        notify('error', 'Gửi yêu cầu phê duyệt thất bại, vui lòng thử lại sau', {
+          vertical: 'top',
+          horizontal: 'right',
+        });
+      }
+    } catch (err) {
+      notify('error', 'Gửi yêu cầu phê duyệt thất bại, vui lòng thử lại sau', {
+        vertical: 'top',
+        horizontal: 'right',
+      });
+    }
+  };
+
+  const handleCancelClick = async () => {
+    try {
+      const res = await updateCourseStatus(id as string, { status: 'draft' });
+      if (res?.success) {
+        notify('success', 'Đã huỷ yêu cầu phê duyệt khoá học', { vertical: 'top', horizontal: 'right' });
+        setStatus('draft');
+      } else {
+        notify('error', 'Huỷ yêu cầu phê duyệt thất bại, vui lòng thử lại sau', {
+          vertical: 'top',
+          horizontal: 'right',
+        });
+      }
+    } catch (err) {
+      notify('error', 'Huỷ yêu cầu phê duyệt thất bại, vui lòng thử lại sau', {
+        vertical: 'top',
+        horizontal: 'right',
+      });
+    }
+  };
 
   return (
     <Paper
@@ -74,6 +126,24 @@ export default function CourseSidebar() {
           </ListItem>
         ))}
       </List>
+
+      {status === 'draft' && (
+        <>
+          <Divider sx={{ my: 2 }} />
+          <Button variant='contained' onClick={handleSubmitClick} sx={{ width: '100%' }}>
+            Gửi yêu cầu phê duyệt
+          </Button>
+        </>
+      )}
+
+      {status === 'pending' && (
+        <>
+          <Divider sx={{ my: 2 }} />
+          <Button variant='outlined' onClick={handleCancelClick} sx={{ width: '100%' }}>
+            Huỷ yêu cầu phê duyệt
+          </Button>
+        </>
+      )}
     </Paper>
   );
 }

@@ -5,6 +5,51 @@ import { ApiError } from '@/lib/errors/ApiError';
 import { CourseLevel, CourseStatus } from '@/types/course';
 import { JSONContent } from '@tiptap/react';
 
+export async function getStudentsByCourseId(
+  id: string,
+  query: { page?: number; limit?: number; search?: string }
+): Promise<any> {
+  try {
+    return await apiFetch(`/api/courses/${id}/students`, {
+      query,
+      auth: true,
+      credentials: 'include',
+    });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      return {
+        success: false,
+        error: {
+          message: 'Có lỗi xảy ra',
+          code: err.code,
+        },
+      };
+    }
+    throw err;
+  }
+}
+
+export async function getRegistrationsByCourseId(id: string, query: { page?: number; limit?: number }): Promise<any> {
+  try {
+    return await apiFetch(`/api/courses/${id}/registrations`, {
+      query,
+      auth: true,
+      credentials: 'include',
+    });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      return {
+        success: false,
+        error: {
+          message: 'Có lỗi xảy ra',
+          code: err.code,
+        },
+      };
+    }
+    throw err;
+  }
+}
+
 interface GetCoursesQuery {
   view?: string;
   page?: number;
