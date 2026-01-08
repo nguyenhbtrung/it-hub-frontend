@@ -27,7 +27,7 @@ import {
   Terminal,
 } from '@mui/icons-material';
 import { stepApi } from '@/lib/mockApi/leanring';
-import { getCourseContentBreadcrumb } from '@/services/course.service';
+import { getCourseContentBreadcrumb, getNavigationByContentId } from '@/services/course.service';
 import { getStepById } from '@/services/step.service';
 import { notFound } from 'next/navigation';
 import { formatDuration } from '@/lib/utils/formatDatetime';
@@ -36,6 +36,7 @@ import SelectToAskAI from './selectToAskAI';
 import { auth } from '@/auth';
 import AiChatButton from './aiChatButton';
 import { getSectionById } from '@/services/section.service';
+import NextLink from '@/components/common/Link';
 
 interface MainContentProps {
   params: Promise<{ slug: string; id: string }>;
@@ -52,6 +53,9 @@ export default async function MainContent({ params }: MainContentProps) {
     notFound();
   }
   const section = sectionRes?.data;
+
+  const navRes = await getNavigationByContentId(sectionId, { contentType: 'section' });
+  const nav = navRes?.data;
 
   return (
     <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
@@ -157,17 +161,53 @@ export default async function MainContent({ params }: MainContentProps) {
             >
               Bước trước
             </Button> */}
-            <Button
-              variant='contained'
-              endIcon={<ArrowForward />}
-              size='large'
-              sx={{
-                backgroundColor: 'primary.main',
-                '&:hover': { backgroundColor: 'primary.dark' },
-              }}
-            >
-              Bắt đầu
-            </Button>
+            {nav?.nextType === 'lesson' && (
+              <Button
+                LinkComponent={NextLink}
+                href={`/courses/${slug}/learn/lessons/${nav?.nextId}`}
+                variant='contained'
+                endIcon={<ArrowForward />}
+                size='large'
+                sx={{
+                  backgroundColor: 'primary.main',
+                  '&:hover': { backgroundColor: 'primary.dark' },
+                }}
+              >
+                Bắt đầu
+              </Button>
+            )}
+
+            {nav?.nextType === 'exercise' && (
+              <Button
+                LinkComponent={NextLink}
+                href={`/courses/${slug}/learn/exercises/${nav?.nextId}`}
+                variant='contained'
+                endIcon={<ArrowForward />}
+                size='large'
+                sx={{
+                  backgroundColor: 'primary.main',
+                  '&:hover': { backgroundColor: 'primary.dark' },
+                }}
+              >
+                Bắt đầu
+              </Button>
+            )}
+
+            {nav?.nextType === 'section' && (
+              <Button
+                LinkComponent={NextLink}
+                href={`/courses/${slug}/learn/sections/${nav?.nextId}`}
+                variant='contained'
+                endIcon={<ArrowForward />}
+                size='large'
+                sx={{
+                  backgroundColor: 'primary.main',
+                  '&:hover': { backgroundColor: 'primary.dark' },
+                }}
+              >
+                Tiếp theo
+              </Button>
+            )}
           </Box>
         </Box>
       </Box>

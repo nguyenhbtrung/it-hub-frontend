@@ -27,7 +27,7 @@ import {
   Terminal,
 } from '@mui/icons-material';
 import { stepApi } from '@/lib/mockApi/leanring';
-import { getCourseContentBreadcrumb } from '@/services/course.service';
+import { getCourseContentBreadcrumb, getNavigationByContentId } from '@/services/course.service';
 import { getStepById } from '@/services/step.service';
 import { notFound } from 'next/navigation';
 import { formatDuration } from '@/lib/utils/formatDatetime';
@@ -35,6 +35,7 @@ import StepContentRenderer from '@/components/common/richText/renderer/stepConte
 import SelectToAskAI from './selectToAskAI';
 import { auth } from '@/auth';
 import AiChatButton from './aiChatButton';
+import NextLink from '@/components/common/Link';
 
 interface MainContentProps {
   params: Promise<{ slug: string; id: string }>;
@@ -51,6 +52,9 @@ export default async function MainContent({ params }: MainContentProps) {
     notFound();
   }
   const step = stepRes?.data;
+
+  const navRes = await getNavigationByContentId(stepId, { contentType: 'step' });
+  const nav = navRes?.data;
 
   return (
     <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
@@ -183,30 +187,144 @@ export default async function MainContent({ params }: MainContentProps) {
           {/* Navigation Buttons */}
           <Divider sx={{ my: 6 }} />
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Button
-              variant='outlined'
-              startIcon={<ArrowBack />}
-              sx={{
-                borderColor: 'grey.300',
-                color: 'text.secondary',
-                '&:hover': {
-                  borderColor: 'grey.400',
-                  backgroundColor: 'grey.100',
-                },
-              }}
-            >
-              Bước trước
-            </Button>
-            <Button
-              variant='contained'
-              endIcon={<ArrowForward />}
-              sx={{
-                backgroundColor: 'primary.main',
-                '&:hover': { backgroundColor: 'primary.dark' },
-              }}
-            >
-              Hoàn thành và tiếp tục
-            </Button>
+            {nav?.previousType === 'step' && (
+              <Button
+                LinkComponent={NextLink}
+                href={`/courses/${slug}/learn/steps/${nav?.previousId}`}
+                variant='outlined'
+                startIcon={<ArrowBack />}
+                sx={{
+                  borderColor: 'grey.300',
+                  color: 'text.secondary',
+                  '&:hover': {
+                    borderColor: 'grey.400',
+                    backgroundColor: 'grey.100',
+                  },
+                }}
+              >
+                Trước đó
+              </Button>
+            )}
+
+            {nav?.previousType === 'lesson' && (
+              <Button
+                LinkComponent={NextLink}
+                href={`/courses/${slug}/learn/lessons/${nav?.previousId}`}
+                variant='outlined'
+                startIcon={<ArrowBack />}
+                sx={{
+                  borderColor: 'grey.300',
+                  color: 'text.secondary',
+                  '&:hover': {
+                    borderColor: 'grey.400',
+                    backgroundColor: 'grey.100',
+                  },
+                }}
+              >
+                Quay lại
+              </Button>
+            )}
+
+            {nav?.previousType === 'exercise' && (
+              <Button
+                LinkComponent={NextLink}
+                href={`/courses/${slug}/learn/exercises/${nav?.previousId}`}
+                variant='outlined'
+                startIcon={<ArrowBack />}
+                sx={{
+                  borderColor: 'grey.300',
+                  color: 'text.secondary',
+                  '&:hover': {
+                    borderColor: 'grey.400',
+                    backgroundColor: 'grey.100',
+                  },
+                }}
+              >
+                Quay lại
+              </Button>
+            )}
+
+            {nav?.previousType === 'section' && (
+              <Button
+                LinkComponent={NextLink}
+                href={`/courses/${slug}/learn/sections/${nav?.previousId}`}
+                variant='outlined'
+                startIcon={<ArrowBack />}
+                sx={{
+                  borderColor: 'grey.300',
+                  color: 'text.secondary',
+                  '&:hover': {
+                    borderColor: 'grey.400',
+                    backgroundColor: 'grey.100',
+                  },
+                }}
+              >
+                Quay lại
+              </Button>
+            )}
+
+            {nav?.nextType === 'step' && (
+              <Button
+                LinkComponent={NextLink}
+                href={`/courses/${slug}/learn/steps/${nav?.nextId}`}
+                variant='contained'
+                endIcon={<ArrowForward />}
+                size='large'
+                sx={{
+                  backgroundColor: 'primary.main',
+                  '&:hover': { backgroundColor: 'primary.dark' },
+                }}
+              >
+                Tiếp theo
+              </Button>
+            )}
+            {nav?.nextType === 'lesson' && (
+              <Button
+                LinkComponent={NextLink}
+                href={`/courses/${slug}/learn/lessons/${nav?.nextId}`}
+                variant='contained'
+                endIcon={<ArrowForward />}
+                size='large'
+                sx={{
+                  backgroundColor: 'primary.main',
+                  '&:hover': { backgroundColor: 'primary.dark' },
+                }}
+              >
+                Tiếp theo
+              </Button>
+            )}
+
+            {nav?.nextType === 'exercise' && (
+              <Button
+                LinkComponent={NextLink}
+                href={`/courses/${slug}/learn/exercises/${nav?.nextId}`}
+                variant='contained'
+                endIcon={<ArrowForward />}
+                size='large'
+                sx={{
+                  backgroundColor: 'primary.main',
+                  '&:hover': { backgroundColor: 'primary.dark' },
+                }}
+              >
+                Tiếp theo
+              </Button>
+            )}
+
+            {nav?.nextType === 'section' && (
+              <Button
+                LinkComponent={NextLink}
+                href={`/courses/${slug}/learn/sections/${nav?.nextId}`}
+                variant='contained'
+                endIcon={<ArrowForward />}
+                size='large'
+                sx={{
+                  backgroundColor: 'primary.main',
+                  '&:hover': { backgroundColor: 'primary.dark' },
+                }}
+              >
+                Tiếp theo
+              </Button>
+            )}
           </Box>
         </Box>
       </Box>
