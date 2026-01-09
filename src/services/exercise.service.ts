@@ -26,6 +26,27 @@ export async function getExerciseByUnitId(unitId: string): Promise<any> {
   }
 }
 
+export async function getMyExerciseSubmission(exerciseId: string): Promise<any> {
+  try {
+    return await apiFetch(`/api/exercises/${exerciseId}/submissions/me`, {
+      auth: true,
+      credentials: 'include',
+      method: 'GET',
+    });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      return {
+        success: false,
+        error: {
+          message: 'Có lỗi xảy ra',
+          code: err.code,
+        },
+      };
+    }
+    throw err;
+  }
+}
+
 export async function updateExercise(
   unitId: string,
   payload: {

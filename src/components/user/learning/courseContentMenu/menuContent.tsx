@@ -169,7 +169,10 @@ export default function MenuContent({ course }: MenuContentProps) {
                               justifyContent={'space-between'}
                               alignItems={'center'}
                             >
-                              <Link href={`/courses/${course?.slug}/learn/lessons/${unit?.id}`} passHref>
+                              <Link
+                                href={`/courses/${course?.slug}/learn/${unit?.type === 'lesson' ? 'lessons' : 'exercises'}/${unit?.id}`}
+                                passHref
+                              >
                                 <ListItemText
                                   primary={
                                     unit.type === 'lesson'
