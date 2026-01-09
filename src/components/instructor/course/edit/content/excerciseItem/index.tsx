@@ -3,21 +3,17 @@
 import { useState } from 'react';
 import { Box, Paper, Typography, IconButton, Collapse, TextField, TextareaAutosize, Button } from '@mui/material';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import ArrowRightIcon from '@mui/icons-material/ArrowRight';
-import AddIcon from '@mui/icons-material/Add';
+import EditNoteIcon from '@mui/icons-material/EditNote';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import BuildOutlinedIcon from '@mui/icons-material/BuildOutlined';
 import QuizIcon from '@mui/icons-material/QuizOutlined';
 import CodeOutlinedIcon from '@mui/icons-material/CodeOutlined';
-import CloseIcon from '@mui/icons-material/Close';
-import UploadFileIcon from '@mui/icons-material/UploadFile';
-import { Section, Lesson, LessonStep, Unit } from '../../types';
-import ContentStep from '../contentStep';
+import { Section, Lesson, Unit } from '../../types';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { useParams, useRouter } from 'next/navigation';
 
 interface LessonItemProps {
   excercise: Unit;
@@ -29,6 +25,9 @@ interface LessonItemProps {
 export default function ExcerciseItem({ excercise, section, onDeleteUnit, onUpdateUnit }: LessonItemProps) {
   const [localTitle, setLocalTitle] = useState(excercise.title);
   const [isEditing, setIsEditing] = useState(false);
+
+  const router = useRouter();
+  const params = useParams();
 
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: excercise.id });
   const style = {
@@ -42,6 +41,10 @@ export default function ExcerciseItem({ excercise, section, onDeleteUnit, onUpda
       title: localTitle,
     });
     setIsEditing(false);
+  };
+
+  const handleEditContentClick = (unitId: string) => {
+    router.push(`/instructor/courses/${params.id}/edit/content/exercises/${unitId}`);
   };
 
   const getExcerciseIcon = () => {
@@ -123,6 +126,9 @@ export default function ExcerciseItem({ excercise, section, onDeleteUnit, onUpda
         </Box>
 
         <Box sx={{ display: 'flex', gap: 0.5 }}>
+          <IconButton size='small' onClick={() => handleEditContentClick(excercise.id)} title='Chỉnh sửa nội dung'>
+            <EditNoteIcon fontSize='small' />
+          </IconButton>
           <IconButton size='small' onClick={() => setIsEditing((prev) => !prev)} title='Chỉnh sửa bài học'>
             <EditIcon fontSize='small' />
           </IconButton>

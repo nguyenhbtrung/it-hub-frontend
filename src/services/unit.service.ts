@@ -97,3 +97,25 @@ export async function addStep(unitId: string, payload: AddStepPayload): Promise<
     throw err;
   }
 }
+
+export async function addMaterial(unitId: string, payload: { fileId: string }): Promise<any> {
+  try {
+    return await apiFetch(`/api/units/${unitId}/material`, {
+      auth: true,
+      credentials: 'include',
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      return {
+        success: false,
+        error: {
+          message: 'Có lỗi xảy ra',
+          code: err.code,
+        },
+      };
+    }
+    throw err;
+  }
+}
