@@ -11,6 +11,8 @@ import {
   School,
   Schedule,
 } from '@mui/icons-material';
+import { Suspense } from 'react';
+import Bio from '@/components/user/profile/bio';
 
 // Component Thẻ thống kê
 function StatCard({
@@ -114,16 +116,9 @@ export default function ProfilePage() {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
       {/* Phần giới thiệu */}
-      <Box>
-        <Typography variant='h5' fontWeight='bold' gutterBottom>
-          Tổng quan
-        </Typography>
-        <Typography variant='body1' color='text.secondary' component={'p'}>
-          Xin chào! Mình là sinh viên năm 3 chuyên ngành Kỹ thuật Phần mềm. Mình có niềm đam mê lớn với lập trình Web
-          Frontend và đang trong quá trình chinh phục ReactJS. Mục tiêu của mình là trở thành một Full-stack Developer
-          trong tương lai. Rất vui được kết nối và học hỏi cùng mọi người trên TechEdu Hub.
-        </Typography>
-      </Box>
+      <Suspense>
+        <Bio />
+      </Suspense>
 
       {/* Cấp độ danh tiếng và cách tính điểm */}
       <Grid container spacing={3}>
