@@ -18,7 +18,12 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 import SortIcon from '@mui/icons-material/Sort';
 import { CourseStats, Review } from '@/types/course';
 import CourseReviewsContent from './content';
-import { getCourseReviews, getCourseReviewStatistics } from '@/services/course.service';
+import {
+  getCourseReviews,
+  getCourseReviewStatistics,
+  getMyReviewOfTheCourse,
+  getUserEnrollmentStatus,
+} from '@/services/course.service';
 
 export interface ReviewStats {
   rating: number;
@@ -101,5 +106,19 @@ export default async function CourseReviews({ courseId }: CourseReviewsProps) {
   const reviewsRes = await getCourseReviews(courseId, { limit: 4 });
   const reviews = reviewsRes?.data || [];
 
-  return <CourseReviewsContent initialReview={reviews} reviewStats={reviewStats} courseId={courseId} />;
+  const enrollmentRes = await getUserEnrollmentStatus(courseId);
+  const enrollmentStatus = enrollmentRes?.data;
+
+  const myReviewRes = await getMyReviewOfTheCourse(courseId);
+  const myReview = myReviewRes?.data;
+
+  return (
+    <CourseReviewsContent
+      initialReview={reviews}
+      reviewStats={reviewStats}
+      courseId={courseId}
+      enrollmentStatus={enrollmentStatus}
+      myReview={myReview}
+    />
+  );
 }

@@ -17,9 +17,17 @@ interface CourseReviewsContentProps {
     distribution: { rating: number; count: number; percentage: number }[];
   };
   courseId: string;
+  enrollmentStatus: any;
+  myReview: any;
 }
 
-export default function CourseReviewsContent({ initialReview, reviewStats, courseId }: CourseReviewsContentProps) {
+export default function CourseReviewsContent({
+  initialReview,
+  reviewStats,
+  courseId,
+  enrollmentStatus,
+  myReview,
+}: CourseReviewsContentProps) {
   const [sortBy, setSortBy] = useState('createdAt');
   const [reviews, setReviews] = useState(initialReview || []);
   const ratingDistribution = reviewStats.distribution.reduce(
@@ -38,7 +46,10 @@ export default function CourseReviewsContent({ initialReview, reviewStats, cours
 
   return (
     <Section id='reviews'>
-      <YourReview />
+      {(enrollmentStatus?.status === 'active' || enrollmentStatus?.status === 'completed') && (
+        <YourReview myReview={myReview} courseId={courseId} />
+      )}
+
       <Suspense>
         <ReviewStatistics reviewStats={reviewStats} ratingDistribution={ratingDistribution} />
       </Suspense>
@@ -73,7 +84,7 @@ export default function CourseReviewsContent({ initialReview, reviewStats, cours
             <Box key={index}>
               <Stack direction='row' spacing={2} alignItems='flex-start'>
                 <Avatar src={review?.user?.avatar?.url} sx={{ width: 56, height: 56 }}>
-                  {review?.user?.fullname.charAt(0)}
+                  {review?.user?.fullname?.charAt(0)}
                 </Avatar>
 
                 <Box sx={{ flex: 1 }}>

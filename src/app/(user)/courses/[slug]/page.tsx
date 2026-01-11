@@ -65,9 +65,13 @@ async function CoursePageWrapper({ params }: Props) {
               </Suspense>
 
               {/* Instructor Section */}
-              <InstructorCard courseId={courseId} />
+              <Suspense>
+                <InstructorCard courseId={courseId} />
+              </Suspense>
 
-              <CourseReviews courseId={courseId} />
+              <Suspense>
+                <CourseReviews courseId={courseId} />
+              </Suspense>
             </Stack>
           </Grid>
         </Grid>

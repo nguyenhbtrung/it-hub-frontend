@@ -195,7 +195,7 @@ export async function getMyCreatedCourse({
   }
 }
 
-export async function getUserEnrollmentStatus(courseId: string): Promise<any> {
+export const getUserEnrollmentStatus = cache(async (courseId: string): Promise<any> => {
   try {
     return await apiFetch(`/api/courses/${courseId}/user-enrollment-status`, { auth: true });
   } catch (err) {
@@ -210,7 +210,7 @@ export async function getUserEnrollmentStatus(courseId: string): Promise<any> {
     }
     throw err;
   }
-}
+});
 
 export async function getCourseIdBySlug(slug: string): Promise<any> {
   try {
@@ -288,6 +288,25 @@ export const getCourseReviews = cache(
     }
   }
 );
+
+export const getMyReviewOfTheCourse = cache(async (id: string): Promise<any> => {
+  try {
+    return await apiFetch(`/api/courses/${id}/reviews/me`, {
+      auth: true,
+    });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      return {
+        success: false,
+        error: {
+          message: 'Có lỗi xảy ra',
+          code: err.code,
+        },
+      };
+    }
+    throw err;
+  }
+});
 
 export const getCourseDetail = cache(async (id: string, view: 'instructor' | 'student' = 'student'): Promise<any> => {
   try {
@@ -427,6 +446,29 @@ export async function addSection(courseId: string, payload: AddSectionPayload): 
     throw err;
   }
 }
+
+export const createOrUpdateReview = cache(
+  async (courseId: string, payload: { rating: number; comment?: string }): Promise<any> => {
+    try {
+      return await apiFetch(`/api/courses/${courseId}/reviews`, {
+        body: JSON.stringify(payload),
+        method: 'PUT',
+        auth: true,
+      });
+    } catch (err) {
+      if (err instanceof ApiError) {
+        return {
+          success: false,
+          error: {
+            message: 'Có lỗi xảy ra',
+            code: err.code,
+          },
+        };
+      }
+      throw err;
+    }
+  }
+);
 
 interface UpdateCourseDetailPayload {
   title: string;
