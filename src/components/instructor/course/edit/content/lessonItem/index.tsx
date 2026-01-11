@@ -215,7 +215,7 @@ export default function LessonItem({
               />
             </Box>
 
-            <Box>
+            {/* <Box>
               <Typography variant='subtitle2' gutterBottom>
                 Tài nguyên đính kèm
               </Typography>
@@ -245,7 +245,7 @@ export default function LessonItem({
                   </Typography>
                 </Box>
               </Box>
-            </Box>
+            </Box> */}
 
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, pt: 1 }}>
               <Button variant='outlined' onClick={() => setIsEditing(false)}>

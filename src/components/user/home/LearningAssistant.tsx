@@ -163,7 +163,7 @@ export default async function LearningAssistant() {
                 ))}
               </Stack>
 
-              <Button
+              {/* <Button
                 component={Link}
                 href='/assistant'
                 variant='contained'
@@ -173,7 +173,7 @@ export default async function LearningAssistant() {
                 sx={{ width: 180 }}
               >
                 Khám phá ngay
-              </Button>
+              </Button> */}
             </Stack>
           </Grid>
         </Grid>

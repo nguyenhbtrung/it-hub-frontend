@@ -4,6 +4,7 @@ import { apiFetch } from '@/lib/fetcher/apiFetch';
 import { ApiError } from '@/lib/errors/ApiError';
 import { CourseLevel, CourseStatus } from '@/types/course';
 import { JSONContent } from '@tiptap/react';
+import { cache } from 'react';
 
 export async function getNavigationByContentId(
   contentId: string,
@@ -228,7 +229,67 @@ export async function getCourseIdBySlug(slug: string): Promise<any> {
   }
 }
 
-export async function getCourseDetail(id: string, view: 'instructor' | 'student' = 'student'): Promise<any> {
+export const getCourseInstructor = cache(async (id: string): Promise<any> => {
+  try {
+    return await apiFetch(`/api/courses/${id}/instructor`, {
+      auth: true,
+    });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      return {
+        success: false,
+        error: {
+          message: 'Có lỗi xảy ra',
+          code: err.code,
+        },
+      };
+    }
+    throw err;
+  }
+});
+
+export const getCourseReviewStatistics = cache(async (id: string): Promise<any> => {
+  try {
+    return await apiFetch(`/api/courses/${id}/review-statistics`, {
+      auth: true,
+    });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      return {
+        success: false,
+        error: {
+          message: 'Có lỗi xảy ra',
+          code: err.code,
+        },
+      };
+    }
+    throw err;
+  }
+});
+
+export const getCourseReviews = cache(
+  async (id: string, query?: { page?: number; limit?: number; sortBy?: string; orderBy?: string }): Promise<any> => {
+    try {
+      return await apiFetch(`/api/courses/${id}/reviews`, {
+        query,
+        auth: true,
+      });
+    } catch (err) {
+      if (err instanceof ApiError) {
+        return {
+          success: false,
+          error: {
+            message: 'Có lỗi xảy ra',
+            code: err.code,
+          },
+        };
+      }
+      throw err;
+    }
+  }
+);
+
+export const getCourseDetail = cache(async (id: string, view: 'instructor' | 'student' = 'student'): Promise<any> => {
   try {
     return await apiFetch(`/api/courses/${id}`, {
       query: {
@@ -248,7 +309,7 @@ export async function getCourseDetail(id: string, view: 'instructor' | 'student'
     }
     throw err;
   }
-}
+});
 
 export async function getCourseContent(id: string, view: 'instructor' | 'student' = 'student'): Promise<any> {
   try {

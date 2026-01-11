@@ -18,11 +18,7 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 import SortIcon from '@mui/icons-material/Sort';
 import { CourseStats, Review } from '@/types/course';
 import CourseReviewsContent from './content';
-
-export interface CourseReviewsProps {
-  reviews: Review[];
-  courseStats: CourseStats;
-}
+import { getCourseReviews, getCourseReviewStatistics } from '@/services/course.service';
 
 export interface ReviewStats {
   rating: number;
@@ -88,15 +84,22 @@ const fetchCourseReviews = async () => {
   ];
 
   const reviewStats: ReviewStats = {
-    rating: 4.8,
+    rating: 4.843435,
     ratingCount: 1245,
   };
 
   return { reviews, reviewStats };
 };
 
-export default async function CourseReviews() {
-  const { reviews, reviewStats } = await fetchCourseReviews();
+interface CourseReviewsProps {
+  courseId: string;
+}
 
-  return <CourseReviewsContent reviews={reviews} reviewStats={reviewStats} />;
+export default async function CourseReviews({ courseId }: CourseReviewsProps) {
+  const reviewStatsRes = await getCourseReviewStatistics(courseId);
+  const reviewStats = reviewStatsRes?.data;
+  const reviewsRes = await getCourseReviews(courseId, { limit: 4 });
+  const reviews = reviewsRes?.data || [];
+
+  return <CourseReviewsContent initialReview={reviews} reviewStats={reviewStats} courseId={courseId} />;
 }

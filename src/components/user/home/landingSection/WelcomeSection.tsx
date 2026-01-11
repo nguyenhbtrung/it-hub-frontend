@@ -7,7 +7,7 @@ import { auth } from '@/auth';
 import { jwtPayload } from '@/types/jwt';
 
 async function getUserLearningData(userId: string): Promise<courseProgress[]> {
-  await new Promise((resolve) => setTimeout(resolve, 3000));
+  await new Promise((resolve) => setTimeout(resolve, 300));
   return userId === '1'
     ? [
         {
@@ -48,10 +48,11 @@ export default async function WelcomeSection() {
   const session = await auth();
   if (!session) return;
 
-  const user: jwtPayload = { userId: '1', name: 'John', role: 'instructor' };
+  const user: jwtPayload = { userId: '1', name: 'Trung', role: 'instructor' };
 
   const learning = await getUserLearningData(user.userId.toString());
-  const hasCourses = learning.length > 0;
+  // const hasCourses = learning.length > 0;
+  const hasCourses = false;
 
   return (
     <Container maxWidth='xl'>

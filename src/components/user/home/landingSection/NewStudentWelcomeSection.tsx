@@ -23,21 +23,25 @@ const topics = [
     icon: <CodeIcon />,
     label: 'Lập trình Web',
     image: '/images/topics/webdev.png',
+    href: '/categories/web-dev',
   },
   {
     icon: <DataObjectIcon />,
     label: 'Khoa học dữ liệu',
     image: '/images/topics/datascience.png',
+    href: '/categories/data-science',
   },
   {
     icon: <MemoryIcon />,
     label: 'AI & Machine Learning',
     image: '/images/topics/ai.png',
+    href: '/categories/data-science',
   },
   {
     icon: <BrushIcon />,
     label: 'UI/UX Design',
     image: '/images/topics/uiux.png',
+    href: '/categories/design',
   },
 ];
 
@@ -121,7 +125,7 @@ export default function NewStudentWelcomeSection({ user }: NewStudentWelcomeSect
             </Box>
           </Stack>
 
-          <Button
+          {/* <Button
             variant='contained'
             size='large'
             startIcon={<ExploreIcon />}
@@ -132,7 +136,7 @@ export default function NewStudentWelcomeSection({ user }: NewStudentWelcomeSect
             }}
           >
             Khám phá tất cả khóa học
-          </Button>
+          </Button> */}
         </Box>
 
         {/* RIGHT  */}

@@ -186,7 +186,7 @@ export default function ExerciseEditor({ exercise, courseId, accessToken }: Lect
                 />
               </Box>
 
-              <Box sx={{ display: 'flex', gap: 4, alignItems: 'flex-end' }}>
+              {/* <Box sx={{ display: 'flex', gap: 4, alignItems: 'flex-end' }}>
                 <Box sx={{ flex: 1 }}>
                   <Typography variant='subtitle2' sx={{ mb: 1, fontWeight: 600 }}>
                     Điểm đạt (0-10)
@@ -218,7 +218,7 @@ export default function ExerciseEditor({ exercise, courseId, accessToken }: Lect
                     />
                   )}
                 </Box>
-              </Box>
+              </Box> */}
             </Paper>
 
             <Paper sx={{ p: 3 }}>

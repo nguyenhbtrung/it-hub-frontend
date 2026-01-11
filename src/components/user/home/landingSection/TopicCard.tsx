@@ -1,10 +1,13 @@
 'use client';
 
 import { Box, Typography, Paper } from '@mui/material';
+import Link from 'next/link';
 
 export function TopicCard({ topic }: any) {
   return (
     <Box
+      component={Link}
+      href={topic.href}
       sx={{
         position: 'relative',
         height: 280,

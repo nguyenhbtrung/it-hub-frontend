@@ -13,7 +13,7 @@ export default function HomePage() {
       </Suspense>
       <Container maxWidth='xl'>
         <FeaturedCourses />
-        <UpcomingContests />
+        {/* <UpcomingContests /> */}
       </Container>
       <Suspense>
         <LearningAssistant />

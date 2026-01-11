@@ -9,6 +9,7 @@ import { fetchCourse } from '@/lib/utils/fakeApi';
 import CourseOverview from '@/components/user/course/courseOverview';
 import { Suspense } from 'react';
 import { getCourseContentOutline, getCourseIdBySlug } from '@/services/course.service';
+import CourseTagsSection from '@/components/user/course/courseTagsSection';
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -25,14 +26,15 @@ export default function CoursePage({ params }: Props) {
 async function CoursePageWrapper({ params }: Props) {
   const slug = (await params).slug;
   const idRes = await getCourseIdBySlug(slug);
+  const courseId = idRes?.data || '';
   const course = await fetchCourse(slug);
-  const courseContentOutlinePromise = getCourseContentOutline(idRes?.data || '');
+  const courseContentOutlinePromise = getCourseContentOutline(courseId);
   return (
     <>
       {/* Header Section */}
       <Box sx={{ mb: 6 }}>
         <Suspense>
-          <CourseHeader courseId={idRes?.data || ''} />
+          <CourseHeader courseId={courseId} />
         </Suspense>
       </Box>
       <Container
@@ -47,7 +49,7 @@ async function CoursePageWrapper({ params }: Props) {
 
               {/* Course Overview */}
               <Suspense>
-                <CourseOverview courseId={idRes?.data || ''} />
+                <CourseOverview courseId={courseId} />
               </Suspense>
 
               {/* Course Content Section */}
@@ -58,33 +60,14 @@ async function CoursePageWrapper({ params }: Props) {
               </Section>
 
               {/* Tags Section */}
-              {/* <Card sx={{ p: 3, borderRadius: 2, boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}> */}
-              <Box>
-                <Typography variant='h5' fontWeight={600} gutterBottom>
-                  Chủ đề liên quan
-                </Typography>
-                <Stack direction='row' flexWrap='wrap' gap={1}>
-                  {course.tags.map((tag) => (
-                    <Chip
-                      key={tag.id}
-                      label={`#${tag.name}`}
-                      variant='outlined'
-                      sx={{
-                        borderRadius: 2,
-                        '&:hover': {
-                          backgroundColor: 'primary.light',
-                          color: 'white',
-                        },
-                      }}
-                    />
-                  ))}
-                </Stack>
-              </Box>
+              <Suspense>
+                <CourseTagsSection courseId={courseId} />
+              </Suspense>
 
               {/* Instructor Section */}
-              <InstructorCard instructor={course.instructor} />
+              <InstructorCard courseId={courseId} />
 
-              <CourseReviews />
+              <CourseReviews courseId={courseId} />
             </Stack>
           </Grid>
         </Grid>

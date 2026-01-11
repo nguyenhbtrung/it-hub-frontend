@@ -181,7 +181,7 @@ export default async function CategoryHeader({ id }: CategoryHeaderProps) {
                     color: 'text.primary',
                   }}
                 >
-                  {data?.avgRating || 0}
+                  {(data?.avgRating || 0).toFixed(1)}
                 </Typography>
                 <Star sx={{ color: 'warning.main' }} />
               </Stack>

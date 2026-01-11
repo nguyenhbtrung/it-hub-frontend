@@ -17,6 +17,7 @@ export default function SearchBar() {
 
   return (
     <TextField
+      id='search-bar-input'
       size='small'
       placeholder='Bạn muốn học gì?'
       variant='outlined'

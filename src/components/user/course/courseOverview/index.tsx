@@ -47,7 +47,7 @@ export default async function CourseOverview({ courseId }: { courseId: string })
             Bạn sẽ học được
           </Typography>
           <List sx={{ color: 'text.secondary' }}>
-            {course?.keyTakeaways?.map((item: string[], index: Key | null | undefined) => (
+            {course?.keyTakeaway?.map((item: string[], index: Key | null | undefined) => (
               <ListItem key={index} sx={{ py: 0.5 }}>
                 <ListItemIcon sx={{ minWidth: 32 }}>
                   <CheckIcon color='secondary' fontSize='small' />

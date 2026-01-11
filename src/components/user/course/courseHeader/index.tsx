@@ -88,7 +88,7 @@ export default async function CourseHeader({ courseId }: { courseId: string }) {
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <StarIcon sx={{ color: '#FFD700', mr: 0.5 }} />
                   <Typography variant='body1' fontWeight={600}>
-                    {course?.avgRating}
+                    {course?.avgRating?.toFixed(1)}
                   </Typography>
                 </Box>
                 <Typography variant='body2' sx={{ opacity: 0.9 }}>

@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Stack, Typography, Rating, LinearProgress } from '@mui/material';
 
 type ReviewSummaryProps = {
-  reviewStats: { rating: number; ratingCount: number };
+  reviewStats: { avgRating: number; reviewCount: number };
   ratingDistribution: { [key: number]: number };
 };
 
@@ -17,11 +17,11 @@ export default function ReviewStatistics({ reviewStats, ratingDistribution }: Re
         <Stack direction='row' spacing={3} alignItems='center'>
           <Box textAlign='center'>
             <Typography variant='h3' fontWeight={800} color='primary'>
-              {reviewStats.rating}
+              {reviewStats?.avgRating.toFixed(1)}
             </Typography>
-            <Rating value={reviewStats.rating} precision={0.1} readOnly size='large' />
+            <Rating value={reviewStats.reviewCount} precision={0.1} readOnly size='large' />
             <Typography variant='body2' color='text.secondary'>
-              {reviewStats.ratingCount} đánh giá
+              {reviewStats.reviewCount} đánh giá
             </Typography>
           </Box>
 

@@ -1,88 +1,66 @@
-// components/user/course/courseReviews.tsx - Component mới
 'use client';
-import React, { useState } from 'react';
-import {
-  Card,
-  CardContent,
-  Typography,
-  Box,
-  Avatar,
-  Stack,
-  Rating,
-  Button,
-  TextField,
-  Divider,
-  Chip,
-  IconButton,
-} from '@mui/material';
-import ThumbUpIcon from '@mui/icons-material/ThumbUp';
-import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
+import React, { Suspense, useEffect, useState } from 'react';
+import { Typography, Box, Avatar, Stack, Rating, Button, Divider, Chip } from '@mui/material';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import SortIcon from '@mui/icons-material/Sort';
 import { Review } from '@/types/course';
-import { ReviewStats } from '.';
 import Section from '@/components/common/section';
 import YourReview from './yourReview';
 import ReviewStatistics from './reviewStatistics';
+import { getCourseReviews } from '@/services/course.service';
 
 interface CourseReviewsContentProps {
-  reviews: Review[];
-  reviewStats: ReviewStats;
+  initialReview: any;
+  reviewStats: {
+    avgRating: number;
+    reviewCount: number;
+    distribution: { rating: number; count: number; percentage: number }[];
+  };
+  courseId: string;
 }
 
-export default function CourseReviewsContent({ reviews, reviewStats }: CourseReviewsContentProps) {
-  const [sortBy, setSortBy] = useState<'recent' | 'helpful'>('recent');
-  const [likedReviews, setLikedReviews] = useState<Set<string>>(new Set());
+export default function CourseReviewsContent({ initialReview, reviewStats, courseId }: CourseReviewsContentProps) {
+  const [sortBy, setSortBy] = useState('createdAt');
+  const [reviews, setReviews] = useState(initialReview || []);
+  const ratingDistribution = reviewStats.distribution.reduce(
+    (acc, item) => {
+      acc[item.rating] = item.percentage;
+      return acc;
+    },
+    {} as Record<number, number>
+  );
 
-  const handleLike = (reviewId: string) => {
-    const newLiked = new Set(likedReviews);
-    if (newLiked.has(reviewId)) {
-      newLiked.delete(reviewId);
-    } else {
-      newLiked.add(reviewId);
-    }
-    setLikedReviews(newLiked);
-  };
-
-  const sortedReviews = [...reviews].sort((a, b) => {
-    if (sortBy === 'recent') {
-      return new Date(b.date).getTime() - new Date(a.date).getTime();
-    } else {
-      return b.likes - a.likes;
-    }
-  });
-
-  const ratingDistribution = {
-    5: Math.round((reviews.filter((r) => r.rating === 5).length / reviews.length) * 100),
-    4: Math.round((reviews.filter((r) => r.rating === 4).length / reviews.length) * 100),
-    3: Math.round((reviews.filter((r) => r.rating === 3).length / reviews.length) * 100),
-    2: Math.round((reviews.filter((r) => r.rating === 2).length / reviews.length) * 100),
-    1: Math.round((reviews.filter((r) => r.rating === 1).length / reviews.length) * 100),
+  const handleChangeSortBy = async (sortBy: string) => {
+    setSortBy(sortBy);
+    const res = await getCourseReviews(courseId, { limit: 4, sortBy });
+    setReviews(res?.data || []);
   };
 
   return (
     <Section id='reviews'>
       <YourReview />
-      <ReviewStatistics reviewStats={reviewStats} ratingDistribution={ratingDistribution} />
+      <Suspense>
+        <ReviewStatistics reviewStats={reviewStats} ratingDistribution={ratingDistribution} />
+      </Suspense>
 
       {/* Sort options */}
       <Stack direction='row' spacing={2} alignItems='center' sx={{ mb: 3 }}>
         <SortIcon color='action' />
         <Button
-          variant={sortBy === 'recent' ? 'contained' : 'outlined'}
+          variant={sortBy === 'createdAt' ? 'contained' : 'outlined'}
           size='small'
-          onClick={() => setSortBy('recent')}
+          onClick={() => handleChangeSortBy('createdAt')}
           sx={{ borderRadius: 2 }}
         >
           Mới nhất
         </Button>
         <Button
-          variant={sortBy === 'helpful' ? 'contained' : 'outlined'}
+          variant={sortBy === 'rating' ? 'contained' : 'outlined'}
           size='small'
-          onClick={() => setSortBy('helpful')}
+          onClick={() => handleChangeSortBy('rating')}
           sx={{ borderRadius: 2 }}
         >
-          Hữu ích nhất
+          Đánh giá
         </Button>
       </Stack>
 
@@ -90,51 +68,36 @@ export default function CourseReviewsContent({ reviews, reviewStats }: CourseRev
 
       {/* Reviews List */}
       <Stack spacing={4}>
-        {sortedReviews.map((review) => (
-          <Box key={review.id}>
-            <Stack direction='row' spacing={2} alignItems='flex-start'>
-              <Avatar src={review.user.avatar} sx={{ width: 56, height: 56 }}>
-                {review.user.name.charAt(0)}
-              </Avatar>
+        {reviews?.length &&
+          reviews.map((review: any, index: number) => (
+            <Box key={index}>
+              <Stack direction='row' spacing={2} alignItems='flex-start'>
+                <Avatar src={review?.user?.avatar?.url} sx={{ width: 56, height: 56 }}>
+                  {review?.user?.fullname.charAt(0)}
+                </Avatar>
 
-              <Box sx={{ flex: 1 }}>
-                <Stack direction='row' spacing={1} alignItems='center' sx={{ mb: 1 }}>
-                  <Typography variant='subtitle1' fontWeight={600}>
-                    {review.user.name}
+                <Box sx={{ flex: 1 }}>
+                  <Stack direction='row' spacing={1} alignItems='center' sx={{ mb: 1 }}>
+                    <Typography variant='subtitle1' fontWeight={600}>
+                      {review?.user?.fullname}
+                    </Typography>
+                  </Stack>
+
+                  <Stack direction='row' spacing={1} alignItems='center' sx={{ mb: 1 }}>
+                    <Rating value={review?.rating} size='small' readOnly />
+                    <Typography variant='body2' color='text.secondary'>
+                      {new Date(review?.createdAt).toLocaleDateString('vi-VN')}
+                    </Typography>
+                  </Stack>
+
+                  <Typography variant='body1' sx={{ mb: 2, lineHeight: 1.6 }}>
+                    {review?.comment}
                   </Typography>
-                  {review.isVerified && (
-                    <Chip icon={<VerifiedIcon />} label='Đã xác thực' size='small' color='success' variant='outlined' />
-                  )}
-                </Stack>
-
-                <Stack direction='row' spacing={1} alignItems='center' sx={{ mb: 1 }}>
-                  <Rating value={review.rating} size='small' readOnly />
-                  <Typography variant='body2' color='text.secondary'>
-                    {new Date(review.date).toLocaleDateString('vi-VN')}
-                  </Typography>
-                </Stack>
-
-                <Typography variant='body1' sx={{ mb: 2, lineHeight: 1.6 }}>
-                  {review.comment}
-                </Typography>
-
-                <Stack direction='row' spacing={2} alignItems='center'>
-                  <IconButton
-                    size='small'
-                    onClick={() => handleLike(review.id)}
-                    color={likedReviews.has(review.id) ? 'primary' : 'default'}
-                  >
-                    {likedReviews.has(review.id) ? <ThumbUpIcon /> : <ThumbUpOutlinedIcon />}
-                  </IconButton>
-                  <Typography variant='body2' color='text.secondary'>
-                    {review.likes + (likedReviews.has(review.id) ? 1 : 0)} người thấy hữu ích
-                  </Typography>
-                </Stack>
-              </Box>
-            </Stack>
-            <Divider sx={{ mt: 3 }} />
-          </Box>
-        ))}
+                </Box>
+              </Stack>
+              <Divider sx={{ mt: 3 }} />
+            </Box>
+          ))}
       </Stack>
 
       {/* Load more button */}
@@ -143,7 +106,6 @@ export default function CourseReviewsContent({ reviews, reviewStats }: CourseRev
           Xem thêm đánh giá
         </Button>
       </Box>
-      {/* </CardContent> */}
     </Section>
   );
 }
