@@ -22,7 +22,7 @@ async function EditProfileFormWrapper() {
   const accessToken = session?.accessToken || '';
   return (
     <>
-      <EditProfileForm initialData={user} accessToken={accessToken} />;
+      <EditProfileForm initialData={user} accessToken={accessToken} />
     </>
   );
 }

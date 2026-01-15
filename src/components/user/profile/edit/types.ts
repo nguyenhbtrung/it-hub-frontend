@@ -1,13 +1,13 @@
 export interface UserProfile {
   id: string;
-  fullName: string;
+  fullname: string;
   role: 'student' | 'instructor';
   school: string;
   specialized: string;
   bio: string;
-  github: string;
-  linkedin: string;
-  website: string;
+  githubUrl: string;
+  linkedinUrl: string;
+  websiteUrl: string;
   avatarUrl: string;
 }
 

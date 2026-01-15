@@ -44,7 +44,7 @@ export const updateMyProfile = async (payload: {
       return {
         success: false,
         error: {
-          message: 'Có lỗi xảy ra',
+          message: 'Lưu thay đổi không thành công, vui lòng thử lại',
           code: err.code,
         },
       };

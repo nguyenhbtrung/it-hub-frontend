@@ -11,11 +11,11 @@ interface SocialLinkFieldProps {
 export default function SocialLinkField({ field, value, onChange }: SocialLinkFieldProps) {
   const getIcon = () => {
     switch (field.name) {
-      case 'github':
+      case 'githubUrl':
         return <GitHub />;
-      case 'linkedin':
+      case 'linkedinUrl':
         return <LinkedIn />;
-      case 'website':
+      case 'websiteUrl':
         return <Language />;
       default:
         return null;
@@ -38,8 +38,10 @@ export default function SocialLinkField({ field, value, onChange }: SocialLinkFi
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder={field.placeholder}
-      InputProps={{
-        startAdornment: <InputAdornment position='start'>{getIcon()}</InputAdornment>,
+      slotProps={{
+        input: {
+          startAdornment: <InputAdornment position='start'>{getIcon()}</InputAdornment>,
+        },
       }}
       sx={{
         '& .MuiOutlinedInput-root': {

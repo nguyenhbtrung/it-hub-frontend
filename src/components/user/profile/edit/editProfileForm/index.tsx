@@ -26,17 +26,18 @@ import { uploadFile } from '@/services/client/file.service';
 import { deleteFile } from '@/services/file.service';
 import { updateMyProfile } from '@/services/user.service';
 import { useRouter } from 'next/navigation';
+import { useNotification } from '@/contexts/notificationContext';
 
 // Schema validation với Zod
 const profileSchema = z.object({
-  fullName: z.string().min(1, 'Họ và tên là bắt buộc'),
+  fullname: z.string().min(1, 'Họ và tên là bắt buộc'),
   role: z.string().min(1, 'Vai trò là bắt buộc'),
   school: z.string().min(1, 'Trường/Đơn vị là bắt buộc'),
   specialized: z.string().min(1, 'Chuyên ngành là bắt buộc'),
   bio: z.string().max(500, 'Giới thiệu không được quá 500 ký tự'),
-  github: z.string().url('URL không hợp lệ').optional().or(z.literal('')),
-  linkedin: z.string().url('URL không hợp lệ').optional().or(z.literal('')),
-  website: z.string().url('URL không hợp lệ').optional().or(z.literal('')),
+  githubUrl: z.url('URL không hợp lệ').optional().or(z.literal('')),
+  linkedinUrl: z.url('URL không hợp lệ').optional().or(z.literal('')),
+  websiteUrl: z.url('URL không hợp lệ').optional().or(z.literal('')),
 });
 
 type ProfileFormData = z.infer<typeof profileSchema>;
@@ -49,8 +50,9 @@ interface EditProfileFormProps {
 export default function EditProfileForm({ initialData, accessToken }: EditProfileFormProps) {
   const [avatarFileId, setAvatarFileId] = useState<string | null>(initialData?.avatar?.id);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
   const [bioLength, setBioLength] = useState(initialData?.profile?.bio?.length || 0);
+
+  const { notify } = useNotification();
 
   const {
     control,
@@ -61,14 +63,14 @@ export default function EditProfileForm({ initialData, accessToken }: EditProfil
   } = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      fullName: initialData?.fullname,
+      fullname: initialData?.fullname,
       role: initialData?.role,
       school: initialData?.profile?.school,
       specialized: initialData?.profile?.specialized,
       bio: initialData?.profile?.bio,
-      github: initialData?.profile?.githubUrl,
-      linkedin: initialData?.profile?.linkedinUrl,
-      website: initialData?.profile?.websiteUrl,
+      githubUrl: initialData?.profile?.githubUrl,
+      linkedinUrl: initialData?.profile?.linkedinUrl,
+      websiteUrl: initialData?.profile?.websiteUrl,
     },
   });
 
@@ -86,7 +88,6 @@ export default function EditProfileForm({ initialData, accessToken }: EditProfil
       }
       const res = await uploadFile(file, true, accessToken);
       if (res?.success) {
-        console.log('>>> file res', res?.data);
         const profileRes = await updateMyProfile({ avatarId: res?.data?.id });
         if (profileRes?.success) {
           setAvatarFileId(res?.data?.id);
@@ -111,14 +112,19 @@ export default function EditProfileForm({ initialData, accessToken }: EditProfil
     try {
       console.log('Submitting data:', data);
 
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const res = await updateMyProfile(data);
+      if (!res?.success) throw new Error(res?.error?.message);
 
-      setSubmitSuccess(true);
+      reset(data);
+      notify('success', 'Thay đổi đã được lưu thành công!', { vertical: 'top', horizontal: 'right' });
       setIsSubmitting(false);
-
-      setTimeout(() => setSubmitSuccess(false), 3000);
-    } catch (error) {
+      router.refresh();
+    } catch (error: any) {
       console.error('Error submitting form:', error);
+      notify('error', error?.message || 'Lưu thay đổi không thành công, vui lòng thử lại', {
+        vertical: 'top',
+        horizontal: 'right',
+      });
       setIsSubmitting(false);
     }
   };
@@ -231,12 +237,6 @@ export default function EditProfileForm({ initialData, accessToken }: EditProfil
 
   return (
     <Card component='form' onSubmit={handleSubmit(onSubmit)} sx={{ p: 3 }}>
-      {submitSuccess && (
-        <Alert severity='success' sx={{ mb: 3 }}>
-          Thay đổi đã được lưu thành công!
-        </Alert>
-      )}
-
       <AvatarUpload
         initialAvatarUrl={initialData?.avatar?.url}
         onAvatarUpload={handleAvatarChange}

@@ -2,21 +2,21 @@ import { UserProfile, FormField } from './types';
 
 export const defaultUserProfile: UserProfile = {
   id: '1',
-  fullName: 'Nguyễn Văn A',
+  fullname: 'Nguyễn Văn A',
   role: 'student',
   school: 'Đại học Bách Khoa HN',
   specialized: 'Kỹ thuật Phần mềm',
   bio: 'Xin chào! Mình là sinh viên năm 3 chuyên ngành Kỹ thuật Phần mềm. Mình có niềm đam mê lớn với lập trình Web Frontend và đang trong quá trình chinh phục ReactJS. Mục tiêu của mình là trở thành một Full-stack Developer trong tương lai.',
-  github: 'github.com/nguyenvana',
-  linkedin: 'linkedin.com/in/nguyenvana',
-  website: 'nguyenvana.dev',
+  githubUrl: 'github.com/nguyenvana',
+  linkedinUrl: 'linkedin.com/in/nguyenvana',
+  websiteUrl: 'nguyenvana.dev',
   avatarUrl:
     'https://lh3.googleusercontent.com/aida-public/AB6AXuCpPIPcXBFHuLDiDz_oTGId2Jatc4x-RkilM0ncAvP-iacoDfD26uO5u5Mriwni0seDqC4fS72WQyErL4AMD0nfncG-b2cvRb2GAmqs8njDMwt9h-4oumNInnrl5oV6r1d0K6u5PnWkKn_u3mc5GI5ZCsX_LffguL3YaQQQfC1PMQPzET_oBdrwz3mrwMa3MERitHmETUQ1IOwvk_O8rQ6WkSRuwhMJkhjMaP0-B07is55DoUSI3mzM0P-znC3yAj6-Z7n7hLG4rYo',
 };
 
 export const formFields: FormField[] = [
   {
-    name: 'fullName',
+    name: 'fullname',
     label: 'Họ và tên',
     type: 'text',
     placeholder: 'Nhập họ tên đầy đủ',
@@ -55,19 +55,19 @@ export const formFields: FormField[] = [
     placeholder: 'Chia sẻ một chút về bản thân bạn...',
   },
   {
-    name: 'github',
+    name: 'githubUrl',
     label: 'GitHub',
     type: 'url',
     placeholder: 'https://github.com/username',
   },
   {
-    name: 'linkedin',
+    name: 'linkedinUrl',
     label: 'LinkedIn',
     type: 'url',
     placeholder: 'https://linkedin.com/in/username',
   },
   {
-    name: 'website',
+    name: 'websiteUrl',
     label: 'Website',
     type: 'url',
     placeholder: 'https://yourwebsite.com',
