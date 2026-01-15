@@ -6,10 +6,11 @@ import { CameraAlt, Delete } from '@mui/icons-material';
 
 interface AvatarUploadProps {
   initialAvatarUrl: string;
-  onAvatarChange: (file: File | null) => void;
+  onAvatarUpload: (file: File) => Promise<string | null>;
+  onAvatarRemove: () => Promise<void>;
 }
 
-export default function AvatarUpload({ initialAvatarUrl, onAvatarChange }: AvatarUploadProps) {
+export default function AvatarUpload({ initialAvatarUrl, onAvatarUpload, onAvatarRemove }: AvatarUploadProps) {
   const [avatarUrl, setAvatarUrl] = useState(initialAvatarUrl);
   const [isHovered, setIsHovered] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -19,7 +20,7 @@ export default function AvatarUpload({ initialAvatarUrl, onAvatarChange }: Avata
     fileInputRef.current?.click();
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       // Kiểm tra kích thước file (max 5MB)
@@ -37,23 +38,27 @@ export default function AvatarUpload({ initialAvatarUrl, onAvatarChange }: Avata
 
       setIsUploading(true);
 
+      const newAvatarUrl = await onAvatarUpload(file);
+      if (newAvatarUrl) setAvatarUrl(newAvatarUrl);
+      setIsUploading(false);
+
       // Giả lập upload
-      setTimeout(() => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const result = e.target?.result as string;
-          setAvatarUrl(result);
-          onAvatarChange(file);
-          setIsUploading(false);
-        };
-        reader.readAsDataURL(file);
-      }, 1000);
+      // setTimeout(() => {
+      //   const reader = new FileReader();
+      //   reader.onload = (e) => {
+      //     const result = e.target?.result as string;
+      //     setAvatarUrl(result);
+      //     onAvatarChange(file);
+      //     setIsUploading(false);
+      //   };
+      //   reader.readAsDataURL(file);
+      // }, 1000);
     }
   };
 
   const handleRemoveAvatar = () => {
-    setAvatarUrl(''); // Hoặc URL ảnh mặc định
-    onAvatarChange(null);
+    onAvatarRemove();
+    setAvatarUrl('');
   };
 
   return (

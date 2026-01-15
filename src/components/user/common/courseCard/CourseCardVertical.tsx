@@ -119,7 +119,7 @@ export function CourseCardVertical({ course }: CourseCardProps) {
               </Stack>
               <Stack direction='row' alignItems='center' spacing={0.5} sx={{ flexShrink: 0 }}>
                 <StarIcon fontSize='small' sx={{ color: '#FFD700', fill: '#FFD700' }} />
-                <Typography variant='body2'>{course?.avgRating}</Typography>
+                <Typography variant='body2'>{course?.avgRating?.toFixed(1)}</Typography>
               </Stack>
               <Stack direction='row' alignItems='center' spacing={0.5} sx={{ flexShrink: 0 }}>
                 <AccessTimeIcon fontSize='small' />

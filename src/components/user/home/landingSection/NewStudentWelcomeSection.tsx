@@ -46,7 +46,7 @@ const topics = [
 ];
 
 interface NewStudentWelcomeSectionProps {
-  user: jwtPayload;
+  user: any;
 }
 
 export default function NewStudentWelcomeSection({ user }: NewStudentWelcomeSectionProps) {
@@ -54,7 +54,7 @@ export default function NewStudentWelcomeSection({ user }: NewStudentWelcomeSect
   const isSmallMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const isMedium = useMediaQuery(theme.breakpoints.down('lg'));
 
-  const name = user.name || 'Sinh viên';
+  const name = user?.name || user?.fullname || 'Sinh viên';
 
   const swiperConfig = {
     slidesPerView: isSmallMobile ? 1 : isMedium ? 2 : 3,
@@ -102,10 +102,11 @@ export default function NewStudentWelcomeSection({ user }: NewStudentWelcomeSect
             justifyContent={{ xs: 'center', md: 'flex-start' }}
           >
             <Avatar
+              src={user?.avatar?.url || null}
               sx={{
                 width: { xs: 56, sm: 64, md: 64 },
                 height: { xs: 56, sm: 64, md: 64 },
-                bgcolor: 'primary.main',
+                // bgcolor: 'primary.main',
               }}
             >
               {name.charAt(0).toUpperCase()}

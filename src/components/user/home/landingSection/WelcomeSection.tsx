@@ -5,6 +5,7 @@ import NewStudentWelcomeSection from './NewStudentWelcomeSection';
 import { courseProgress } from '@/types/course';
 import { auth } from '@/auth';
 import { jwtPayload } from '@/types/jwt';
+import { getMyProfile } from '@/services/user.service';
 
 async function getUserLearningData(userId: string): Promise<courseProgress[]> {
   await new Promise((resolve) => setTimeout(resolve, 300));
@@ -53,6 +54,7 @@ export default async function WelcomeSection() {
   const learning = await getUserLearningData(user.userId.toString());
   // const hasCourses = learning.length > 0;
   const hasCourses = false;
+  const res = await getMyProfile();
 
   return (
     <Container maxWidth='xl'>
@@ -66,7 +68,7 @@ export default async function WelcomeSection() {
         {hasCourses ? (
           <EnrolledWelcomeSection user={user} learning={learning} />
         ) : (
-          <NewStudentWelcomeSection user={user} />
+          <NewStudentWelcomeSection user={res?.data || user} />
         )}
       </Box>
     </Container>

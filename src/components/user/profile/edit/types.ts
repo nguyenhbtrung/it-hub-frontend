@@ -3,7 +3,7 @@ export interface UserProfile {
   fullName: string;
   role: 'student' | 'instructor';
   school: string;
-  major: string;
+  specialized: string;
   bio: string;
   github: string;
   linkedin: string;

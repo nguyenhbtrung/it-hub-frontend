@@ -20,15 +20,19 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import AvatarUpload from '../avatarUpload';
 import SocialLinkField from '../socialLinkField';
-import { UserProfile, FormField } from '../types';
-import { formFields, defaultUserProfile } from '../data';
+import { FormField } from '../types';
+import { formFields } from '../data';
+import { uploadFile } from '@/services/client/file.service';
+import { deleteFile } from '@/services/file.service';
+import { updateMyProfile } from '@/services/user.service';
+import { useRouter } from 'next/navigation';
 
 // Schema validation với Zod
 const profileSchema = z.object({
   fullName: z.string().min(1, 'Họ và tên là bắt buộc'),
   role: z.string().min(1, 'Vai trò là bắt buộc'),
   school: z.string().min(1, 'Trường/Đơn vị là bắt buộc'),
-  major: z.string().min(1, 'Chuyên ngành là bắt buộc'),
+  specialized: z.string().min(1, 'Chuyên ngành là bắt buộc'),
   bio: z.string().max(500, 'Giới thiệu không được quá 500 ký tự'),
   github: z.string().url('URL không hợp lệ').optional().or(z.literal('')),
   linkedin: z.string().url('URL không hợp lệ').optional().or(z.literal('')),
@@ -38,14 +42,15 @@ const profileSchema = z.object({
 type ProfileFormData = z.infer<typeof profileSchema>;
 
 interface EditProfileFormProps {
-  initialData?: UserProfile;
+  initialData?: any;
+  accessToken: string;
 }
 
-export default function EditProfileForm({ initialData = defaultUserProfile }: EditProfileFormProps) {
-  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+export default function EditProfileForm({ initialData, accessToken }: EditProfileFormProps) {
+  const [avatarFileId, setAvatarFileId] = useState<string | null>(initialData?.avatar?.id);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
-  const [bioLength, setBioLength] = useState(initialData.bio.length);
+  const [bioLength, setBioLength] = useState(initialData?.profile?.bio?.length || 0);
 
   const {
     control,
@@ -56,25 +61,48 @@ export default function EditProfileForm({ initialData = defaultUserProfile }: Ed
   } = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      fullName: initialData.fullName,
-      role: initialData.role,
-      school: initialData.school,
-      major: initialData.major,
-      bio: initialData.bio,
-      github: initialData.github,
-      linkedin: initialData.linkedin,
-      website: initialData.website,
+      fullName: initialData?.fullname,
+      role: initialData?.role,
+      school: initialData?.profile?.school,
+      specialized: initialData?.profile?.specialized,
+      bio: initialData?.profile?.bio,
+      github: initialData?.profile?.githubUrl,
+      linkedin: initialData?.profile?.linkedinUrl,
+      website: initialData?.profile?.websiteUrl,
     },
   });
 
   const watchedBio = watch('bio');
+  const router = useRouter();
 
   const handleBioChange = (value: string) => {
     setBioLength(value.length);
   };
 
-  const handleAvatarChange = (file: File | null) => {
-    setAvatarFile(file);
+  const handleAvatarChange = async (file: File): Promise<string | null> => {
+    try {
+      if (avatarFileId) {
+        await deleteFile(avatarFileId);
+      }
+      const res = await uploadFile(file, true, accessToken);
+      if (res?.success) {
+        console.log('>>> file res', res?.data);
+        const profileRes = await updateMyProfile({ avatarId: res?.data?.id });
+        if (profileRes?.success) {
+          setAvatarFileId(res?.data?.id);
+          router.refresh();
+          return res?.data?.url;
+        } else {
+          await deleteFile(res?.data?.id);
+        }
+      }
+    } catch (error) {}
+    return null;
+  };
+
+  const handleAvatarRemove = async () => {
+    if (avatarFileId) await deleteFile(avatarFileId);
+    router.refresh();
   };
 
   const onSubmit = async (data: ProfileFormData) => {
@@ -82,7 +110,6 @@ export default function EditProfileForm({ initialData = defaultUserProfile }: Ed
 
     try {
       console.log('Submitting data:', data);
-      console.log('Avatar file:', avatarFile);
 
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
@@ -98,7 +125,6 @@ export default function EditProfileForm({ initialData = defaultUserProfile }: Ed
 
   const handleCancel = () => {
     reset();
-    setAvatarFile(null);
     setBioLength(initialData.bio.length);
   };
 
@@ -211,7 +237,11 @@ export default function EditProfileForm({ initialData = defaultUserProfile }: Ed
         </Alert>
       )}
 
-      <AvatarUpload initialAvatarUrl={initialData.avatarUrl} onAvatarChange={handleAvatarChange} />
+      <AvatarUpload
+        initialAvatarUrl={initialData?.avatar?.url}
+        onAvatarUpload={handleAvatarChange}
+        onAvatarRemove={handleAvatarRemove}
+      />
 
       {/* Personal Information */}
       <Box sx={{ mt: 4 }}>

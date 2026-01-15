@@ -9,6 +9,7 @@ import { Person, School, Edit, GitHub, LinkedIn, Public } from '@mui/icons-mater
 import { getMyProfile } from '@/services/user.service';
 import { notFound } from 'next/navigation';
 import { roleLabelsMap } from '@/lib/const/user';
+import Link from '@/components/common/Link';
 
 export default async function ProfileSidebar() {
   const res = await getMyProfile();
@@ -16,7 +17,6 @@ export default async function ProfileSidebar() {
     notFound();
   }
   const user = res.data;
-  console.log('>>>me', res?.data);
 
   const formatUrlDisplay = (url: string) => {
     try {
@@ -202,6 +202,8 @@ export default async function ProfileSidebar() {
           {/* Nút chỉnh sửa */}
           <Box sx={{ width: '100%', mt: 3 }}>
             <Button
+              LinkComponent={Link}
+              href='/profile/edit'
               fullWidth
               variant='contained'
               startIcon={<Edit />}

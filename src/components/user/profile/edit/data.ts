@@ -5,7 +5,7 @@ export const defaultUserProfile: UserProfile = {
   fullName: 'Nguyễn Văn A',
   role: 'student',
   school: 'Đại học Bách Khoa HN',
-  major: 'Kỹ thuật Phần mềm',
+  specialized: 'Kỹ thuật Phần mềm',
   bio: 'Xin chào! Mình là sinh viên năm 3 chuyên ngành Kỹ thuật Phần mềm. Mình có niềm đam mê lớn với lập trình Web Frontend và đang trong quá trình chinh phục ReactJS. Mục tiêu của mình là trở thành một Full-stack Developer trong tương lai.',
   github: 'github.com/nguyenvana',
   linkedin: 'linkedin.com/in/nguyenvana',
@@ -28,7 +28,7 @@ export const formFields: FormField[] = [
     type: 'select',
     placeholder: 'Chọn vai trò',
     required: true,
-    disabled: true, // Đây là trường disabled theo yêu cầu
+    disabled: true,
     options: [
       { value: 'student', label: 'Học viên' },
       { value: 'instructor', label: 'Giảng viên' },
@@ -42,7 +42,7 @@ export const formFields: FormField[] = [
     required: true,
   },
   {
-    name: 'major',
+    name: 'specialized',
     label: 'Chuyên ngành / Vị trí',
     type: 'text',
     placeholder: 'Ví dụ: Kỹ thuật Phần mềm',
