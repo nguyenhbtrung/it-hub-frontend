@@ -3,10 +3,11 @@
 import { signIn } from 'next-auth/react';
 import { AuthFormProps } from '@/types/auth';
 import { Box, TextField, Button, Link, Stack } from '@mui/material';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { useNotification } from '@/contexts/notificationContext';
 import { SignUp } from '@/services/auth.service';
 import { useRouter } from 'next/navigation';
+import AuthNotify from './AuthNotify';
 
 export default function AuthForm({ type }: AuthFormProps) {
   const [form, setForm] = useState({
@@ -32,7 +33,7 @@ export default function AuthForm({ type }: AuthFormProps) {
     }
     if (type === 'signup') {
       if (form.password !== form.confirmPassword) {
-        notify('error', 'Mật khẩu không khớp', { vertical: 'top', horizontal: 'right' });
+        notify('error', 'Mật khẩu không khớp', { vertical: 'top', horizontal: 'center' });
         return;
       }
       const res = await SignUp({
@@ -40,10 +41,10 @@ export default function AuthForm({ type }: AuthFormProps) {
         password: form.password,
       });
       if (res?.success) {
-        notify('success', 'Đăng ký tài khoản thành công', { vertical: 'top', horizontal: 'right' });
+        notify('success', 'Đăng ký tài khoản thành công', { vertical: 'top', horizontal: 'center' });
         router.push('/auth/login');
       } else {
-        notify('error', res?.error?.message || 'Đăng ký tài khoản thất bại', { vertical: 'top', horizontal: 'right' });
+        notify('error', res?.error?.message || 'Đăng ký tài khoản thất bại', { vertical: 'top', horizontal: 'center' });
         console.log('res', res);
       }
     }
@@ -51,6 +52,9 @@ export default function AuthForm({ type }: AuthFormProps) {
 
   return (
     <Box>
+      <Suspense>
+        <AuthNotify />
+      </Suspense>
       <Stack spacing={3}>
         {/* EMAIL */}
         <TextField label='Email' name='email' fullWidth value={form.email} onChange={handleChange} />

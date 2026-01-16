@@ -51,6 +51,10 @@ export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
       },
     }),
   ],
+  pages: {
+    signIn: '/auth/login',
+    // error: '/auth/login',
+  },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
