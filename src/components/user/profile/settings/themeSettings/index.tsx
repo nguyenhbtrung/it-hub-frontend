@@ -1,23 +1,18 @@
 'use client';
 
 import { useState } from 'react';
-import { Box, Typography, Grid, Radio, FormControlLabel, RadioGroup, useTheme } from '@mui/material';
+import { Box, Typography, Grid, Radio, FormControlLabel, RadioGroup, useTheme, useColorScheme } from '@mui/material';
 import { Palette, LightMode, DarkMode, CheckCircle } from '@mui/icons-material';
 import { themeOptions } from '../data';
 
-interface ThemeSettingsProps {
-  initialTheme: 'light' | 'dark';
-  onThemeChange: (theme: 'light' | 'dark') => void;
-}
+export default function ThemeSettings() {
+  const { mode, setMode } = useColorScheme();
 
-export default function ThemeSettings({ initialTheme, onThemeChange }: ThemeSettingsProps) {
-  const [selectedTheme, setSelectedTheme] = useState<'light' | 'dark'>(initialTheme);
   const theme = useTheme();
 
   const handleThemeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newTheme = event.target.value as 'light' | 'dark';
-    setSelectedTheme(newTheme);
-    onThemeChange(newTheme);
+    setMode(newTheme);
   };
 
   const getIcon = (iconName: string) => {
@@ -30,6 +25,9 @@ export default function ThemeSettings({ initialTheme, onThemeChange }: ThemeSett
         return null;
     }
   };
+  if (!mode) {
+    return null;
+  }
 
   return (
     <Box
@@ -54,7 +52,7 @@ export default function ThemeSettings({ initialTheme, onThemeChange }: ThemeSett
           Chọn giao diện
         </Typography>
 
-        <RadioGroup name='theme' value={selectedTheme} onChange={handleThemeChange} sx={{ width: '100%' }}>
+        <RadioGroup name='theme' value={mode} onChange={handleThemeChange} sx={{ width: '100%' }}>
           <Grid container spacing={2}>
             {themeOptions.map((option) => (
               <Grid size={6} key={option.id}>
@@ -67,7 +65,7 @@ export default function ThemeSettings({ initialTheme, onThemeChange }: ThemeSett
                         position: 'relative',
                         borderRadius: 1,
                         border: 2,
-                        borderColor: selectedTheme === option.id ? 'primary.main' : 'divider',
+                        borderColor: mode === option.id ? 'primary.main' : 'divider',
                         p: 1.5,
                         cursor: 'pointer',
                         transition: 'all 0.2s',
@@ -98,7 +96,7 @@ export default function ThemeSettings({ initialTheme, onThemeChange }: ThemeSett
                       </Box>
 
                       {/* Check icon */}
-                      {selectedTheme === option.id && (
+                      {mode === option.id && (
                         <Box
                           sx={{
                             position: 'absolute',

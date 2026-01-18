@@ -52,11 +52,6 @@ export default function SettingsForm({ initialData = defaultSettings }: Settings
     setIsDirty(true);
   };
 
-  const handleThemeChange = (theme: 'light' | 'dark') => {
-    setSettings((prev) => ({ ...prev, theme: { theme } }));
-    setIsDirty(true);
-  };
-
   const handleAccountAction = (type: 'password' | 'devices' | 'delete') => {
     if (type === 'password') {
       setShowPasswordDialog(true);
@@ -177,7 +172,7 @@ export default function SettingsForm({ initialData = defaultSettings }: Settings
           <PrivacySettings initialSettings={settings.privacy} onSettingsChange={handlePrivacyChange} />
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
-          <ThemeSettings initialTheme={settings.theme.theme} onThemeChange={handleThemeChange} />
+          <ThemeSettings />
         </Grid>
       </Grid>
 
