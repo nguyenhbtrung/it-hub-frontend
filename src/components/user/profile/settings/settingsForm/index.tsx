@@ -25,6 +25,8 @@ import ChangePasswordDialog from '../changePassword/dialog';
 import { SettingsData } from '../types';
 import { defaultSettings } from '../data';
 import { ChangePasswordFormData } from '../changePassword/schemas';
+import { changePassword } from '@/services/auth.service';
+import { signOut } from 'next-auth/react';
 
 interface SettingsFormProps {
   initialData?: SettingsData;
@@ -37,6 +39,7 @@ export default function SettingsForm({ initialData = defaultSettings }: Settings
   const [showSuccess, setShowSuccess] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [showPasswordDialog, setShowPasswordDialog] = useState(false);
+  const [showPasswordSuccessDialog, setShowPasswordSuccessDialog] = useState(false);
   const [dialogType, setDialogType] = useState<'password' | 'devices' | 'delete' | null>(null);
 
   const handleNotificationChange = (notificationSettings: typeof settings.notifications) => {
@@ -67,16 +70,19 @@ export default function SettingsForm({ initialData = defaultSettings }: Settings
     // Giả lập API call để đổi mật khẩu
     console.log('Changing password:', data);
 
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    const res = await changePassword(data);
+    if (res?.success) {
+      // Đóng dialog
+      setShowPasswordDialog(false);
+      setShowPasswordSuccessDialog(true);
+    } else {
+      throw new Error(res?.error?.message || 'Đổi mật khẩu không thành công');
+    }
+  };
 
-    // Trong thực tế, bạn sẽ gọi API ở đây
-    // Ví dụ: await api.changePassword(data);
-
-    // Hiển thị thông báo thành công
-    setShowSuccess(true);
-
-    // Đóng dialog
-    setShowPasswordDialog(false);
+  const handleLogout = async () => {
+    await signOut();
+    window.location.href = '/auth/login';
   };
 
   const handleConfirmAction = () => {
@@ -214,6 +220,25 @@ export default function SettingsForm({ initialData = defaultSettings }: Settings
         onClose={() => setShowPasswordDialog(false)}
         onSubmit={handleChangePassword}
       />
+
+      <Dialog
+        open={showPasswordSuccessDialog}
+        onClose={() => setShowPasswordSuccessDialog(false)}
+        maxWidth='sm'
+        fullWidth
+      >
+        <DialogTitle>Đổi mật khẩu thành công</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Mật khẩu của bạn đã được thay đổi. Vui lòng đăng nhập lại để tiếp tục sử dụng.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleLogout} variant='contained' color='primary' autoFocus>
+            Ok
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       {/* Success Snackbar */}
       <Snackbar

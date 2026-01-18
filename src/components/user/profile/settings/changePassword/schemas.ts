@@ -8,7 +8,7 @@ export const changePasswordSchema = z
       .min(8, 'Mật khẩu phải có ít nhất 8 ký tự')
       .regex(/[A-Z]/, 'Mật khẩu phải chứa ít nhất 1 chữ hoa')
       .regex(/[a-z]/, 'Mật khẩu phải chứa ít nhất 1 chữ thường')
-      .regex(/[^A-Za-z0-9]/, 'Mật khẩu phải chứa ít nhất 1 ký tự đặc biệt'),
+      .regex(/[0-9]/, 'Mật khẩu phải chứa ít nhất 1 chữ số'),
     confirmPassword: z.string().min(1, 'Vui lòng xác nhận mật khẩu'),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
@@ -30,14 +30,14 @@ export const evaluatePasswordStrength = (
     minLength: boolean;
     hasUppercase: boolean;
     hasLowercase: boolean;
-    hasSpecialChar: boolean;
+    hasNumber: boolean;
   };
 } => {
   const checks = {
     minLength: password.length >= 8,
     hasUppercase: /[A-Z]/.test(password),
     hasLowercase: /[a-z]/.test(password),
-    hasSpecialChar: /[^A-Za-z0-9]/.test(password),
+    hasNumber: /[0-9]/.test(password),
   };
 
   const score = Object.values(checks).filter(Boolean).length;

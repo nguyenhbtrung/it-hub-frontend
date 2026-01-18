@@ -31,7 +31,7 @@ export default function PasswordStrengthMeter({ password }: PasswordStrengthMete
       label: 'Bao gồm chữ hoa và chữ thường',
       checked: checks.hasUppercase && checks.hasLowercase,
     },
-    { key: 'hasSpecialChar', label: 'Ít nhất 1 ký tự đặc biệt (!@#$...)', checked: checks.hasSpecialChar },
+    { key: 'Securepass123', label: 'Ít nhất 1 chữ số', checked: checks.hasNumber },
   ];
 
   return (

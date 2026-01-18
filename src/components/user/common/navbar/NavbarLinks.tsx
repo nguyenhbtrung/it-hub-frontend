@@ -19,6 +19,7 @@ import Link from '@/components/common/Link';
 import LinkButton from '@mui/material/Link';
 import { NavItem } from '@/types/navigation.user';
 import { Session } from 'next-auth';
+import { signOut } from 'next-auth/react';
 
 const navButtonSx = {
   color: 'text.primary',
@@ -105,6 +106,12 @@ export default function NavbarLinks({ navItems, session }: NavbarLinksProps) {
     setAvatarAnchor(null);
   };
 
+  const handleLogout = async () => {
+    handleAvatarClose();
+    await signOut();
+    window.location.href = '/auth/login';
+  };
+
   const isOpen = (label: string) => openMenu === label;
 
   const mdNavItems = mergeNavItems(navItems);
@@ -181,10 +188,7 @@ export default function NavbarLinks({ navItems, session }: NavbarLinksProps) {
                 {' '}
                 Cài đặt{' '}
               </MenuItem>{' '}
-              <MenuItem component={Link} href='/auth/logout' onClick={handleAvatarClose}>
-                {' '}
-                Đăng xuất{' '}
-              </MenuItem>{' '}
+              <MenuItem onClick={handleLogout}> Đăng xuất </MenuItem>{' '}
             </Menu>{' '}
           </>
         ) : (
