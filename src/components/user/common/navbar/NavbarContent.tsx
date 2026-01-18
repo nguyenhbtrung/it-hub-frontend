@@ -6,6 +6,7 @@ import Logo from '@/components/common/Logo';
 import { instructorNavItems, mapCategoryTreeToNavItems, studentNavItems } from '@/data/navigation/userNavItems';
 import { auth } from '@/auth';
 import { getCategoryTree } from '@/services/category.service';
+import { getMyProfile } from '@/services/user.service';
 
 export default async function NavbarContent() {
   const res = await getCategoryTree();
@@ -24,18 +25,20 @@ export default async function NavbarContent() {
     navItems = [...userNavItems, ...instructorNavItems, ...studentNavItems];
   }
 
+  const profilePromise = getMyProfile();
+
   return (
     <Toolbar sx={{ justifyContent: 'space-between' }}>
       <Box display='flex' alignItems='center' gap={{ xs: 1, lg: 2 }}>
         <Box sx={{ display: { xs: 'block', md: 'none' } }}>
-          <MobileMenu navItems={navItems} />
+          <MobileMenu navItems={navItems} session={session} profilePromise={profilePromise} />
         </Box>
         <Logo href='/' />
         <Box sx={{ width: { xs: 0, lg: 40 } }} />
         <SearchBar />
       </Box>
       <Box sx={{ display: { xs: 'none', md: 'block' } }}>
-        <NavbarLinks navItems={navItems} session={session} />
+        <NavbarLinks navItems={navItems} session={session} profilePromise={profilePromise} />
       </Box>
     </Toolbar>
   );

@@ -81,8 +81,7 @@ export default function SettingsForm({ initialData = defaultSettings }: Settings
   };
 
   const handleLogout = async () => {
-    await signOut();
-    window.location.href = '/auth/login';
+    await signOut({ redirectTo: '/auth/login' });
   };
 
   const handleConfirmAction = () => {

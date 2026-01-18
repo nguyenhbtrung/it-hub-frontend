@@ -10,7 +10,7 @@ interface ProfileLayoutProps {
 
 export default function ProfileLayout({ children }: ProfileLayoutProps) {
   return (
-    <Container maxWidth='xl' sx={{ py: { xs: 2, md: 12 }, px: { xs: 2, md: 12 }, bgcolor: 'customBackground.4' }}>
+    <Container maxWidth='xl' sx={{ py: { xs: 8, md: 12 }, px: { xs: 2, md: 12 }, bgcolor: 'customBackground.4' }}>
       <Grid container spacing={3}>
         {/* Cột bên trái - Thông tin cá nhân */}
         <Suspense>

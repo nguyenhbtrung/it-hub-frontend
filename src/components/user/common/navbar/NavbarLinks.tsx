@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import {
   Button,
   Box,
@@ -19,7 +19,7 @@ import Link from '@/components/common/Link';
 import LinkButton from '@mui/material/Link';
 import { NavItem } from '@/types/navigation.user';
 import { Session } from 'next-auth';
-import { signOut } from 'next-auth/react';
+import UserProfileMenu from './userProfileMenu';
 
 const navButtonSx = {
   color: 'text.primary',
@@ -91,26 +91,13 @@ function SmallMenu({
 interface NavbarLinksProps {
   navItems: NavItem[];
   session: Session | null;
+  profilePromise: Promise<any>;
 }
 
-export default function NavbarLinks({ navItems, session }: NavbarLinksProps) {
+export default function NavbarLinks({ navItems, session, profilePromise }: NavbarLinksProps) {
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [hoverTimer, setHoverTimer] = useState<NodeJS.Timeout | null>(null);
-
-  const [avatarAnchor, setAvatarAnchor] = useState<null | HTMLElement>(null);
-  const handleAvatarClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAvatarAnchor(event.currentTarget);
-  };
-  const handleAvatarClose = () => {
-    setAvatarAnchor(null);
-  };
-
-  const handleLogout = async () => {
-    handleAvatarClose();
-    await signOut();
-    window.location.href = '/auth/login';
-  };
 
   const isOpen = (label: string) => openMenu === label;
 
@@ -172,25 +159,9 @@ export default function NavbarLinks({ navItems, session }: NavbarLinksProps) {
           </Box>
         ))}
         {session ? (
-          <>
-            {' '}
-            <IconButton onClick={handleAvatarClick} sx={{ p: 0 }}>
-              {' '}
-              <Avatar alt={session.user?.name || 'User'} src={session.user?.image || undefined} />{' '}
-            </IconButton>{' '}
-            <Menu anchorEl={avatarAnchor} open={Boolean(avatarAnchor)} onClose={handleAvatarClose}>
-              {' '}
-              <MenuItem component={Link} href='/profile' onClick={handleAvatarClose}>
-                {' '}
-                Hồ sơ{' '}
-              </MenuItem>{' '}
-              <MenuItem component={Link} href='/settings' onClick={handleAvatarClose}>
-                {' '}
-                Cài đặt{' '}
-              </MenuItem>{' '}
-              <MenuItem onClick={handleLogout}> Đăng xuất </MenuItem>{' '}
-            </Menu>{' '}
-          </>
+          <Suspense>
+            <UserProfileMenu profilePromise={profilePromise} />
+          </Suspense>
         ) : (
           <>
             {' '}
