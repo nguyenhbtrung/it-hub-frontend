@@ -1,6 +1,6 @@
 'use client';
 
-import { signIn } from 'next-auth/react';
+import { getSession, signIn } from 'next-auth/react';
 import { AuthFormProps } from '@/types/auth';
 import { Box, TextField, Button, Link, Stack } from '@mui/material';
 import { Suspense, useState } from 'react';
@@ -25,11 +25,24 @@ export default function AuthForm({ type }: AuthFormProps) {
 
   const handleSubmit = async () => {
     if (type === 'login') {
-      await signIn('credentials', {
+      const res = await signIn('credentials', {
         email: form.email,
         password: form.password,
-        callbackUrl: '/',
+        // callbackUrl: '/',
+        redirect: false,
       });
+      if (res?.ok) {
+        if (res?.error === 'CredentialsSignin' && res?.code === 'credentials') {
+          notify('error', 'Email hoặc mật khẩu không đúng', { vertical: 'top', horizontal: 'center' });
+        } else {
+          const session = await getSession();
+          console.log('>>>session', session);
+          if (session?.role === 'admin') window.location.href = '/admin';
+          else window.location.href = '/';
+        }
+      } else {
+        notify('error', 'Đăng nhập thất bại', { vertical: 'top', horizontal: 'center' });
+      }
     }
     if (type === 'signup') {
       if (form.password !== form.confirmPassword) {

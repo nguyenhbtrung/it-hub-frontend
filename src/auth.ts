@@ -29,6 +29,9 @@ declare module 'next-auth/jwt' {
   }
 }
 
+// let isRefreshing = false;
+// let refreshedTokenPromise: any = null;
+
 export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
   providers: [
     Credentials({
@@ -100,6 +103,47 @@ export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
 
       // console.log('token', token);
       return token;
+
+      // if (!isRefreshing) {
+      //   isRefreshing = true;
+      //   refreshedTokenPromise = (async () => {
+      //     try {
+      //       const res = await fetch(`${API_BASE_URL}${REFRESH_ENDPOINT}`, {
+      //         method: 'POST',
+      //         credentials: 'include',
+      //         cache: 'no-store',
+      //         headers: {
+      //           Cookie: `refreshToken=${token?.refreshToken || ''}`,
+      //         },
+      //       });
+      //       const json = await res.json();
+      //       if (json?.success && json?.data) {
+      //         const data = json.data;
+      //         console.log('data', data);
+
+      //         const decoded = jwtDecode(data.accessToken);
+      //         token.expiresAt = decoded.exp ?? Math.floor(Date.now() / 1000) + 10 * 60;
+      //         token.accessToken = data.accessToken;
+      //         const setCookieHeader = res.headers.get('set-cookie');
+      //         console.log('setCookieHeader', setCookieHeader);
+      //         if (setCookieHeader) {
+      //           const match = setCookieHeader.match(/refreshToken=([^;]+)/);
+      //           if (match) {
+      //             console.log('match', match[1]);
+      //             token.refreshToken = match[1];
+      //           }
+      //         }
+      //       }
+      //       // console.log('token', token);
+      //       return token;
+      //     } catch (error) {
+      //       return token;
+      //     } finally {
+      //       isRefreshing = false;
+      //     }
+      //   })();
+      // }
+      // return refreshedTokenPromise;
     },
     async session({ session, token }) {
       // console.log('session-token', token);
