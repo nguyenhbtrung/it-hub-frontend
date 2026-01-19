@@ -10,7 +10,13 @@ declare module '@tiptap/core' {
       /**
        * Add a figure element
        */
-      setFigure: (options: { src: string; alt?: string; title?: string; caption?: string }) => ReturnType;
+      setFigure: (options: {
+        src: string;
+        alt?: string;
+        title?: string;
+        caption?: string;
+        fileId?: string;
+      }) => ReturnType;
 
       /**
        * Converts an image to a figure
@@ -60,6 +66,11 @@ export const Figure = Node.create<FigureOptions>({
         default: null,
         parseHTML: (element) => element.querySelector('img')?.getAttribute('title'),
       },
+      fileId: {
+        default: null,
+        parseHTML: (element) =>
+          element.getAttribute('data-file-id') ?? element.querySelector('img')?.getAttribute('data-file-id'),
+      },
     };
   },
 
@@ -73,9 +84,13 @@ export const Figure = Node.create<FigureOptions>({
   },
 
   renderHTML({ HTMLAttributes }) {
+    const figureAttrs = mergeAttributes(
+      this.options.HTMLAttributes,
+      HTMLAttributes.fileId ? { 'data-file-id': HTMLAttributes.fileId } : {}
+    );
     return [
       'figure',
-      this.options.HTMLAttributes,
+      figureAttrs,
       [
         'img',
         mergeAttributes(HTMLAttributes, {
