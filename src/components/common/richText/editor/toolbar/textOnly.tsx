@@ -14,8 +14,6 @@ import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
 import LinkIcon from '@mui/icons-material/Link';
 import InfoIcon from '@mui/icons-material/InfoOutline';
 
-import { useRichTextEditorActions } from '@/hooks/useRichTextEditorAction';
-
 export default function Toolbar({ editor }: { editor: any }) {
   if (!editor) return null;
 
@@ -74,9 +72,6 @@ export default function Toolbar({ editor }: { editor: any }) {
   //       .run();
   //   }
   // };
-
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const { addFigure, setLink } = useRichTextEditorActions(editor);
 
   return (
     <Paper

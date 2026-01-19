@@ -76,7 +76,7 @@ export default function Toolbar({ editor }: { editor: any }) {
   // };
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const { addFigure, setLink } = useRichTextEditorActions(editor);
+  const { addFigure, setLink, FigureDialogComponent } = useRichTextEditorActions(editor);
 
   return (
     <Paper
@@ -263,6 +263,7 @@ export default function Toolbar({ editor }: { editor: any }) {
           </ToggleButton>
         </ToggleButtonGroup> */}
       </ButtonGroup>
+      {FigureDialogComponent}
     </Paper>
   );
 }

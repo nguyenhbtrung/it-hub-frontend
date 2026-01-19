@@ -64,7 +64,7 @@ export default function CustomFloatingMenu({ editor }: { editor: any }) {
     }
   }, [open, editor]);
 
-  const { addFigure } = useRichTextEditorActions(editor);
+  const { addFigure, FigureDialogComponent } = useRichTextEditorActions(editor);
 
   // ===============================
   // Render guard (RẤT QUAN TRỌNG)
@@ -128,6 +128,7 @@ export default function CustomFloatingMenu({ editor }: { editor: any }) {
           </IconButton>
         </Box>
       </Box>
+      {FigureDialogComponent}
     </FloatingMenu>
   );
 }
