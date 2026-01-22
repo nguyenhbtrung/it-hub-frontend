@@ -1,4 +1,5 @@
 import { FigureInsertDialog } from '@/components/common/richText/components/figureInsertDialog';
+import { VideoInsertDialog } from '@/components/common/richText/components/videoInsertDialog';
 import { uploadFile } from '@/services/client/file.service';
 import { getSession, signOut } from 'next-auth/react';
 import { useCallback, useState } from 'react';
@@ -6,9 +7,14 @@ import { useCallback, useState } from 'react';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function useRichTextEditorActions(editor: any) {
   const [openImageDialog, setOpenImageDialog] = useState(false);
+  const [openVideoDialog, setOpenVideoDialog] = useState(false);
 
   const addFigure = useCallback(() => {
     setOpenImageDialog(true);
+  }, []);
+
+  const addVideo = useCallback(() => {
+    setOpenVideoDialog(true);
   }, []);
 
   const setLink = useCallback(() => {
@@ -39,12 +45,16 @@ export function useRichTextEditorActions(editor: any) {
       const res = await uploadFile(file, true, session?.accessToken);
       if (!res.success) {
         const err = res?.error;
-        throw new Error(err?.message || 'Tải lên ảnh thất bại, vui lòng thử lại');
+        throw new Error(err?.message || 'Tải lên thất bại, vui lòng thử lại');
       }
 
-      return { url: res?.data?.url || '', fileId: res?.data?.id || `${new Date().toISOString()}` };
+      return {
+        url: res?.data?.url || '',
+        fileId: res?.data?.id || `${new Date().toISOString()}`,
+        metadata: res?.data?.metadata,
+      };
     } catch (error) {
-      throw new Error('Tải lên ảnh thất bại, vui lòng thử lại');
+      throw new Error('Tải lên thất bại, vui lòng thử lại');
     }
   };
 
@@ -58,5 +68,14 @@ export function useRichTextEditorActions(editor: any) {
     />
   );
 
-  return { addFigure, setLink, FigureDialogComponent };
+  const VideoDialogComponent = (
+    <VideoInsertDialog
+      open={openVideoDialog}
+      onClose={() => setOpenVideoDialog(false)}
+      editor={editor}
+      uploadVideo={handleUploadImage}
+    />
+  );
+
+  return { addFigure, setLink, FigureDialogComponent, addVideo, VideoDialogComponent };
 }

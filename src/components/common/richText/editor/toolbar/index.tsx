@@ -8,6 +8,7 @@ import FormatUnderlinedIcon from '@mui/icons-material/FormatUnderlined';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
 import ImageIcon from '@mui/icons-material/Image';
+import SmartDisplayIcon from '@mui/icons-material/SmartDisplay';
 import TitleIcon from '@mui/icons-material/Title';
 import CodeIcon from '@mui/icons-material/Code';
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
@@ -75,8 +76,9 @@ export default function Toolbar({ editor }: { editor: any }) {
   //   }
   // };
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const { addFigure, setLink, FigureDialogComponent } = useRichTextEditorActions(editor);
+  const { addFigure, addVideo, setLink, FigureDialogComponent, VideoDialogComponent } =
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    useRichTextEditorActions(editor);
 
   return (
     <Paper
@@ -200,6 +202,13 @@ export default function Toolbar({ editor }: { editor: any }) {
         >
           <ImageIcon fontSize='small' />
         </IconButton>
+        <IconButton
+          onClick={addVideo}
+          //   color={editor.isActive('orderedList') ? 'primary' : 'default'}
+          size='small'
+        >
+          <SmartDisplayIcon fontSize='small' />
+        </IconButton>
         {/* <IconButton
           onClick={() =>
             editor
@@ -264,6 +273,7 @@ export default function Toolbar({ editor }: { editor: any }) {
         </ToggleButtonGroup> */}
       </ButtonGroup>
       {FigureDialogComponent}
+      {VideoDialogComponent}
     </Paper>
   );
 }

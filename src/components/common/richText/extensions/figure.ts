@@ -84,19 +84,17 @@ export const Figure = Node.create<FigureOptions>({
   },
 
   renderHTML({ HTMLAttributes }) {
-    const figureAttrs = mergeAttributes(
-      this.options.HTMLAttributes,
-      HTMLAttributes.fileId ? { 'data-file-id': HTMLAttributes.fileId } : {}
-    );
+    const { fileId, ...attrs } = HTMLAttributes;
+    const figureAttrs = mergeAttributes(this.options.HTMLAttributes, fileId ? { 'data-file-id': fileId } : {});
     return [
       'figure',
       figureAttrs,
       [
         'img',
-        mergeAttributes(HTMLAttributes, {
+        mergeAttributes(attrs, {
           draggable: false,
           contentEditable: false,
-          style: 'width: 70%; height: auto; display: block; margin: 0 auto;',
+          style: 'width: 100%; height: auto; display: block; margin: 0 auto;',
         }),
       ],
       ['figcaption', 0],

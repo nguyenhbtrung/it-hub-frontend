@@ -33,6 +33,7 @@ import CodeBlockComponent from '../../components/codeBlockComponent';
 import Toolbar from '../toolbar';
 import { Placeholder } from '@tiptap/extensions';
 import { Callout } from '../../extensions/callout';
+import { Video } from '../../extensions/video';
 
 // create a lowlight instance
 const lowlight = createLowlight(all);
@@ -70,6 +71,7 @@ export default function EditorBase({
       Blockquote,
       //   Image,
       Figure,
+      Video,
       Callout,
       //   CustomComponent,
       Link.configure({

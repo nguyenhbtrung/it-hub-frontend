@@ -19,6 +19,7 @@ import { Callout } from '../../extensions/callout';
 import CalloutComponent from '../../components/calloutComponent/static';
 import { ReactNodeViewContentProvider } from '@tiptap/react';
 import ClientCodeBlockConfig from '@/components/common/clientCodeBlockConfig';
+import { Video } from '../../extensions/video';
 
 interface StepContentRendererProps {
   content: Node | JSONContent;
@@ -52,6 +53,7 @@ export default function StepContentRenderer({ content }: StepContentRendererProp
       ListItem,
       Image,
       Figure,
+      Video,
       //   CustomComponent,
       Callout,
       CodeBlockLowlight.configure({ lowlight }).extend({

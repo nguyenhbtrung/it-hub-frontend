@@ -14,16 +14,15 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import { useNotification } from '@/contexts/notificationContext';
 
-type ImageInsertDialogProps = {
+type VideoInsertDialogProps = {
   open: boolean;
   onClose: () => void;
   editor: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-  uploadImage?: (file: File) => Promise<{ fileId: string; url: string }>;
+  uploadVideo?: (file: File) => Promise<{ fileId: string; url: string; metadata?: any }>;
 };
 
-export function FigureInsertDialog({ open, onClose, editor, uploadImage }: ImageInsertDialogProps) {
+export function VideoInsertDialog({ open, onClose, editor, uploadVideo }: VideoInsertDialogProps) {
   const [url, setUrl] = useState('');
-  const [caption, setCaption] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -44,7 +43,6 @@ export function FigureInsertDialog({ open, onClose, editor, uploadImage }: Image
     if (open) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setUrl('');
-      setCaption('');
       setFile(null);
       setPreview(null);
       setLoading(false);
@@ -70,19 +68,19 @@ export function FigureInsertDialog({ open, onClose, editor, uploadImage }: Image
     }
   }, []);
 
-  const insertImage = useCallback(async () => {
+  const insertVideo = useCallback(async () => {
     let fileId = null;
     let src = url.trim();
-    console.log('file', file);
-    console.log('url', url);
+    let poster = null;
 
     try {
       setLoading(true);
       if (file) {
-        if (uploadImage) {
-          const result = await uploadImage(file);
+        if (uploadVideo) {
+          const result = await uploadVideo(file);
           fileId = result.fileId;
           src = result.url;
+          poster = result?.metadata?.thumbnails?.[0];
         } else {
           // fallback to object URL
           src = preview || '';
@@ -98,25 +96,25 @@ export function FigureInsertDialog({ open, onClose, editor, uploadImage }: Image
       editor
         .chain()
         .focus()
-        .setFigure({
+        .setVideo({
           src,
-          caption: caption || undefined,
           fileId: fileId || undefined,
+          poster,
         })
         .run();
 
       onClose();
     } catch (err: any) {
-      console.error('Insert image failed', err);
+      console.error('Insert video failed', err);
       notify('error', err.message || 'Có lỗi xảy ra, vui lòng thử lại', { vertical: 'top', horizontal: 'center' });
       setLoading(false);
     }
-  }, [url, file, preview, caption, editor, uploadImage, onClose, notify]);
+  }, [url, file, preview, editor, uploadVideo, onClose, notify]);
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth='sm'>
       <DialogTitle>
-        Chèn hình ảnh
+        Chèn video
         <IconButton aria-label='close' onClick={onClose} sx={{ position: 'absolute', right: 8, top: 8 }} size='large'>
           <CloseIcon />
         </IconButton>
@@ -125,13 +123,13 @@ export function FigureInsertDialog({ open, onClose, editor, uploadImage }: Image
       <DialogContent dividers>
         <Box display='flex' flexDirection='column' gap={2}>
           <TextField
-            label='Dán URL hình ảnh'
+            label='Dán URL video'
             value={url}
             onChange={(e) => {
               setUrl(e.target.value);
               setFile(null);
             }}
-            // onPaste={handlePaste}
+            onPaste={handlePaste}
             fullWidth
             placeholder='https://...'
           />
@@ -159,39 +157,30 @@ export function FigureInsertDialog({ open, onClose, editor, uploadImage }: Image
             }}
           >
             <input
-              id='image-file-input'
+              id='video-file-input'
               type='file'
-              accept='image/*'
+              accept='video/*'
               style={{ display: 'none' }}
               onChange={handleFileInput}
             />
-            <label htmlFor='image-file-input' style={{ cursor: 'pointer' }}>
+            <label htmlFor='video-file-input' style={{ cursor: 'pointer' }}>
               <Typography variant='body2' color='textSecondary'>
-                Kéo thả ảnh vào đây hoặc <strong>chọn file</strong>
+                Kéo thả video vào đây hoặc <strong>chọn file</strong>
               </Typography>
             </label>
 
             {preview && (
               <Box mt={2}>
-                <img src={preview} alt='preview' style={{ maxWidth: '100%', maxHeight: 240 }} />
+                <video src={preview} controls style={{ maxWidth: '100%', maxHeight: 240 }} onError={() => {}} />
               </Box>
             )}
 
             {!preview && url && (
               <Box mt={2}>
-                <img src={url} alt='preview-url' style={{ maxWidth: '100%', maxHeight: 240 }} onError={() => {}} />
+                <video src={url} controls style={{ maxWidth: '100%', maxHeight: 240 }} onError={() => {}} />
               </Box>
             )}
           </Box>
-
-          <TextField
-            label='Caption'
-            value={caption}
-            onChange={(e) => setCaption(e.target.value)}
-            fullWidth
-            // multiline
-            rows={2}
-          />
         </Box>
       </DialogContent>
 
@@ -199,8 +188,8 @@ export function FigureInsertDialog({ open, onClose, editor, uploadImage }: Image
         <Button onClick={onClose} disabled={loading}>
           Huỷ
         </Button>
-        <Button onClick={insertImage} variant='contained' disabled={loading || (!url && !file)}>
-          {loading ? 'Đang chèn...' : 'Chèn ảnh'}
+        <Button onClick={insertVideo} variant='contained' disabled={loading || (!url && !file)}>
+          {loading ? 'Đang chèn...' : 'Chèn video'}
         </Button>
       </DialogActions>
     </Dialog>

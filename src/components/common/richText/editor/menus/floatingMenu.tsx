@@ -6,6 +6,7 @@ import { IconButton, Box } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
 import ImageIcon from '@mui/icons-material/Image';
+import SmartDisplayIcon from '@mui/icons-material/SmartDisplay';
 import CodeIcon from '@mui/icons-material/Code';
 import InfoIcon from '@mui/icons-material/InfoOutline';
 import { useRichTextEditorActions } from '@/hooks/useRichTextEditorAction';
@@ -64,7 +65,7 @@ export default function CustomFloatingMenu({ editor }: { editor: any }) {
     }
   }, [open, editor]);
 
-  const { addFigure, FigureDialogComponent } = useRichTextEditorActions(editor);
+  const { addFigure, addVideo, FigureDialogComponent, VideoDialogComponent } = useRichTextEditorActions(editor);
 
   // ===============================
   // Render guard (RẤT QUAN TRỌNG)
@@ -119,6 +120,10 @@ export default function CustomFloatingMenu({ editor }: { editor: any }) {
             <ImageIcon />
           </IconButton>
 
+          <IconButton size='small' onClick={addVideo}>
+            <SmartDisplayIcon />
+          </IconButton>
+
           <IconButton size='small' onClick={() => editor.chain().focus().toggleCodeBlock().run()}>
             <CodeIcon />
           </IconButton>
@@ -129,6 +134,7 @@ export default function CustomFloatingMenu({ editor }: { editor: any }) {
         </Box>
       </Box>
       {FigureDialogComponent}
+      {VideoDialogComponent}
     </FloatingMenu>
   );
 }
