@@ -53,7 +53,7 @@ export default function Toolbar({ editor }: { editor: any }) {
   });
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const { addFigure, setLink, FigureDialogComponent } = useRichTextEditorActions(editor);
+  const { addFigure, FigureDialogComponent } = useRichTextEditorActions(editor);
 
   return (
     <Paper

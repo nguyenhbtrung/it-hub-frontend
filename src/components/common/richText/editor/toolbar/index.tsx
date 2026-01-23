@@ -76,7 +76,7 @@ export default function Toolbar({ editor }: { editor: any }) {
   //   }
   // };
 
-  const { addFigure, addVideo, setLink, FigureDialogComponent, VideoDialogComponent } =
+  const { addFigure, addVideo, setLink, FigureDialogComponent, VideoDialogComponent, LinkDialogComponent } =
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useRichTextEditorActions(editor);
 
@@ -274,6 +274,7 @@ export default function Toolbar({ editor }: { editor: any }) {
       </ButtonGroup>
       {FigureDialogComponent}
       {VideoDialogComponent}
+      {LinkDialogComponent}
     </Paper>
   );
 }

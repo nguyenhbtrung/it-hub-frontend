@@ -1,4 +1,5 @@
 import { FigureInsertDialog } from '@/components/common/richText/components/figureInsertDialog';
+import { LinkInsertDialog } from '@/components/common/richText/components/linkInsertDialog';
 import { VideoInsertDialog } from '@/components/common/richText/components/videoInsertDialog';
 import { uploadFile } from '@/services/client/file.service';
 import { getSession, signOut } from 'next-auth/react';
@@ -8,6 +9,7 @@ import { useCallback, useState } from 'react';
 export function useRichTextEditorActions(editor: any) {
   const [openImageDialog, setOpenImageDialog] = useState(false);
   const [openVideoDialog, setOpenVideoDialog] = useState(false);
+  const [openLinkDialog, setOpenLinkDialog] = useState(false);
 
   const addFigure = useCallback(() => {
     setOpenImageDialog(true);
@@ -18,27 +20,14 @@ export function useRichTextEditorActions(editor: any) {
   }, []);
 
   const setLink = useCallback(() => {
-    const previousUrl = editor.getAttributes('link').href;
-    const url = window.prompt('URL', previousUrl);
+    setOpenLinkDialog(true);
+  }, []);
 
-    if (url === null) return;
-    if (url === '') {
-      editor.chain().focus().extendMarkRange('link').unsetLink().run();
-      return;
-    }
-
-    try {
-      editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
-    } catch (e: any) {
-      alert(e.message);
-    }
-  }, [editor]);
-
-  const handleUploadImage = async (file: File) => {
+  const handleUploadFile = async (file: File) => {
     try {
       const session = await getSession();
       if (!session?.accessToken) {
-        alert('');
+        alert('Vui lòng đăng nhập trước khi thực hiện đăng tải');
         await signOut({ redirectTo: '/auth/login' });
         return { url: '', fileId: '' };
       }
@@ -63,8 +52,7 @@ export function useRichTextEditorActions(editor: any) {
       open={openImageDialog}
       onClose={() => setOpenImageDialog(false)}
       editor={editor}
-      // uploadImage optional: (file) => upload to server and return URL
-      uploadImage={handleUploadImage}
+      uploadImage={handleUploadFile}
     />
   );
 
@@ -73,9 +61,13 @@ export function useRichTextEditorActions(editor: any) {
       open={openVideoDialog}
       onClose={() => setOpenVideoDialog(false)}
       editor={editor}
-      uploadVideo={handleUploadImage}
+      uploadVideo={handleUploadFile}
     />
   );
 
-  return { addFigure, setLink, FigureDialogComponent, addVideo, VideoDialogComponent };
+  const LinkDialogComponent = (
+    <LinkInsertDialog open={openLinkDialog} onClose={() => setOpenLinkDialog(false)} editor={editor} />
+  );
+
+  return { addFigure, setLink, FigureDialogComponent, addVideo, VideoDialogComponent, LinkDialogComponent };
 }

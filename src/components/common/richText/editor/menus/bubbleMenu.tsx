@@ -58,7 +58,7 @@ export default function CustomBubbleMenu({ editor }: { editor: any }) {
   });
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const { setLink } = useRichTextEditorActions(editor);
+  const { setLink, LinkDialogComponent } = useRichTextEditorActions(editor);
 
   return (
     <BubbleMenu editor={editor}>
@@ -179,6 +179,7 @@ export default function CustomBubbleMenu({ editor }: { editor: any }) {
           </IconButton>
         </ButtonGroup>
       </Paper>
+      {LinkDialogComponent}
     </BubbleMenu>
   );
 }
