@@ -40,6 +40,7 @@ import NextLink from '@/components/common/Link';
 import { getExerciseByUnitId, getMyExerciseSubmission } from '@/services/exercise.service';
 import DescriptionOutlined from '@mui/icons-material/DescriptionOutlined';
 import FolderZipIcon from '@mui/icons-material/FolderZip';
+import Submission from './submission';
 
 interface MainContentProps {
   params: Promise<{ slug: string; id: string }>;
@@ -177,7 +178,7 @@ export default async function MainContent({ params }: MainContentProps) {
   return (
     <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Box sx={{ flex: 1, overflowY: 'auto' }}>
-        <Box sx={{ maxWidth: 800, mx: 'auto', p: { xs: 3, md: 6 } }}>
+        <Box sx={{ maxWidth: 1200, mx: 'auto', p: { xs: 3, md: 6 } }}>
           {/* Breadcrumb */}
           <Breadcrumbs separator={<ChevronRight fontSize='small' />} sx={{ mb: 3 }}>
             <Link
@@ -234,101 +235,120 @@ export default async function MainContent({ params }: MainContentProps) {
               </Box>
             </Box>
           </Box>
-          <Box sx={{ border: 1, borderColor: 'divider', borderRadius: 1 }}>
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                bgcolor: 'customBackground.4',
-                p: 1,
-                alignItems: 'center',
-                borderTopRightRadius: 12,
-                borderTopLeftRadius: 12,
-              }}
-            >
-              <DescriptionOutlined sx={{ ml: 2, color: 'primary.main' }} />
-              <Typography
-                variant='h5'
-                sx={{
-                  fontWeight: 600,
-                  ml: 1,
-                }}
-              >
-                Nội dung bài tập
-              </Typography>
-            </Box>
 
-            <Box sx={{ p: 4, minHeight: 300 }}>
-              {exercise?.content && (
-                // <SelectToAskAI accessToken={accessToken} stepId={exercise?.id || ''}>
-                <StepContentRenderer content={exercise?.content} />
-                // </SelectToAskAI>
-              )}
-            </Box>
-
-            <Box sx={{ p: 4, pt: 0 }}>
-              <Typography
-                variant='h6'
-                sx={{
-                  fontWeight: 600,
-                  mb: 2,
-                  ml: 1,
-                }}
-              >
-                Tài nguyên đính kèm
-              </Typography>
-
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                {exercise?.unit?.materials?.map((material: any) => (
-                  <Box
-                    key={material.id}
-                    component='a'
-                    href={material.file.url}
-                    target='_blank'
-                    rel='noopener noreferrer'
+          <Box
+            sx={{
+              maxWidth: 1200,
+              mx: 'auto',
+              // p: { xs: 2, md: 4 },
+              display: 'flex',
+              gap: 3,
+              alignItems: 'flex-start',
+            }}
+          >
+            {/* LEFT: Nội dung bài tập */}
+            <Box sx={{ flex: 1, minWidth: 0 }}>
+              <Box sx={{ border: 1, borderColor: 'divider', borderRadius: 1 }}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    bgcolor: 'customBackground.4',
+                    p: 2,
+                    alignItems: 'center',
+                    borderTopRightRadius: 12,
+                    borderTopLeftRadius: 12,
+                    borderBottom: 1,
+                    borderColor: 'divider',
+                  }}
+                >
+                  <DescriptionOutlined sx={{ ml: 1, color: 'primary.main' }} />
+                  <Typography
+                    variant='h6'
                     sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      p: '12px 20px',
-                      bgcolor: '#f4f7f9',
-                      border: '1px solid',
-                      borderColor: '#e0e4e8',
-                      borderRadius: '12px',
-                      textDecoration: 'none',
-                      color: 'inherit',
-                      transition: '0.2s',
-                      '&:hover': {
-                        bgcolor: '#ebf0f4',
-                        borderColor: 'primary.main',
-                      },
+                      fontWeight: 600,
+                      ml: 1,
                     }}
                   >
-                    <FolderZipIcon sx={{ color: '#455a64', mr: 2, fontSize: 28 }} />
+                    Nội dung bài tập
+                  </Typography>
+                </Box>
 
-                    <Typography
-                      sx={{
-                        fontWeight: 600,
-                        fontSize: '1rem',
-                        flex: 1,
-                        color: '#37474f',
-                      }}
-                    >
-                      {material.file.name}
-                    </Typography>
+                <Box sx={{ p: 4, minHeight: 300 }}>
+                  {exercise?.content && (
+                    // <SelectToAskAI accessToken={accessToken} stepId={exercise?.id || ''}>
+                    <StepContentRenderer content={exercise?.content} />
+                    // </SelectToAskAI>
+                  )}
+                </Box>
 
-                    <Typography
-                      sx={{
-                        color: 'text.secondary',
-                        fontSize: '0.9rem',
-                        ml: 2,
-                      }}
-                    >
-                      ({formatFileSize(Number(material.file.size))})
-                    </Typography>
+                <Box sx={{ p: 4, pt: 0 }}>
+                  <Typography
+                    variant='h6'
+                    sx={{
+                      fontWeight: 600,
+                      mb: 2,
+                      ml: 1,
+                    }}
+                  >
+                    Tài nguyên đính kèm
+                  </Typography>
+
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                    {exercise?.unit?.materials?.map((material: any) => (
+                      <Box
+                        key={material.id}
+                        component='a'
+                        href={material.file.url}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          p: '12px 20px',
+                          bgcolor: '#f4f7f9',
+                          border: '1px solid',
+                          borderColor: '#e0e4e8',
+                          borderRadius: '12px',
+                          textDecoration: 'none',
+                          color: 'inherit',
+                          transition: '0.2s',
+                          '&:hover': {
+                            bgcolor: '#ebf0f4',
+                            borderColor: 'primary.main',
+                          },
+                        }}
+                      >
+                        <FolderZipIcon sx={{ color: '#455a64', mr: 2, fontSize: 28 }} />
+
+                        <Typography
+                          sx={{
+                            fontWeight: 600,
+                            fontSize: '1rem',
+                            flex: 1,
+                            color: '#37474f',
+                          }}
+                        >
+                          {material.file.name}
+                        </Typography>
+
+                        <Typography
+                          sx={{
+                            color: 'text.secondary',
+                            fontSize: '0.9rem',
+                            ml: 2,
+                          }}
+                        >
+                          ({formatFileSize(Number(material.file.size))})
+                        </Typography>
+                      </Box>
+                    ))}
                   </Box>
-                ))}
+                </Box>
               </Box>
             </Box>
+            {/* RIGHT */}
+            <Submission exercise={exercise} submission={submission} />
           </Box>
 
           {/* Navigation Buttons */}

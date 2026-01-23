@@ -47,6 +47,36 @@ export async function getMyExerciseSubmission(exerciseId: string): Promise<any> 
   }
 }
 
+export async function addSubmission(
+  exerciseId: string,
+  payload: {
+    score?: number | null;
+    demoUrl?: string[];
+    note?: string | null;
+    fileIds?: string[] | null;
+  }
+): Promise<any> {
+  try {
+    return await apiFetch(`/api/exercises/${exerciseId}/submissions`, {
+      auth: true,
+      credentials: 'include',
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      return {
+        success: false,
+        error: {
+          message: 'Có lỗi xảy ra',
+          code: err.code,
+        },
+      };
+    }
+    throw err;
+  }
+}
+
 export async function updateExercise(
   unitId: string,
   payload: {
@@ -65,6 +95,27 @@ export async function updateExercise(
       credentials: 'include',
       method: 'PATCH',
       body: JSON.stringify(payload),
+    });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      return {
+        success: false,
+        error: {
+          message: 'Có lỗi xảy ra',
+          code: err.code,
+        },
+      };
+    }
+    throw err;
+  }
+}
+
+export async function deleteSubmission(submissionId: string): Promise<any> {
+  try {
+    return await apiFetch(`/api/exercises/submissions/${submissionId}`, {
+      auth: true,
+      credentials: 'include',
+      method: 'DELETE',
     });
   } catch (err) {
     if (err instanceof ApiError) {
