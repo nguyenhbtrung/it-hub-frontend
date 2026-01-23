@@ -29,7 +29,7 @@ export interface Lesson {
   isEditing?: boolean;
 }
 
-export type ExcerciseType = 'assigment' | 'project' | 'quiz' | 'coding';
+export type ExcerciseType = 'assignment' | 'project' | 'quiz' | 'coding';
 
 export interface Excercise {
   id: string;
@@ -43,6 +43,7 @@ export interface Unit {
   description?: string;
   steps?: LessonStep[];
   excercise?: Excercise;
+  excercises?: any;
   order: number;
   type: UnitType;
 }

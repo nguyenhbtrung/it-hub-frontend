@@ -31,7 +31,7 @@ import { addMaterial } from '@/services/unit.service';
 import { useNotification } from '@/contexts/notificationContext';
 import { deleteFile } from '@/services/file.service';
 
-interface LectureEditorProps {
+interface ExerciseEditorProps {
   exercise: any;
   courseId: string;
   accessToken: string;
@@ -47,7 +47,7 @@ interface Attachment {
   url: string;
 }
 
-export default function ExerciseEditor({ exercise, courseId, accessToken }: LectureEditorProps) {
+export default function CodingEditor({ exercise, courseId, accessToken }: ExerciseEditorProps) {
   const { notify } = useNotification();
 
   // --- Khởi tạo State từ dữ liệu Backend ---

@@ -33,7 +33,7 @@ import { restrictToVerticalAxis, restrictToWindowEdges } from '@dnd-kit/modifier
 interface ChapterItemProps {
   section: Section;
   onUpdateSection: (chapterId: string, updates: Partial<Section>) => void;
-  onUpdateUnit: (chapterId: string, lessonId: string, updates: Partial<Section>) => void;
+  onUpdateUnit: (sectionId: string, unitId: string, updates: any) => void;
   onUpdateStep: (sectionId: string, unitId: string, stepId: string, updates: Partial<LessonStep>) => void;
   onAddLesson: (chapterId: string) => void;
   onAddExcercise: (chapterId: string) => void;

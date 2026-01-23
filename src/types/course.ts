@@ -52,7 +52,7 @@ export interface LearningUnit {
   lessonType?: 'theory' | 'practice' | 'project' | 'review';
 }
 
-export type ExcerciseType = 'assigment' | 'project' | 'quiz' | 'coding';
+export type ExcerciseType = 'assignment' | 'project' | 'quiz' | 'coding';
 
 export interface Excercise {
   id: string;

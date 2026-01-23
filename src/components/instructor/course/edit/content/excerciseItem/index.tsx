@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Box, Paper, Typography, IconButton, Collapse, TextField, TextareaAutosize, Button } from '@mui/material';
+import { Box, Paper, Typography, IconButton, TextField, Button, Select, MenuItem } from '@mui/material';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import EditIcon from '@mui/icons-material/Edit';
@@ -10,21 +10,26 @@ import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import BuildOutlinedIcon from '@mui/icons-material/BuildOutlined';
 import QuizIcon from '@mui/icons-material/QuizOutlined';
 import CodeOutlinedIcon from '@mui/icons-material/CodeOutlined';
-import { Section, Lesson, Unit } from '../../types';
+import { Section, Unit } from '../../types';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useParams, useRouter } from 'next/navigation';
+import { ExcerciseType } from '@/types/course';
+import { updateExercise } from '@/services/exercise.service';
 
 interface LessonItemProps {
-  excercise: Unit;
+  excercise: any;
   section: Section;
-  onUpdateUnit: (sectionId: string, lessonId: string, updates: Partial<Lesson>) => void;
+  onUpdateUnit: (sectionId: string, unitId: string, updates: any) => void;
   onDeleteUnit: (chapterId: string, lessonId: string) => void;
 }
 
 export default function ExcerciseItem({ excercise, section, onDeleteUnit, onUpdateUnit }: LessonItemProps) {
   const [localTitle, setLocalTitle] = useState(excercise.title);
+  const [type, setType] = useState<ExcerciseType>(excercise.excercises?.[0]?.type || 'assignment');
   const [isEditing, setIsEditing] = useState(false);
+
+  console.log('unit', excercise);
 
   const router = useRouter();
   const params = useParams();
@@ -47,10 +52,18 @@ export default function ExcerciseItem({ excercise, section, onDeleteUnit, onUpda
     router.push(`/instructor/courses/${params.id}/edit/content/exercises/${unitId}`);
   };
 
+  const handleTypeChange = async (newType: ExcerciseType) => {
+    try {
+      const res = await updateExercise(excercise.id, { type: newType });
+      if (!res?.success) throw new Error();
+      setType(newType);
+    } catch {}
+  };
+
   const getExcerciseIcon = () => {
     const color = '#ed6c02';
-    switch (excercise.excercise?.type) {
-      case 'assigment':
+    switch (type) {
+      case 'assignment':
         return <AssignmentOutlinedIcon sx={{ color }} />;
       case 'project':
         return <BuildOutlinedIcon sx={{ color }} />;
@@ -62,6 +75,7 @@ export default function ExcerciseItem({ excercise, section, onDeleteUnit, onUpda
         return <AssignmentOutlinedIcon sx={{ color }} />;
     }
   };
+
   return (
     <Paper
       ref={setNodeRef}
@@ -84,9 +98,6 @@ export default function ExcerciseItem({ excercise, section, onDeleteUnit, onUpda
           cursor: 'pointer',
         }}
       >
-        {/* <IconButton size='small' onClick={() => setIsExpanded(!isExpanded)} sx={{ mr: 1 }}>
-          {isExpanded ? <ArrowDropDownIcon /> : <ArrowRightIcon />}
-        </IconButton> */}
         <Box width={30} height={30} pr={5} />
 
         <Box {...listeners} sx={{ cursor: 'grab', mr: 2, display: 'flex', alignItems: 'center' }}>
@@ -125,7 +136,20 @@ export default function ExcerciseItem({ excercise, section, onDeleteUnit, onUpda
           )}
         </Box>
 
-        <Box sx={{ display: 'flex', gap: 0.5 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+          {!isEditing && (
+            <Select
+              value={type}
+              onChange={(e) => handleTypeChange(e.target.value as ExcerciseType)}
+              size='small'
+              sx={{ minWidth: 100, height: 30 }}
+            >
+              <MenuItem value='assignment'>Thực hành</MenuItem>
+              <MenuItem value='quiz'>Trắc nghiệm</MenuItem>
+              <MenuItem value='coding'>Lập trình</MenuItem>
+            </Select>
+          )}
+
           <IconButton size='small' onClick={() => handleEditContentClick(excercise.id)} title='Chỉnh sửa nội dung'>
             <EditNoteIcon fontSize='small' />
           </IconButton>

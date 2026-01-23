@@ -86,10 +86,12 @@ export async function updateExercise(
     deadline?: string | null;
     duration?: number;
     passingScore?: number;
+    quizzes?: string | any;
   }
 ): Promise<any> {
   try {
     if (typeof payload.content === 'string') payload.content = JSON.parse(payload.content) as JSONContent;
+    if (typeof payload.quizzes === 'string') payload.quizzes = JSON.parse(payload.quizzes);
     return await apiFetch(`/api/exercises/${unitId}`, {
       auth: true,
       credentials: 'include',

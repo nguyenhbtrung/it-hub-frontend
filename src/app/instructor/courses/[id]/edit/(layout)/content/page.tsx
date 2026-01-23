@@ -19,6 +19,7 @@ async function PageWrapper({ params }: ContentPageProps) {
   const { id } = await params;
   const res = await getCourseContent(id, 'instructor');
   const courseContent = res?.data;
+  console.log('course content: ', courseContent);
   return (
     <>
       <CourseContentPage initialSections={courseContent?.sections} courseId={id || ''} />

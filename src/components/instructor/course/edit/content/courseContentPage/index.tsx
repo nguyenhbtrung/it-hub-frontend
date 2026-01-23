@@ -33,7 +33,7 @@ export default function CourseContentPage({ initialSections, courseId }: CourseC
     }
   };
 
-  const handleUpdateUnit = async (sectionId: string, unitId: string, updates: Partial<Lesson>) => {
+  const handleUpdateUnit = async (sectionId: string, unitId: string, updates: any) => {
     const res = await updateUnit(unitId, updates as UpdateUnitPayload);
     if (res?.success) {
       setSections(
