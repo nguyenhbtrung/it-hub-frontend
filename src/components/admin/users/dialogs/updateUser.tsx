@@ -36,6 +36,7 @@ export const updateUserSchema = z.object({
 
   role: z.enum(['admin', 'instructor', 'student']),
   scope: z.enum(['internal', 'external']),
+  status: z.enum(['active', 'suspended']),
 });
 
 type UpdateUserForm = z.infer<typeof updateUserSchema>;
@@ -63,6 +64,7 @@ export default function UpdateUserDialog({ open, userId, onClose, onSuccess }: P
       fullname: null,
       role: undefined,
       scope: undefined,
+      status: undefined,
       school: null,
       specialized: null,
       bio: null,
@@ -94,6 +96,7 @@ export default function UpdateUserDialog({ open, userId, onClose, onSuccess }: P
           fullname: user.fullname ?? null,
           role: user.role,
           scope: user.scope,
+          status: user.status,
           school: profile.school ?? null,
           specialized: profile.specialized ?? null,
           bio: profile.bio ?? null,
@@ -197,18 +200,25 @@ export default function UpdateUserDialog({ open, userId, onClose, onSuccess }: P
               />
             </Grid>
 
-            {/* <Grid size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Controller
-                name='scope'
+                name='status'
                 control={control}
-                render={({ field }) => (
-                  <TextField {...field} label='Phạm vi' select fullWidth>
-                    <MenuItem value='internal'>Internal</MenuItem>
-                    <MenuItem value='external'>External</MenuItem>
+                render={({ field, fieldState }) => (
+                  <TextField
+                    {...field}
+                    label='Trạng thái'
+                    select
+                    fullWidth
+                    error={!!fieldState.error}
+                    helperText={fieldState.error?.message}
+                  >
+                    <MenuItem value='active'>Hoạt động</MenuItem>
+                    <MenuItem value='suspended'>Đình chỉ</MenuItem>
                   </TextField>
                 )}
               />
-            </Grid> */}
+            </Grid>
 
             <Grid size={{ xs: 12, md: 6 }}>
               <Controller
