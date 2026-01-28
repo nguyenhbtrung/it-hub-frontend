@@ -16,7 +16,7 @@ export const lightPalette: PaletteOptions = {
   },
   error: {
     main: '#e53935',
-    light: '#ef6c6c',
+    light: '#fee2e2',
     dark: '#ab000d',
     contrastText: '#ffffff',
   },
@@ -34,7 +34,7 @@ export const lightPalette: PaletteOptions = {
   },
   success: {
     main: '#43a047',
-    light: '#76d275',
+    light: '#dcfce7',
     dark: '#00701a',
     contrastText: '#ffffff',
   },
