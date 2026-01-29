@@ -16,10 +16,11 @@ import CustomColumnMenu from '@/components/common/customDataGrid/customColumnMen
 import { getDefaultFilter } from '@/lib/utils/filter';
 import { useMounted } from '@/hooks/useMounted';
 import { useNotification } from '@/contexts/notificationContext';
-import { getUsers } from '@/services/user.service';
+import { deleteUser, getUsers } from '@/services/user.service';
 import { roleLabelsMap } from '@/lib/const/user';
 import UpdateUserDialog from '../dialogs/updateUser';
 import { getRoleColor } from '@/lib/utils/userBadge';
+import ConfirmDialog from '@/components/common/dialog/confirm';
 
 interface User {
   id: number;
@@ -100,6 +101,9 @@ export default function UserTable({ reloadKey }: { reloadKey: number }) {
     initFilters.length > 0 ? initFilters : [getDefaultFilter<User>(userSchema)]
   );
 
+  const [openDelete, setOpenDelete] = useState(false);
+  const [deleteUserId, setDeleteUserId] = useState<string | null>(null);
+
   const isMounted = useMounted();
   const { notify } = useNotification();
 
@@ -111,6 +115,40 @@ export default function UserTable({ reloadKey }: { reloadKey: number }) {
   const handleCloseEdit = () => {
     setOpenEdit(false);
     setSelectedUserId(null);
+  };
+
+  const handleOpenDelete = (user: User) => {
+    setDeleteUserId(String(user.id));
+    setOpenDelete(true);
+  };
+
+  const handleCloseDelete = () => {
+    setOpenDelete(false);
+    setDeleteUserId(null);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteUserId) return;
+
+    try {
+      const res = await deleteUser(deleteUserId);
+
+      if (!res?.success) {
+        throw new Error(res?.error?.message || 'Xoá thất bại');
+      }
+      notify('success', 'Xoá người dùng thành công', {
+        vertical: 'top',
+        horizontal: 'right',
+      });
+      setPaginationModel((prev) => ({ ...prev }));
+    } catch (error: any) {
+      notify('error', error?.message || 'Có lỗi xảy ra khi xoá người dùng', {
+        vertical: 'top',
+        horizontal: 'right',
+      });
+    } finally {
+      handleCloseDelete();
+    }
   };
 
   useEffect(() => {
@@ -278,7 +316,7 @@ export default function UserTable({ reloadKey }: { reloadKey: number }) {
           </Tooltip>
 
           <Tooltip title='Xóa'>
-            <IconButton>
+            <IconButton onClick={() => handleOpenDelete(params.row)}>
               <DeleteIcon />
             </IconButton>
           </Tooltip>
@@ -334,6 +372,15 @@ export default function UserTable({ reloadKey }: { reloadKey: number }) {
           setPaginationModel((prev) => ({ ...prev }));
           // router.refresh();
         }}
+      />
+      <ConfirmDialog
+        open={openDelete}
+        title='Xác nhận xoá'
+        description='Bạn có chắc chắn muốn xoá người dùng này không? Hành động này không thể hoàn tác.'
+        confirmText='Xóa'
+        confirmColor='error'
+        onClose={handleCloseDelete}
+        onConfirm={handleConfirmDelete}
       />
     </>
   );

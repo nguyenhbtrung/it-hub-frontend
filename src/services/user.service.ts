@@ -181,3 +181,25 @@ export const updateMyProfile = async (payload: {
     throw err;
   }
 };
+
+export const deleteUser = async (id: string): Promise<any> => {
+  try {
+    return await apiFetch(`/api/users/${id}`, {
+      auth: true,
+      method: 'DELETE',
+      credentials: 'include',
+    });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      return {
+        success: false,
+        error: {
+          message: 'Có lỗi xảy ra',
+          code: err.code,
+          credentials: 'include',
+        },
+      };
+    }
+    throw err;
+  }
+};

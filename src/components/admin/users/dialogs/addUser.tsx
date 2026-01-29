@@ -115,6 +115,7 @@ export default function AddUserDialog({ open, onClose, onSuccess }: Props) {
               render={({ field, fieldState }) => (
                 <TextField
                   {...field}
+                  variant='filled'
                   label='Mật khẩu'
                   type='password'
                   fullWidth
@@ -133,6 +134,7 @@ export default function AddUserDialog({ open, onClose, onSuccess }: Props) {
               render={({ field, fieldState }) => (
                 <TextField
                   {...field}
+                  variant='filled'
                   label='Vai trò'
                   select
                   fullWidth
