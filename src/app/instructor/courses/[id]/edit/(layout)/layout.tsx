@@ -18,7 +18,9 @@ export default function EditCourseLayout({ children, params }: EditCourseLayout)
         <Container maxWidth='xl'>
           <Grid container spacing={6}>
             <Grid size={{ xs: 12, lg: 3 }}>
-              <CourseSidebar />
+              <Suspense>
+                <CourseSidebar />
+              </Suspense>
             </Grid>
 
             <Grid size={{ xs: 12, lg: 9 }}>

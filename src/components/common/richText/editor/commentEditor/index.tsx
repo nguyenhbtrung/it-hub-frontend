@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import type { JSONContent } from '@tiptap/react';
 import EditorBase from '../editorBase/minimal';
 
@@ -11,8 +11,8 @@ export default function CommentEditor() {
   });
 
   return (
-    <>
+    <Suspense>
       <EditorBase value={content} onChange={setContent} borderRadius={1} height={100} placeholder='Nhập bình luận...' />
-    </>
+    </Suspense>
   );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import type { JSONContent } from '@tiptap/react';
 import EditorBase from '../editorBase';
 
@@ -11,7 +11,7 @@ export default function PostEditor() {
   });
 
   return (
-    <>
+    <Suspense>
       <EditorBase
         value={content}
         onChange={setContent}
@@ -20,6 +20,6 @@ export default function PostEditor() {
         placeholder='Nhập nội dung bài viết'
       />
       {/* <pre>{JSON.stringify(content, null, 2)}</pre> */}
-    </>
+    </Suspense>
   );
 }

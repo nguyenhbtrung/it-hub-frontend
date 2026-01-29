@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import type { JSONContent } from '@tiptap/react';
 import EditorBase from '@/components/common/richText/editor/editorBase';
 import EditExerciseHeader from '../header';
@@ -299,13 +299,15 @@ export default function CodingEditor({ exercise, courseId, accessToken }: Exerci
               <Typography variant='subtitle2' sx={{ mb: 1, fontWeight: 600 }}>
                 Nội dung chi tiết bài tập
               </Typography>
-              <EditorBase
-                value={content}
-                onChange={setContent}
-                borderRadius={0}
-                height={500}
-                placeholder='Nhập hướng dẫn chi tiết các bước thực hiện...'
-              />
+              <Suspense>
+                <EditorBase
+                  value={content}
+                  onChange={setContent}
+                  borderRadius={0}
+                  height={500}
+                  placeholder='Nhập hướng dẫn chi tiết các bước thực hiện...'
+                />
+              </Suspense>
             </Box>
           </Box>
         </Container>

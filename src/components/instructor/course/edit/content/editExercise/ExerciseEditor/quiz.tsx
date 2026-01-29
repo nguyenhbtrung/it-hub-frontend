@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import type { JSONContent } from '@tiptap/react';
 import EditorBase from '@/components/common/richText/editor/editorBase';
 import EditExerciseHeader from '../header';
@@ -263,13 +263,15 @@ function SortableQuestionItem({
             <Typography variant='subtitle2' sx={{ mb: 1, fontWeight: 600 }}>
               Nội dung câu hỏi
             </Typography>
-            <EditorBase
-              value={questionContent}
-              onChange={setQuestionContent}
-              borderRadius={1}
-              height={120}
-              placeholder='Nhập nội dung câu hỏi...'
-            />
+            <Suspense>
+              <EditorBase
+                value={questionContent}
+                onChange={setQuestionContent}
+                borderRadius={1}
+                height={120}
+                placeholder='Nhập nội dung câu hỏi...'
+              />
+            </Suspense>
           </Box>
 
           {/* Options */}
@@ -337,13 +339,15 @@ function SortableQuestionItem({
             <Typography variant='subtitle2' sx={{ mb: 1, fontWeight: 600 }}>
               Giải thích đáp án (tùy chọn)
             </Typography>
-            <EditorBase
-              value={explanationContent}
-              onChange={setExplanationContent}
-              borderRadius={1}
-              height={100}
-              placeholder='Nhập giải thích cho đáp án...'
-            />
+            <Suspense>
+              <EditorBase
+                value={explanationContent}
+                onChange={setExplanationContent}
+                borderRadius={1}
+                height={100}
+                placeholder='Nhập giải thích cho đáp án...'
+              />
+            </Suspense>
           </Box>
         </CardContent>
       </Collapse>

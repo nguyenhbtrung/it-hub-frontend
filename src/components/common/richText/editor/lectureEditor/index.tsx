@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import type { JSONContent } from '@tiptap/react';
 import EditorBase from '../editorBase';
 
@@ -11,7 +11,7 @@ export default function LectureEditor() {
   });
 
   return (
-    <>
+    <Suspense>
       <EditorBase
         value={content}
         onChange={setContent}
@@ -19,6 +19,6 @@ export default function LectureEditor() {
         height={600}
         placeholder='Nhập nội dung bài giảng'
       />
-    </>
+    </Suspense>
   );
 }

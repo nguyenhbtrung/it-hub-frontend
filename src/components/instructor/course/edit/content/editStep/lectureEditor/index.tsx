@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import type { JSONContent } from '@tiptap/react';
 import EditorBase from '@/components/common/richText/editor/editorBase';
 import EditStepHeader from '../header';
@@ -42,13 +42,15 @@ export default function LectureEditor({ step, courseId }: LectureEditorProps) {
 
       <Box sx={{ flexGrow: 1, overflowY: 'auto', p: 6 }}>
         <Container maxWidth='lg'>
-          <EditorBase
-            value={content}
-            onChange={setContent}
-            borderRadius={0}
-            height={600}
-            placeholder='Nhập nội dung bài giảng'
-          />
+          <Suspense>
+            <EditorBase
+              value={content}
+              onChange={setContent}
+              borderRadius={0}
+              height={600}
+              placeholder='Nhập nội dung bài giảng'
+            />
+          </Suspense>
         </Container>
       </Box>
     </>

@@ -1,18 +1,25 @@
-// app/courses/[id]/students/page.tsx
-import React from 'react';
-import { Box, Alert, AlertTitle, Typography, Divider, Button, Stack } from '@mui/material';
+import { Box, Alert, Typography, Divider, Button, Stack } from '@mui/material';
 import { Warning as WarningIcon, Download as DownloadIcon } from '@mui/icons-material';
 import RegistrationApproval from '@/components/instructor/course/edit/studentManagement/registrationApproval';
 import StudentList from '@/components/instructor/course/edit/studentManagement/studentList';
 import { ApiResponse, Registration, Student } from '@/components/instructor/course/edit/studentManagement/types';
 import { getRegistrationsByCourseId, getStudentsByCourseId } from '@/services/course.service';
+import { Suspense } from 'react';
 
 interface PageProps {
   params: Promise<{ id: string }>;
   searchParams: Promise<{ page?: string; limit?: string }>;
 }
 
-export default async function ManageStudentsPage({ params, searchParams }: PageProps) {
+export default function ManageStudentsPage({ params, searchParams }: PageProps) {
+  return (
+    <Suspense>
+      <ManageStudentsPageWrapper params={params} searchParams={searchParams} />
+    </Suspense>
+  );
+}
+
+async function ManageStudentsPageWrapper({ params, searchParams }: PageProps) {
   const resolvedParams = await params;
   const resolvedSearchParams = await searchParams;
   const courseId = resolvedParams.id;

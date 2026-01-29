@@ -18,7 +18,7 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import debounce from 'lodash/debounce';
 import { Tag } from '@/types/tag';
 import { getTags } from '@/services/tag.service';
@@ -232,13 +232,15 @@ export default function EditCourseDetailForm({ courseDetail }: EditCourseDetailF
           <Typography variant='subtitle2' gutterBottom>
             Mô tả chi tiết
           </Typography>
-          <EditorBase
-            value={description}
-            onChange={setDescription}
-            borderRadius={1}
-            height={200}
-            placeholder='Nhập mô tả chi tiết...'
-          />
+          <Suspense>
+            <EditorBase
+              value={description}
+              onChange={setDescription}
+              borderRadius={1}
+              height={200}
+              placeholder='Nhập mô tả chi tiết...'
+            />
+          </Suspense>
           {/* <pre>{JSON.stringify(description, null, 2)}</pre> */}
         </Box>
 

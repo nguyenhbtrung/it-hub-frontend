@@ -1,10 +1,9 @@
-import CourseFilterSidebar from '@/components/user/common/courseFilterSidebar';
 import AllCourses from '@/components/user/explore/category/allCourses';
 import CategoryHeader from '@/components/user/explore/category/categoryHeader';
 import RecommendedCourses from '@/components/user/explore/category/recommendedCourses';
-import SearchResults from '@/components/user/search/searchResults';
+
 import { getCategoryIdBySlug } from '@/services/category.service';
-import { Container, Grid, Box, Typography } from '@mui/material';
+import { Container, Box } from '@mui/material';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
@@ -16,7 +15,9 @@ interface BrowseByCategoryPageProps {
 export default async function BrowseByCategoryPage({ params, searchParams }: BrowseByCategoryPageProps) {
   return (
     <Box>
-      <BrowseByCategoryPageWrapper params={params} searchParams={searchParams} />
+      <Suspense>
+        <BrowseByCategoryPageWrapper params={params} searchParams={searchParams} />
+      </Suspense>
     </Box>
   );
 }
