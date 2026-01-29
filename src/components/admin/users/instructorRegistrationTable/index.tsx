@@ -15,6 +15,8 @@ import { FieldType, FilterItem } from '@/types/filter';
 import CustomColumnMenu from '@/components/common/customDataGrid/customColumnMenu';
 import { getDefaultFilter } from '@/lib/utils/filter';
 import { useMounted } from '@/hooks/useMounted';
+import { getInstructorRegistrations, updateUser } from '@/services/user.service';
+import { useNotification } from '@/contexts/notificationContext';
 
 interface InstructorRegistration {
   id: number;
@@ -186,7 +188,7 @@ export default function InstructorRegistrationTable() {
     }
   });
 
-  const [registrations, setRegistrations] = useState<InstructorRegistration[]>([]);
+  const [data, setData] = useState([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
 
@@ -207,30 +209,52 @@ export default function InstructorRegistrationTable() {
     initFilters.length > 0 ? initFilters : [getDefaultFilter<InstructorRegistration>(instructorRegistrationSchema)]
   );
   const isMounted = useMounted();
+  const { notify } = useNotification();
 
-  useEffect(() => {
-    console.log(filterModel);
-  }, [filterModel]);
+  const handleAccept = async (userId: string) => {
+    try {
+      const res = await updateUser(userId, { role: 'instructor' });
+      if (!res?.success) throw new Error('Chấp thuận thất bại, vui lòng thử lại');
+      setPaginationModel((prev) => ({ ...prev }));
+    } catch (error: any) {
+      notify('error', error?.message || 'Chấp thuận thất bại, vui lòng thử lại', {
+        vertical: 'top',
+        horizontal: 'right',
+      });
+    }
+  };
+
+  const handleReject = async (userId: string) => {
+    try {
+      const res = await updateUser(userId, { instructorApplicationAt: null });
+      if (!res?.success) throw new Error('Từ chối thất bại, vui lòng thử lại');
+      setPaginationModel((prev) => ({ ...prev }));
+    } catch (error: any) {
+      notify('error', error?.message || 'Từ chối thất bại, vui lòng thử lại', {
+        vertical: 'top',
+        horizontal: 'right',
+      });
+    }
+  };
 
   useEffect(() => {
     const fetchRegistrations = async () => {
       setLoading(true);
       try {
         const sortField = sortModel[0]?.field;
-        const sortOrder = sortModel[0]?.sort;
+        const sortOrder = sortModel[0]?.sort || 'asc';
         const search = filterModel.quickFilterValues?.join(' ');
 
-        const response = await fakeApi.getInstructorRegistrations(
-          paginationModel.page + 1,
-          paginationModel.pageSize,
-          sortField,
+        const res = await getInstructorRegistrations({
+          page: paginationModel.page + 1,
+          limit: paginationModel.pageSize,
+          sortBy: sortField,
           sortOrder,
-          search,
-          filters
-        );
+          q: search ? search : undefined,
+        });
 
-        setRegistrations(response.instructorRegistrations);
-        setTotal(response.total);
+        setData(res?.data || []);
+        setTotal(res?.meta?.total || 0);
       } catch (error) {
         console.error('Lỗi khi tải dữ liệu:', error);
       } finally {
@@ -274,11 +298,12 @@ export default function InstructorRegistrationTable() {
   }, [paginationModel, sortModel, filterModel, filters, isMounted, router]);
 
   const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', width: 70 },
+    // { field: 'id', headerName: 'ID', width: 70 },
     {
       field: 'avatarUrl',
       headerName: 'Ảnh',
       width: 70,
+      sortable: false,
       renderCell: (params) => {
         const url = params.value;
 
@@ -290,7 +315,7 @@ export default function InstructorRegistrationTable() {
       },
     },
     {
-      field: 'name',
+      field: 'fullname',
       headerName: 'Họ tên',
       flex: 1,
       minWidth: 150,
@@ -302,9 +327,10 @@ export default function InstructorRegistrationTable() {
       minWidth: 200,
     },
     {
-      field: 'createdAt',
+      field: 'instructorApplicationAt',
       headerName: 'Ngày đăng ký',
       width: 120,
+      valueGetter: (value: any) => toLocaleDateString(new Date(value)),
     },
     {
       field: 'actions',
@@ -312,14 +338,14 @@ export default function InstructorRegistrationTable() {
       width: 140,
       sortable: false,
       filterable: false,
-      renderCell: () => (
+      renderCell: (params) => (
         <Box>
           <Tooltip title='Chấp nhận'>
-            <IconButton color='success'>
+            <IconButton color='success' onClick={() => handleAccept(params.row.id || '')}>
               <CheckCircleOutline />
             </IconButton>
           </Tooltip>
-          <Tooltip title='Từ chối'>
+          <Tooltip title='Từ chối' onClick={() => handleReject(params.row.id || '')}>
             <IconButton color='error'>
               <CancelOutlined />
             </IconButton>
@@ -340,7 +366,7 @@ export default function InstructorRegistrationTable() {
 
   return (
     <DataGrid
-      rows={registrations}
+      rows={data}
       columns={columns}
       paginationMode='server'
       sortingMode='server'

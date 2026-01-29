@@ -77,7 +77,7 @@ export default function UserTable({ reloadKey }: { reloadKey: number }) {
     }
   });
 
-  const [data, setData] = useState<User[]>([]);
+  const [data, setData] = useState([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
 

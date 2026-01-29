@@ -54,6 +54,35 @@ export const getUserById = cache(async (id: string): Promise<any> => {
   }
 });
 
+export const getInstructorRegistrations = cache(
+  async (query: {
+    page?: number;
+    limit?: number;
+    q?: string | string[];
+    sortBy?: string | string[];
+    sortOrder?: string | string[];
+  }): Promise<any> => {
+    try {
+      return await apiFetch(`/api/users/instructor/registrations`, {
+        auth: true,
+        query,
+        credentials: 'include',
+      });
+    } catch (err) {
+      if (err instanceof ApiError) {
+        return {
+          success: false,
+          error: {
+            message: 'Có lỗi xảy ra',
+            code: err.code,
+          },
+        };
+      }
+      throw err;
+    }
+  }
+);
+
 export const getMyProfile = cache(async (): Promise<any> => {
   try {
     return await apiFetch(`/api/users/me/profile`, {
@@ -122,6 +151,7 @@ export const updateUser = async (
     role?: UserRole;
     status?: UserStatus;
     scope?: UserScope;
+    instructorApplicationAt?: string | null;
   }
 ): Promise<any> => {
   try {
