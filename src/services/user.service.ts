@@ -74,6 +74,40 @@ export const getMyProfile = cache(async (): Promise<any> => {
   }
 });
 
+export const createUser = async (payload: {
+  email: string;
+  fullname?: string | null;
+  password: string;
+  role: UserRole;
+  scope: UserScope;
+}): Promise<any> => {
+  try {
+    return await apiFetch(`/api/users`, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      auth: true,
+      credentials: 'include',
+    });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      const res = {
+        success: false,
+        error: {
+          message: 'Lưu thay đổi không thành công, vui lòng thử lại',
+          code: err.code,
+        },
+      };
+      if (err.code === 'FORBIDDEN') {
+        res.error.message = 'Bạn không có quyền cập nhật người dùng này';
+      } else if (err.code === 'RECORD_ALREADY_EXISTS') {
+        res.error.message = 'Email này đã được sử dụng';
+      }
+      return res;
+    }
+    throw err;
+  }
+};
+
 export const updateUser = async (
   id: string,
   payload: {
@@ -109,7 +143,7 @@ export const updateUser = async (
       if (err.code === 'FORBIDDEN') {
         res.error.message = 'Bạn không có quyền cập nhật người dùng này';
       } else if (err.code === 'RECORD_ALREADY_EXISTS') {
-        res.error.message = 'Email bạn nhập đã tồn tại';
+        res.error.message = 'Email này đã được sử dụng';
       }
       return res;
     }

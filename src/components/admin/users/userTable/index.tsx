@@ -19,6 +19,7 @@ import { useNotification } from '@/contexts/notificationContext';
 import { getUsers } from '@/services/user.service';
 import { roleLabelsMap } from '@/lib/const/user';
 import UpdateUserDialog from '../dialogs/updateUser';
+import { getRoleColor } from '@/lib/utils/userBadge';
 
 interface User {
   id: number;
@@ -53,7 +54,7 @@ const userFieldsMap: Record<keyof User, string> = {
   createdAt: 'Ngày tạo',
 };
 
-export default function UserTable() {
+export default function UserTable({ reloadKey }: { reloadKey: number }) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -148,7 +149,7 @@ export default function UserTable() {
     if (isMounted) {
       fetchUsers();
     }
-  }, [paginationModel, sortModel, filterModel, filters, isMounted]);
+  }, [paginationModel, sortModel, filterModel, filters, isMounted, reloadKey]);
 
   useEffect(() => {
     if (!isMounted) return;
@@ -216,13 +217,8 @@ export default function UserTable() {
       width: 130,
       renderCell: (params) => {
         const role = params.value;
-        const colors: any = {
-          admin: 'error',
-          instructor: 'primary',
-          student: 'secondary',
-        };
 
-        return <Chip label={roleLabelsMap[role]} color={colors[role] || 'default'} size='small' />;
+        return <Chip label={roleLabelsMap[role]} size='small' sx={getRoleColor(role)} />;
       },
     },
     // {
@@ -246,7 +242,11 @@ export default function UserTable() {
       renderCell: (params) => (
         <Chip
           label={params.value === 'active' ? 'Hoạt động' : 'Đình chỉ'}
-          color={params.value === 'active' ? 'success' : 'error'}
+          // color={params.value === 'active' ? 'success' : 'error'}
+          sx={{
+            color: params.value === 'active' ? 'success.main' : 'error.main',
+            bgcolor: params.value === 'active' ? 'success.light' : 'error.light',
+          }}
           size='small'
         />
       ),
@@ -332,7 +332,7 @@ export default function UserTable() {
         onClose={handleCloseEdit}
         onSuccess={() => {
           setPaginationModel((prev) => ({ ...prev }));
-          router.refresh();
+          // router.refresh();
         }}
       />
     </>
