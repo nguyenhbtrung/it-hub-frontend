@@ -171,7 +171,7 @@ export default function UpdateUserDialog({ open, userId, onClose, onSuccess }: P
                     helperText={fieldState.error?.message}
                     value={field.value ?? ''}
                     onChange={(e) => {
-                      const v = e.target.value.trim();
+                      const v = e.target.value;
                       field.onChange(v === '' ? null : v);
                     }}
                   />
@@ -233,7 +233,7 @@ export default function UpdateUserDialog({ open, userId, onClose, onSuccess }: P
                     helperText={fieldState.error?.message}
                     value={field.value ?? ''}
                     onChange={(e) => {
-                      const v = e.target.value.trim();
+                      const v = e.target.value;
                       field.onChange(v === '' ? null : v);
                     }}
                   />
@@ -254,7 +254,7 @@ export default function UpdateUserDialog({ open, userId, onClose, onSuccess }: P
                     helperText={fieldState.error?.message}
                     value={field.value ?? ''}
                     onChange={(e) => {
-                      const v = e.target.value.trim();
+                      const v = e.target.value;
                       field.onChange(v === '' ? null : v);
                     }}
                   />
@@ -277,7 +277,7 @@ export default function UpdateUserDialog({ open, userId, onClose, onSuccess }: P
                     helperText={fieldState.error?.message}
                     value={field.value ?? ''}
                     onChange={(e) => {
-                      const v = e.target.value.trim();
+                      const v = e.target.value;
                       field.onChange(v === '' ? null : v);
                     }}
                   />
@@ -298,7 +298,7 @@ export default function UpdateUserDialog({ open, userId, onClose, onSuccess }: P
                     helperText={fieldState.error?.message}
                     value={field.value ?? ''}
                     onChange={(e) => {
-                      const v = e.target.value.trim();
+                      const v = e.target.value;
                       field.onChange(v === '' ? null : v);
                     }}
                   />
@@ -319,7 +319,7 @@ export default function UpdateUserDialog({ open, userId, onClose, onSuccess }: P
                     helperText={fieldState.error?.message}
                     value={field.value ?? ''}
                     onChange={(e) => {
-                      const v = e.target.value.trim();
+                      const v = e.target.value;
                       field.onChange(v === '' ? null : v);
                     }}
                   />
@@ -340,7 +340,7 @@ export default function UpdateUserDialog({ open, userId, onClose, onSuccess }: P
                     helperText={fieldState.error?.message}
                     value={field.value ?? ''}
                     onChange={(e) => {
-                      const v = e.target.value.trim();
+                      const v = e.target.value;
                       field.onChange(v === '' ? null : v);
                     }}
                   />
