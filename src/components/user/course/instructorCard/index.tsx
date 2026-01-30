@@ -32,7 +32,7 @@ export default async function InstructorCard({ courseId }: InstructorCardProps) 
             borderColor: 'primary.light',
           }}
         >
-          {instructor?.fullname.charAt(0)}
+          {instructor?.fullname?.charAt(0)}
         </Avatar>
 
         <Box sx={{ flex: 1, textAlign: { xs: 'center', md: 'left' } }}>
