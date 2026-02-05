@@ -19,7 +19,7 @@ export default function PostEditor() {
         height={500}
         placeholder='Nhập nội dung bài viết'
       />
-      {/* <pre>{JSON.stringify(content, null, 2)}</pre> */}
+      <pre>{JSON.stringify(content, null, 2)}</pre>
     </Suspense>
   );
 }

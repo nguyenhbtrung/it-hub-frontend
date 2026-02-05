@@ -9,6 +9,8 @@ import { ChatMenu } from './menu';
 import MarkdownViewer from '@/components/common/markdownViewer';
 import { API_BASE_URL } from '@/lib/fetcher/constants';
 import { ApiError } from '@/lib/errors/ApiError';
+import { ScopeMenu } from './scopeMenu';
+import { Scope } from './types';
 
 type ChatMessage = {
   role: 'user' | 'assistant';
@@ -30,6 +32,8 @@ export function AIChatDialog({ open, onClose, selectedText, accessToken, stepId 
   const [input, setInput] = useState('');
   const [contextText, setContextText] = useState('');
   const [flexibility, setFlexibility] = useState<Flexibility>('GUIDED');
+  const [scope, setScope] = useState<Scope>('step');
+
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -47,7 +51,7 @@ export function AIChatDialog({ open, onClose, selectedText, accessToken, stepId 
 
     const payload = {
       stepId,
-      scope: 'lesson',
+      scope,
       question: input,
       selectedText: contextText || undefined,
       flexibility,
@@ -151,18 +155,42 @@ export function AIChatDialog({ open, onClose, selectedText, accessToken, stepId 
           {contextText && <ContextPreview text={contextText} onClear={() => setContextText('')} />}
 
           {/* Input */}
-          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-            <ChatMenu value={flexibility} onChange={setFlexibility} />
+          <TextField
+            fullWidth
+            multiline
+            minRows={1}
+            maxRows={5}
+            variant='standard'
+            placeholder='Nhập câu hỏi cho AI...'
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && sendMessage()}
+            InputProps={{
+              disableUnderline: true,
+            }}
+            sx={{
+              mx: 1,
+              mb: 1,
+              fontSize: 16,
+            }}
+          />
 
-            <TextField
-              fullWidth
-              placeholder='Nhập câu hỏi cho AI...'
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-            />
+          {/* Controls row */}
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            {/* Left tools */}
+            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+              <ChatMenu value={flexibility} onChange={setFlexibility} />
+              <ScopeMenu value={scope} onChange={setScope} />
+            </Box>
 
-            <IconButton color='primary' onClick={sendMessage}>
+            {/* Send */}
+            <IconButton color='primary' onClick={sendMessage} disabled={!input.trim()}>
               <SendIcon />
             </IconButton>
           </Box>
