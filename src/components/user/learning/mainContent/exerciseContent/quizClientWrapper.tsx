@@ -4,6 +4,8 @@ import { useState } from 'react';
 import QuizIntro from './quizIntro';
 import QuizSession from './quizSession';
 import QuizResult from './quizResult';
+import { addSubmission } from '@/services/exercise.service';
+import { useNotification } from '@/contexts/notificationContext';
 
 interface QuizClientWrapperProps {
   exercise: any;
@@ -15,6 +17,7 @@ export default function QuizClientWrapper({ exercise, nav, slug }: QuizClientWra
   const [isQuizStarted, setIsQuizStarted] = useState(false);
   const [isQuizSubmitted, setIsQuizSubmitted] = useState(false);
   const [quizResult, setQuizResult] = useState<any>(null);
+  const { notify } = useNotification();
 
   const handleStartQuiz = () => {
     setIsQuizStarted(true);
@@ -34,7 +37,7 @@ export default function QuizClientWrapper({ exercise, nav, slug }: QuizClientWra
       }
     });
 
-    const score = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 0;
+    const score = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 10) : 0;
 
     const result = {
       score,
@@ -44,9 +47,24 @@ export default function QuizClientWrapper({ exercise, nav, slug }: QuizClientWra
       answers,
       submittedAt: new Date().toISOString(),
     };
+    const quizResultsMetadata = { result, quizzes: exercise?.quizzes };
+    console.log('exercise: ', exercise);
+    try {
+      const res = await addSubmission(exercise.id, {
+        score,
+        quizResultsMetadata: JSON.stringify(quizResultsMetadata),
+      });
 
-    setQuizResult(result);
-    setIsQuizSubmitted(true);
+      if (!res?.success) throw new Error(res?.error?.message || 'Nộp bài thất bại, vui lòng thử lại');
+
+      setQuizResult(result);
+      setIsQuizSubmitted(true);
+    } catch (error: any) {
+      notify('error', error?.message || 'Nộp bài thất bại, vui lòng thử lại', {
+        vertical: 'bottom',
+        horizontal: 'right',
+      });
+    }
   };
 
   const handleRestartQuiz = () => {

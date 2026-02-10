@@ -54,6 +54,7 @@ export async function addSubmission(
     demoUrl?: string[];
     note?: string | null;
     fileIds?: string[] | null;
+    quizResultsMetadata?: string | null;
   }
 ): Promise<any> {
   try {
