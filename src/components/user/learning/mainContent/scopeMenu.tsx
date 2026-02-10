@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import { Button, Menu, MenuItem, Box, Typography } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { Scope } from './types';
 
-type Scope = 'step' | 'lesson' | 'section' | 'course';
 const SCOPE_OPTIONS: {
   value: Scope;
   label: string;
