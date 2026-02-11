@@ -26,12 +26,16 @@ export async function getExerciseByUnitId(unitId: string): Promise<any> {
   }
 }
 
-export async function getMyExerciseSubmission(exerciseId: string): Promise<any> {
+export async function getMyExerciseSubmission(
+  exerciseId: string,
+  query?: { page?: number; limit?: number }
+): Promise<any> {
   try {
     return await apiFetch(`/api/exercises/${exerciseId}/submissions/me`, {
       auth: true,
       credentials: 'include',
       method: 'GET',
+      query,
     });
   } catch (err) {
     if (err instanceof ApiError) {
