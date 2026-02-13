@@ -11,9 +11,10 @@ interface QuizClientWrapperProps {
   exercise: any;
   nav: any;
   slug: string;
+  submissionsPromise: Promise<any>;
 }
 
-export default function QuizClientWrapper({ exercise, nav, slug }: QuizClientWrapperProps) {
+export default function QuizClientWrapper({ exercise, nav, slug, submissionsPromise }: QuizClientWrapperProps) {
   const [isQuizStarted, setIsQuizStarted] = useState(false);
   const [isQuizSubmitted, setIsQuizSubmitted] = useState(false);
   const [quizResult, setQuizResult] = useState<any>(null);
@@ -94,5 +95,13 @@ export default function QuizClientWrapper({ exercise, nav, slug }: QuizClientWra
     return <QuizSession exercise={exercise} onSubmitQuiz={handleSubmitQuiz} />;
   }
 
-  return <QuizIntro exercise={exercise} onStartQuiz={handleStartQuiz} nav={nav} slug={slug} />;
+  return (
+    <QuizIntro
+      exercise={exercise}
+      onStartQuiz={handleStartQuiz}
+      nav={nav}
+      slug={slug}
+      submissionsPromise={submissionsPromise}
+    />
+  );
 }

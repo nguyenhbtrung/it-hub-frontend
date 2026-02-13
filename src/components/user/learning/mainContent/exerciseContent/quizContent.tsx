@@ -48,9 +48,10 @@ interface QuizContentProps {
 }
 
 export default async function QuizContent({ exercise, nav, slug }: QuizContentProps) {
+  const submissionsPromise = getMyExerciseSubmission(exercise?.id || '', { page: 1, limit: 100 });
   return (
     <>
-      <QuizClientWrapper exercise={exercise} nav={nav} slug={slug} />
+      <QuizClientWrapper exercise={exercise} nav={nav} slug={slug} submissionsPromise={submissionsPromise} />
     </>
   );
 }

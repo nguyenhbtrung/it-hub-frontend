@@ -29,19 +29,26 @@ import {
 } from '@mui/icons-material';
 
 import NextLink from '@/components/common/Link';
+import { use } from 'react';
+import { formatISOToDateTime, formatSecondsToMMSS } from '@/lib/utils/formatDatetime';
 
 interface QuizIntroProps {
   exercise: any;
   onStartQuiz: () => void;
   nav: any;
   slug: string;
+  submissionsPromise: Promise<any>;
 }
 
-export default function QuizIntro({ exercise, onStartQuiz, nav, slug }: QuizIntroProps) {
+export default function QuizIntro({ exercise, onStartQuiz, nav, slug, submissionsPromise }: QuizIntroProps) {
   const totalQuestions = exercise?.quizzes?.length || 0;
   const durationInMinutes = exercise?.duration ? Math.floor(exercise.duration / 60) : 30;
   const passingScore = exercise?.passingScore || 8;
   const maxScore = 10;
+
+  const res = use(submissionsPromise);
+  console.log('data: ', res?.data);
+  const submissions = res?.data || [];
 
   return (
     <>
@@ -447,40 +454,31 @@ export default function QuizIntro({ exercise, onStartQuiz, nav, slug }: QuizIntr
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  <TableRow hover>
-                    <TableCell sx={{ fontWeight: 600, color: 'text.primary' }}>#1</TableCell>
-                    <TableCell sx={{ color: 'text.secondary' }}>15/05/2024 - 14:30</TableCell>
-                    <TableCell sx={{ fontWeight: 700, color: 'text.primary' }}>85/100</TableCell>
-                    <TableCell sx={{ color: 'text.secondary' }}>22:15</TableCell>
-                    <TableCell>
-                      <Chip
-                        label='Đạt'
-                        size='small'
-                        sx={{
-                          bgcolor: 'success.light',
-                          color: 'success.dark',
-                          fontWeight: 500,
-                        }}
-                      />
-                    </TableCell>
-                  </TableRow>
-                  <TableRow hover>
-                    <TableCell sx={{ fontWeight: 600, color: 'text.primary' }}>#2</TableCell>
-                    <TableCell sx={{ color: 'text.secondary' }}>16/05/2024 - 09:15</TableCell>
-                    <TableCell sx={{ fontWeight: 700, color: 'text.primary' }}>70/100</TableCell>
-                    <TableCell sx={{ color: 'text.secondary' }}>28:40</TableCell>
-                    <TableCell>
-                      <Chip
-                        label='Chưa đạt'
-                        size='small'
-                        sx={{
-                          bgcolor: 'error.light',
-                          color: 'error.dark',
-                          fontWeight: 500,
-                        }}
-                      />
-                    </TableCell>
-                  </TableRow>
+                  {submissions?.map((submission: any, index: number) => {
+                    const createdAt = submission?.createdAt || '';
+                    const score = submission?.quizResults?.result?.score;
+                    const timeSpent = submission?.quizResults?.result?.timeSpent || 0;
+                    const isPass = submission?.quizResults?.result?.score >= exercise?.passingScore;
+                    return (
+                      <TableRow key={submission?.id} hover>
+                        <TableCell sx={{ fontWeight: 600, color: 'text.primary' }}>#{index + 1}</TableCell>
+                        <TableCell sx={{ color: 'text.secondary' }}>{formatISOToDateTime(createdAt)}</TableCell>
+                        <TableCell sx={{ fontWeight: 700, color: 'text.primary' }}>{score}/10</TableCell>
+                        <TableCell sx={{ color: 'text.secondary' }}>{formatSecondsToMMSS(timeSpent)}</TableCell>
+                        <TableCell>
+                          <Chip
+                            label={isPass ? 'Đạt' : 'Chưa đạt'}
+                            size='small'
+                            sx={{
+                              bgcolor: isPass ? 'success.light' : 'error.light',
+                              color: isPass ? 'success.dark' : 'error.dark',
+                              fontWeight: 500,
+                            }}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
                 </TableBody>
               </Table>
             </TableContainer>
