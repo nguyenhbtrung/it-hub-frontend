@@ -14,7 +14,7 @@ import { getCourseDetail, updateCourseStatus } from '@/services/course.service';
 const rawMenuItems = [
   { icon: <InfoIcon />, text: 'Thông tin tổng quan', href: '/' },
   { icon: <ViewListIcon />, text: 'Nội dung khóa học', href: '/content' },
-  // { icon: <AssignmentIcon />, text: 'Quản lý bài tập', href: '/assignments' },
+  { icon: <AssignmentIcon />, text: 'Quản lý bài tập', href: '/exercises' },
   { icon: <GroupIcon />, text: 'Quản lý học viên', href: '/students' },
 ];
 

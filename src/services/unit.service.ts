@@ -26,7 +26,7 @@ export async function getUnitById(unitId: string): Promise<any> {
 
 export interface UpdateUnitPayload {
   title: string;
-  description: string;
+  description?: string;
 }
 
 export async function updateUnit(unitId: string, payload: UpdateUnitPayload): Promise<any> {

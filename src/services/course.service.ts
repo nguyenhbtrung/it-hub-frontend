@@ -2,7 +2,7 @@
 
 import { apiFetch } from '@/lib/fetcher/apiFetch';
 import { ApiError } from '@/lib/errors/ApiError';
-import { CourseLevel, CourseStatus } from '@/types/course';
+import { CourseLevel, CourseStatus, ExcerciseType } from '@/types/course';
 import { JSONContent } from '@tiptap/react';
 import { cache } from 'react';
 
@@ -377,6 +377,29 @@ export async function getCourseContentBreadcrumb(contentId: string, type: 'secti
       query: {
         type,
       },
+      auth: true,
+    });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      return {
+        success: false,
+        error: {
+          message: 'Có lỗi xảy ra',
+          code: err.code,
+        },
+      };
+    }
+    throw err;
+  }
+}
+
+export async function getCourseExercisesGroupedBySection(
+  id: string,
+  query?: { page: number; limit: number; type?: ExcerciseType }
+): Promise<any> {
+  try {
+    return await apiFetch(`/api/courses/${id}/sections/exercises`, {
+      query,
       auth: true,
     });
   } catch (err) {
