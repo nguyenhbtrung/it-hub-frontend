@@ -51,6 +51,57 @@ export async function getMyExerciseSubmission(
   }
 }
 
+export async function getSubmissionOverview(unitId: string): Promise<any> {
+  try {
+    return await apiFetch(`/api/exercises/${unitId}/submissions/overview`, {
+      auth: true,
+      credentials: 'include',
+      method: 'GET',
+    });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      return {
+        success: false,
+        error: {
+          message: 'Có lỗi xảy ra',
+          code: err.code,
+        },
+      };
+    }
+    throw err;
+  }
+}
+
+export async function getStudentSubmissions(
+  unitId: string,
+  query?: {
+    page?: number;
+    limit?: number;
+    q?: string | string[];
+    status?: string | string[];
+  }
+): Promise<any> {
+  try {
+    return await apiFetch(`/api/exercises/${unitId}/submissions`, {
+      auth: true,
+      credentials: 'include',
+      method: 'GET',
+      query,
+    });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      return {
+        success: false,
+        error: {
+          message: 'Có lỗi xảy ra',
+          code: err.code,
+        },
+      };
+    }
+    throw err;
+  }
+}
+
 export async function addSubmission(
   exerciseId: string,
   payload: {

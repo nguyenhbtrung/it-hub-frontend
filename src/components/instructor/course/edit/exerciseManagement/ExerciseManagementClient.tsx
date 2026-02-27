@@ -185,6 +185,10 @@ export default function ExerciseManagementClient({
     router.push(`/instructor/courses/${courseId}/edit/content/exercises/${unitId}`);
   };
 
+  const handleViewClick = (unitId: string) => {
+    router.push(`/instructor/courses/${courseId}/edit/exercises/${unitId}`);
+  };
+
   return (
     <Box sx={{ flex: 1, overflow: 'auto', py: 4 }}>
       {sections.length === 0 ? (
@@ -302,7 +306,11 @@ export default function ExerciseManagementClient({
                             </TableCell>
                             <TableCell align='right'>
                               <Stack direction='row' spacing={1} justifyContent='flex-end'>
-                                <IconButton size='small' sx={{ color: 'text.disabled' }}>
+                                <IconButton
+                                  size='small'
+                                  sx={{ color: 'text.disabled' }}
+                                  onClick={() => handleViewClick(exercise.unitId)}
+                                >
                                   <VisibilityOutlined fontSize='small' />
                                 </IconButton>
                                 <IconButton

@@ -7,7 +7,7 @@ interface EditCoursePageProps {
   params: Promise<{ id: string }>;
 }
 
-export default function EditCoursePage({ params }: EditCoursePageProps) {
+export default function ExerciseManagementPage({ params }: EditCoursePageProps) {
   return (
     <Suspense>
       {/* <EditFormWrapper params={params} /> */}
