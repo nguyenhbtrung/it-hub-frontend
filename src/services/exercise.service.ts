@@ -102,6 +102,53 @@ export async function getStudentSubmissions(
   }
 }
 
+export async function getSubmissionById(id: string): Promise<any> {
+  try {
+    return await apiFetch(`/api/exercises/submissions/${id}`, {
+      auth: true,
+      credentials: 'include',
+      method: 'GET',
+    });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      return {
+        success: false,
+        error: {
+          message: 'Có lỗi xảy ra',
+          code: err.code,
+        },
+      };
+    }
+    throw err;
+  }
+}
+
+export async function getSubmissionsByUnitAndStudent(
+  unitId: string,
+  studentId: string,
+  query?: { page?: number; limit?: number }
+): Promise<any> {
+  try {
+    return await apiFetch(`/api/exercises/${unitId}/students/${studentId}/submissions`, {
+      auth: true,
+      credentials: 'include',
+      method: 'GET',
+      query,
+    });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      return {
+        success: false,
+        error: {
+          message: 'Có lỗi xảy ra',
+          code: err.code,
+        },
+      };
+    }
+    throw err;
+  }
+}
+
 export async function addSubmission(
   exerciseId: string,
   payload: {
@@ -149,6 +196,34 @@ export async function updateExercise(
     if (typeof payload.content === 'string') payload.content = JSON.parse(payload.content) as JSONContent;
     if (typeof payload.quizzes === 'string') payload.quizzes = JSON.parse(payload.quizzes);
     return await apiFetch(`/api/exercises/${unitId}`, {
+      auth: true,
+      credentials: 'include',
+      method: 'PATCH',
+      body: JSON.stringify(payload),
+    });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      return {
+        success: false,
+        error: {
+          message: 'Có lỗi xảy ra',
+          code: err.code,
+        },
+      };
+    }
+    throw err;
+  }
+}
+
+export async function updateSubmission(
+  id: string,
+  payload: {
+    score?: number;
+    comment?: string;
+  }
+): Promise<any> {
+  try {
+    return await apiFetch(`/api/exercises/submissions/${id}`, {
       auth: true,
       credentials: 'include',
       method: 'PATCH',
