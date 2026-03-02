@@ -127,7 +127,7 @@ function SubmissionHistoryDialog({
       <DialogContent dividers sx={{ p: 0, bgcolor: 'background.paper' }}>
         <Box sx={{ p: 3 }}>
           <Typography variant='body2' color='text.secondary' sx={{ mb: 2 }}>
-            Danh sách các phiên bản bài nộp của bạn cho bài tập này.
+            Danh sách các phiên bản bài nộp của học viên cho bài tập này.
           </Typography>
           <TableContainer component={Paper} variant='outlined'>
             <Table size='small'>

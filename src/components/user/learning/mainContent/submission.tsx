@@ -23,7 +23,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { uploadFile } from '@/services/client/file.service';
 import { getSession } from 'next-auth/react';
 import { useNotification } from '@/contexts/notificationContext';
-import { addSubmission, deleteSubmission } from '@/services/exercise.service';
+import { addSubmission, deleteSubmission, getMyExerciseSubmission } from '@/services/exercise.service';
+import SubmissionDetailDialog from './submissionDetailDialog';
+import SubmissionHistoryDialog from './submissionHistoryDialog';
 
 // Giả sử có hàm deleteFile để xử lý xoá file
 async function deleteFile(id: string) {
@@ -49,19 +51,25 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>;
 
 interface SubmissionProp {
-  submission: any;
+  submissions: any;
   exercise: any;
+  initialAttemptCount: number;
 }
 
-export default function Submission({ submission, exercise }: SubmissionProp) {
+export default function Submission({ submissions, exercise, initialAttemptCount }: SubmissionProp) {
+  const [submission, setSubmission] = useState(submissions?.[0]);
   const deadline = new Date(exercise.deadline).getTime();
+  const [isGraded, setIsGraded] = useState<boolean>(submission?.score);
+  const [attemptCount, setAttemptCount] = useState<number>(initialAttemptCount);
   const [remaining, setRemaining] = useState(() => deadline - Date.now());
   const [submissionId, setSubmissionId] = useState<string | null>(submission?.id);
-  const [attachments, setAttachments] = useState<any[]>(submission?.attachments || []);
+  const [attachments, setAttachments] = useState<any[]>(isGraded ? [] : submission?.attachments || []);
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [undoing, setUndoing] = useState(false);
   const [submitted, setSubmitted] = useState(!!submission);
+  const [openDetail, setOpenDetail] = useState(false);
+  const [openHistory, setOpenHistory] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { notify } = useNotification();
 
@@ -75,8 +83,10 @@ export default function Submission({ submission, exercise }: SubmissionProp) {
     resolver: zodResolver(schema),
     defaultValues: {
       // Chuyển mảng string từ API (nếu có) thành mảng object
-      demoUrl: submission?.demoUrl?.map((url: string) => ({ value: url })) || [{ value: '' }],
-      note: submission?.note || '',
+      demoUrl: isGraded
+        ? [{ value: '' }]
+        : submission?.demoUrl?.map((url: string) => ({ value: url })) || [{ value: '' }],
+      note: isGraded ? '' : submission?.note || '',
     },
   });
 
@@ -167,6 +177,13 @@ export default function Submission({ submission, exercise }: SubmissionProp) {
         throw new Error('Nộp bài thất bại, vui lòng thử lại');
       }
 
+      reset({
+        demoUrl: flatDemoUrls.map((url) => ({ value: url })),
+        note: data.note || '',
+      });
+
+      setAttemptCount((prev) => prev + 1);
+      setIsGraded(false);
       setSubmissionId(res?.data?.id);
       setSubmitted(true);
     } catch (error: any) {
@@ -186,7 +203,16 @@ export default function Submission({ submission, exercise }: SubmissionProp) {
     try {
       const res = await deleteSubmission(submissionId || '');
       if (!res?.success) throw new Error('Hoàn tác thất bại, vui lòng thử lại');
-      setSubmitted(false);
+      const lastAttemptTime = attemptCount - 1;
+
+      const submissionsRes = await getMyExerciseSubmission(exercise?.id || '');
+      const submissions = submissionsRes?.data || [];
+      const meta = submissionsRes?.meta;
+      const currentSubmission = submissions?.[0];
+      setSubmission(currentSubmission);
+      setSubmitted(!!currentSubmission);
+      setAttemptCount(meta?.total || 0);
+      setIsGraded(currentSubmission?.score);
     } catch (error: any) {
       console.error('Lỗi khi hoàn tác nộp bài:', error);
       notify('error', error.message || 'Hoàn tác thất bại, vui lòng thử lại', {
@@ -223,11 +249,48 @@ export default function Submission({ submission, exercise }: SubmissionProp) {
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
             <Typography color='text.secondary'>Tình trạng</Typography>
             <Chip
-              label={submitted ? 'Đã nộp bài' : 'Chưa nộp bài'}
+              label={submitted ? (isGraded ? 'Đã chấm điểm' : 'Đã nộp bài') : 'Chưa nộp bài'}
               color={submitted ? 'success' : 'error'}
               size='small'
             />
           </Box>
+
+          {submitted && (
+            <>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1, alignItems: 'center' }}>
+                <Typography color='text.secondary'>Lần</Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Typography color='text.secondary'>{attemptCount}</Typography>
+                  <Button size='small' variant='text' onClick={() => setOpenHistory(true)}>
+                    Xem Lịch sử
+                  </Button>
+                </Box>
+              </Box>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1, alignItems: 'center' }}>
+                <Typography color='text.secondary'>Điểm số</Typography>
+
+                {!isGraded ? (
+                  <Typography fontWeight={500} color='warning.main'>
+                    Chưa có điểm
+                  </Typography>
+                ) : (
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    {/* Hiển thị điểm */}
+                    <Typography
+                      fontWeight={600}
+                      sx={{ color: submission.score >= exercise?.passingScore ? 'success.main' : 'error.main' }}
+                    >
+                      {submission.score}/10
+                    </Typography>
+
+                    <Button size='small' variant='text' onClick={() => setOpenDetail(true)}>
+                      Xem chi tiết
+                    </Button>
+                  </Box>
+                )}
+              </Box>
+            </>
+          )}
 
           {exercise?.deadline && (
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
@@ -274,7 +337,22 @@ export default function Submission({ submission, exercise }: SubmissionProp) {
 
             {fields.map((field, index) => (
               <Box key={field.id} sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, mb: 1 }}>
-                {submitted ? (
+                {!submitted || isGraded ? (
+                  <Controller
+                    name={`demoUrl.${index}.value`}
+                    control={control}
+                    render={({ field: controllerField }) => (
+                      <TextField
+                        {...controllerField}
+                        fullWidth
+                        placeholder='Nhập liên kết demo...'
+                        size='small'
+                        error={!!errors.demoUrl?.[index]?.value}
+                        helperText={errors.demoUrl?.[index]?.value?.message}
+                      />
+                    )}
+                  />
+                ) : (
                   <Typography
                     component='a'
                     href={field.value}
@@ -292,24 +370,9 @@ export default function Submission({ submission, exercise }: SubmissionProp) {
                     <InsertLinkIcon fontSize='small' />
                     {field.value}
                   </Typography>
-                ) : (
-                  <Controller
-                    name={`demoUrl.${index}.value`}
-                    control={control}
-                    render={({ field: controllerField }) => (
-                      <TextField
-                        {...controllerField}
-                        fullWidth
-                        placeholder='Nhập liên kết demo...'
-                        size='small'
-                        error={!!errors.demoUrl?.[index]?.value}
-                        helperText={errors.demoUrl?.[index]?.value?.message}
-                      />
-                    )}
-                  />
                 )}
 
-                {!submitted && fields.length > 1 && (
+                {(!submitted || isGraded) && fields.length > 1 && (
                   <IconButton size='small' onClick={() => remove(index)} sx={{ mt: 0.5 }}>
                     <CloseIcon fontSize='small' />
                   </IconButton>
@@ -317,7 +380,7 @@ export default function Submission({ submission, exercise }: SubmissionProp) {
               </Box>
             ))}
 
-            {!submitted && (
+            {(!submitted || isGraded) && (
               <Button
                 fullWidth
                 variant='outlined'
@@ -337,7 +400,7 @@ export default function Submission({ submission, exercise }: SubmissionProp) {
                 Tải lên tệp
               </Typography>
 
-              {!submitted && (
+              {(!submitted || isGraded) && (
                 <Box
                   onClick={() => fileInputRef.current?.click()}
                   onDrop={handleDrop}
@@ -401,7 +464,7 @@ export default function Submission({ submission, exercise }: SubmissionProp) {
                   <Typography fontSize={14}>{att.file.name}</Typography>
                 </Box>
 
-                {!submitted && (
+                {(!submitted || isGraded) && (
                   <IconButton size='small' onClick={() => handleDelete(att.id)}>
                     <CloseIcon fontSize='small' />
                   </IconButton>
@@ -415,13 +478,7 @@ export default function Submission({ submission, exercise }: SubmissionProp) {
                 Ghi chú cho giảng viên
               </Typography>
 
-              {submitted ? (
-                <Paper variant='outlined' sx={{ p: 2, borderRadius: 1, bgcolor: 'grey.50' }}>
-                  <Typography fontSize={14} color='text.primary' sx={{ whiteSpace: 'pre-line' }}>
-                    {watch('note') || 'Không có ghi chú nào.'}
-                  </Typography>
-                </Paper>
-              ) : (
+              {!submitted || isGraded ? (
                 <Controller
                   name='note'
                   control={control}
@@ -437,6 +494,12 @@ export default function Submission({ submission, exercise }: SubmissionProp) {
                     />
                   )}
                 />
+              ) : (
+                <Paper variant='outlined' sx={{ p: 2, borderRadius: 1, bgcolor: 'grey.50' }}>
+                  <Typography fontSize={14} color='text.primary' sx={{ whiteSpace: 'pre-line' }}>
+                    {watch('note') || 'Không có ghi chú nào.'}
+                  </Typography>
+                </Paper>
               )}
             </Box>
 
@@ -451,6 +514,18 @@ export default function Submission({ submission, exercise }: SubmissionProp) {
                 disabled={submitting}
               >
                 {submitting ? 'Đang gửi...' : 'Nộp bài'}
+              </Button>
+            ) : isGraded ? (
+              <Button
+                type='submit'
+                fullWidth
+                variant='contained'
+                size='large'
+                startIcon={submitting ? <CircularProgress size={20} color='inherit' /> : <SendIcon />}
+                sx={{ mt: 2 }}
+                disabled={submitting}
+              >
+                {submitting ? 'Đang gửi...' : 'Nộp lại bài'}
               </Button>
             ) : (
               <Button
@@ -469,6 +544,19 @@ export default function Submission({ submission, exercise }: SubmissionProp) {
           </form>
         </Box>
       </Box>
+      <SubmissionHistoryDialog
+        open={openHistory}
+        onClose={() => setOpenHistory(false)}
+        exerciseId={exercise?.id || ''}
+        currentAttemptId={submissionId || ''}
+        passingScore={exercise?.passingScore || 0}
+      />
+      <SubmissionDetailDialog
+        open={openDetail}
+        onClose={() => setOpenDetail(false)}
+        submission={submission}
+        exercise={exercise}
+      />
     </Box>
   );
 }

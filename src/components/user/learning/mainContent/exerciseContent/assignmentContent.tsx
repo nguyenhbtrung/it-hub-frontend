@@ -32,7 +32,9 @@ interface AssignmentContentProps {
 
 export default async function AssignmentContent({ exercise, nav, slug }: AssignmentContentProps) {
   const submissionRes = await getMyExerciseSubmission(exercise?.id || '');
-  const submission = submissionRes?.data?.[0];
+  const submissions = submissionRes?.data || [];
+  const meta = submissionRes?.meta;
+  // const submission = submissionRes?.data?.[0];
   //   submissionRes: {
   //     "success": true,
   //     "message": "Success",
@@ -228,7 +230,7 @@ export default async function AssignmentContent({ exercise, nav, slug }: Assignm
           </Box>
         </Box>
         {/* RIGHT */}
-        <Submission exercise={exercise} submission={submission} />
+        <Submission exercise={exercise} submissions={submissions} initialAttemptCount={meta?.total || 0} />
       </Box>
 
       {/* Navigation Buttons */}

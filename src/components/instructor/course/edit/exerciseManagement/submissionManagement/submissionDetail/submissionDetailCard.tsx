@@ -14,6 +14,7 @@ import {
   OpenInNew as OpenInNewIcon,
 } from '@mui/icons-material';
 import { getSubmissionById } from '@/services/exercise.service';
+import { notFound } from 'next/navigation';
 
 interface SubmissionDetailCardProps {
   params: Promise<{ id: string; unitId: string; attemptId: string }>;
@@ -24,6 +25,7 @@ export default async function SubmissionDetailCard({ params }: SubmissionDetailC
   const submissionRes = await getSubmissionById(attemptId);
 
   const submission = submissionRes?.data;
+  if (!submission) notFound();
 
   return (
     <Paper sx={{ borderRadius: 1, overflow: 'hidden' }}>
