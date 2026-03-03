@@ -56,7 +56,7 @@ export default async function SubmissionDetailHeader({ params }: SubmissionDetai
           <Divider orientation='vertical' flexItem sx={{ display: { xs: 'none', md: 'block' } }} />
           <Box>
             <Typography variant='h6' fontWeight='bold' lineHeight={1.2}>
-              Chấm điểm bài nộp
+              {exercise?.type === 'quiz' ? 'Chi tiết bài làm' : 'Chấm điểm bài nộp'}
             </Typography>
             <Typography variant='caption' color='text.secondary'>
               {exercise.unit.title}

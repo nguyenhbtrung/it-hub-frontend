@@ -7,11 +7,11 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 
 interface OverviewSectionProps {
-  params: Promise<{ unitId: string }>;
+  params: Promise<{ unitId: string; id: string }>;
 }
 
 export default async function OverviewSection({ params }: OverviewSectionProps) {
-  const { unitId } = await params;
+  const { unitId, id } = await params;
   const overviewRes = await getSubmissionOverview(unitId);
   const overview: Overview = overviewRes?.data || {
     title: 'Bài tập',
@@ -25,7 +25,7 @@ export default async function OverviewSection({ params }: OverviewSectionProps) 
   return (
     <>
       {/* App Bar */}
-      <Header title={overview?.title} />
+      <Header title={overview?.title} courseId={id} />
 
       <Container maxWidth='lg' sx={{ flex: 1, pt: { xs: 3, md: 5 } }}>
         <Box sx={{ pb: 4 }}>

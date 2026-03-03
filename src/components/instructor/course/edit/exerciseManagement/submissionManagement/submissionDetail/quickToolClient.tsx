@@ -28,24 +28,26 @@ import { useRouter } from 'next/navigation';
 interface QuickToolsClientProps {
   initialSubmissions: any[];
   currentAttemptId: string;
+  courseId: string;
+  unitId: string;
   passingScore: number;
 }
 
 function SubmissionHistoryDialog({
   open,
   onClose,
+  onViewClick,
   submissions,
   currentAttemptId,
   passingScore,
 }: {
   open: boolean;
   onClose: () => void;
+  onViewClick: (id: string) => void;
   submissions: any[];
   currentAttemptId: string;
   passingScore: number;
 }) {
-  const router = useRouter();
-
   // Sắp xếp submissions mới nhất lên đầu
   const sortedSubmissions = [...submissions].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -57,7 +59,7 @@ function SubmissionHistoryDialog({
 
   const handleViewSubmission = (attemptId: string) => {
     // Điều hướng đến trang chi tiết của lần nộp đó
-    router.push(`?attemptId=${attemptId}`); // Hoặc dùng đường dẫn tuyệt đối
+    onViewClick(attemptId);
     onClose();
   };
 
@@ -161,7 +163,7 @@ function SubmissionHistoryDialog({
                       <TableCell>
                         <Stack spacing={0.5}>
                           <Typography variant='body2' fontWeight='medium'>
-                            Lần {index + 1}
+                            Lần {sortedSubmissions.length - index}
                           </Typography>
                           {isCurrent && (
                             <Typography variant='caption' color='primary' fontWeight='bold'>
@@ -213,9 +215,6 @@ function SubmissionHistoryDialog({
           justifyContent: 'flex-end',
         }}
       >
-        <Button onClick={onClose} variant='outlined' color='inherit'>
-          Hủy bỏ
-        </Button>
         <Button onClick={onClose} variant='contained' color='primary'>
           Đóng
         </Button>
@@ -227,9 +226,16 @@ function SubmissionHistoryDialog({
 export default function QuickToolsClient({
   initialSubmissions,
   currentAttemptId,
+  courseId,
+  unitId,
   passingScore,
 }: QuickToolsClientProps) {
   const [historyOpen, setHistoryOpen] = useState(false);
+  const router = useRouter();
+
+  const handleViewSubmissionClick = (attemptId: string) => {
+    router.push(`/instructor/courses/${courseId}/edit/exercises/${unitId}/submissions/${attemptId}`);
+  };
 
   return (
     <>
@@ -255,6 +261,7 @@ export default function QuickToolsClient({
       <SubmissionHistoryDialog
         open={historyOpen}
         onClose={() => setHistoryOpen(false)}
+        onViewClick={handleViewSubmissionClick}
         submissions={initialSubmissions}
         currentAttemptId={currentAttemptId}
         passingScore={passingScore}

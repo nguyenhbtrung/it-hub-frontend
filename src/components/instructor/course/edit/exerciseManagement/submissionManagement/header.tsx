@@ -10,9 +10,10 @@ import { useRouter } from 'next/navigation';
 
 interface HeaderProps {
   title: string;
+  courseId: string;
 }
 
-export default function Header({ title }: HeaderProps) {
+export default function Header({ title, courseId }: HeaderProps) {
   const router = useRouter();
   return (
     <Box
@@ -36,7 +37,7 @@ export default function Header({ title }: HeaderProps) {
         <Typography>Quay lại Quản lý bài tập</Typography> */}
         <Button
           startIcon={<ArrowBackIcon />}
-          onClick={() => router.back()}
+          onClick={() => router.push(`/instructor/courses/${courseId}/edit/exercises`)}
           sx={{
             color: 'text.secondary',
             '&:hover': { color: 'primary.main', bgcolor: 'transparent', boxShadow: 'none' },
