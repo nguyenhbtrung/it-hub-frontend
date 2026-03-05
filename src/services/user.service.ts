@@ -103,6 +103,26 @@ export const getMyProfile = cache(async (): Promise<any> => {
   }
 });
 
+export const getMyLearningProgressByStepId = async (stepId: string): Promise<any> => {
+  try {
+    return await apiFetch(`/api/users/me/steps/${stepId}/progress`, {
+      auth: true,
+      credentials: 'include',
+    });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      return {
+        success: false,
+        error: {
+          message: 'Lưu thay đổi không thành công, vui lòng thử lại',
+          code: err.code,
+        },
+      };
+    }
+    throw err;
+  }
+};
+
 export const createUser = async (payload: {
   email: string;
   fullname?: string | null;
@@ -194,6 +214,33 @@ export const updateMyProfile = async (payload: {
   try {
     return await apiFetch(`/api/users/me/profile`, {
       method: 'PATCH',
+      body: JSON.stringify(payload),
+      auth: true,
+      credentials: 'include',
+    });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      return {
+        success: false,
+        error: {
+          message: 'Lưu thay đổi không thành công, vui lòng thử lại',
+          code: err.code,
+        },
+      };
+    }
+    throw err;
+  }
+};
+
+export const createOrUpdateStepLearningProgress = async (
+  stepId: string,
+  payload: {
+    status: string;
+  }
+): Promise<any> => {
+  try {
+    return await apiFetch(`/api/users/me/steps/${stepId}/progress`, {
+      method: 'PUT',
       body: JSON.stringify(payload),
       auth: true,
       credentials: 'include',

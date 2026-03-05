@@ -36,6 +36,8 @@ import SelectToAskAI from './selectToAskAI';
 import { auth } from '@/auth';
 import AiChatButton from './aiChatButton';
 import NextLink from '@/components/common/Link';
+import { getMyLearningProgressByStepId } from '@/services/user.service';
+import LearningProgressAction from './learningProgressAction';
 
 interface MainContentProps {
   params: Promise<{ slug: string; id: string }>;
@@ -55,6 +57,8 @@ export default async function MainContent({ params }: MainContentProps) {
 
   const navRes = await getNavigationByContentId(stepId, { contentType: 'step' });
   const nav = navRes?.data;
+
+  const learningProgressPromise = getMyLearningProgressByStepId(stepId);
 
   return (
     <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
@@ -262,6 +266,8 @@ export default async function MainContent({ params }: MainContentProps) {
                 Quay lại
               </Button>
             )}
+
+            <LearningProgressAction stepId={stepId} learningProgressPromise={learningProgressPromise} />
 
             {nav?.nextType === 'step' && (
               <Button

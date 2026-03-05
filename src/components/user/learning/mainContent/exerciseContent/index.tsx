@@ -58,6 +58,7 @@ export default async function MainContent({ params }: MainContentProps) {
     notFound();
   }
   const exercise = exerciseRes?.data;
+  console.log('exercise: ', exercise);
   // exerciseRes: {
   //     "success": true,
   //     "message": "Success",

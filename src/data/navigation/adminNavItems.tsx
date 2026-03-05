@@ -3,6 +3,7 @@ import People from '@mui/icons-material/People';
 import School from '@mui/icons-material/School';
 import EmojiEvents from '@mui/icons-material/EmojiEvents';
 import Forum from '@mui/icons-material/Forum';
+import Category from '@mui/icons-material/Category';
 import Settings from '@mui/icons-material/Settings';
 import { NavItem } from '@/types/navigation.admin';
 
@@ -42,8 +43,8 @@ export const navItems: NavItem[] = [
   //   ],
   // },
   {
-    label: 'Diễn đàn',
-    icon: Forum,
+    label: 'Danh mục & Tag',
+    icon: Category,
     href: '/admin/forum',
     children: [
       { label: 'Tất cả bài viết', href: '/admin/forum' },
