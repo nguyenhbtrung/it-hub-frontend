@@ -2,12 +2,13 @@
 
 import { getSession, signIn } from 'next-auth/react';
 import { AuthFormProps } from '@/types/auth';
-import { Box, TextField, Button, Link, Stack } from '@mui/material';
+import { Box, TextField, Button, Link, Stack, InputAdornment, IconButton } from '@mui/material';
 import { Suspense, useState } from 'react';
 import { useNotification } from '@/contexts/notificationContext';
 import { SignUp } from '@/services/auth.service';
 import { useRouter } from 'next/navigation';
 import AuthNotify from './AuthNotify';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 export default function AuthForm({ type }: AuthFormProps) {
   const [form, setForm] = useState({
@@ -16,6 +17,9 @@ export default function AuthForm({ type }: AuthFormProps) {
     confirmPassword: '',
   });
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const { notify } = useNotification();
   const router = useRouter();
 
@@ -23,12 +27,12 @@ export default function AuthForm({ type }: AuthFormProps) {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     if (type === 'login') {
       const res = await signIn('credentials', {
         email: form.email,
         password: form.password,
-        // callbackUrl: '/',
         redirect: false,
       });
       if (res?.ok) {
@@ -68,59 +72,83 @@ export default function AuthForm({ type }: AuthFormProps) {
       <Suspense>
         <AuthNotify />
       </Suspense>
-      <Stack spacing={3}>
-        {/* EMAIL */}
-        <TextField label='Email' name='email' fullWidth value={form.email} onChange={handleChange} />
+      <Box component='form' onSubmit={handleSubmit}>
+        <Stack spacing={3}>
+          {/* EMAIL */}
+          <TextField label='Email' name='email' fullWidth value={form.email} onChange={handleChange} />
 
-        {/* PASSWORD: login + register */}
-        {(type === 'login' || type === 'signup') && (
-          <TextField
-            label='Mật khẩu'
-            name='password'
-            type='password'
-            fullWidth
-            value={form.password}
-            onChange={handleChange}
-          />
-        )}
+          {/* PASSWORD: login + register */}
+          {(type === 'login' || type === 'signup') && (
+            <TextField
+              label='Mật khẩu'
+              name='password'
+              type={showPassword ? 'text' : 'password'}
+              fullWidth
+              value={form.password}
+              onChange={handleChange}
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position='end'>
+                      <IconButton onClick={() => setShowPassword(!showPassword)} edge='end'>
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
+              }}
+            />
+          )}
 
-        {/* CONFIRM PASSWORD: register */}
-        {type === 'signup' && (
-          <TextField
-            label='Xác nhận mật khẩu'
-            name='confirmPassword'
-            type='password'
-            fullWidth
-            value={form.confirmPassword}
-            onChange={handleChange}
-          />
-        )}
+          {/* CONFIRM PASSWORD: register */}
+          {type === 'signup' && (
+            <TextField
+              label='Xác nhận mật khẩu'
+              name='confirmPassword'
+              type={showConfirmPassword ? 'text' : 'password'}
+              fullWidth
+              value={form.confirmPassword}
+              onChange={handleChange}
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position='end'>
+                      <IconButton onClick={() => setShowConfirmPassword(!showConfirmPassword)} edge='end'>
+                        {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
+              }}
+            />
+          )}
 
-        {/* BUTTON */}
-        <Button variant='contained' size='large' fullWidth onClick={handleSubmit}>
-          {type === 'login' ? 'Đăng nhập' : type === 'signup' ? 'Đăng ký' : 'Gửi yêu cầu đặt lại mật khẩu'}
-        </Button>
+          {/* BUTTON */}
+          <Button variant='contained' size='large' fullWidth type='submit'>
+            {type === 'login' ? 'Đăng nhập' : type === 'signup' ? 'Đăng ký' : 'Gửi yêu cầu đặt lại mật khẩu'}
+          </Button>
 
-        {/* EXTRA LINKS */}
-        {type === 'login' && (
-          <Stack direction='row' justifyContent='space-between'>
-            <Link href='/auth/forgot-password'>Quên mật khẩu?</Link>
-            <Link href='/auth/signup'>Tạo tài khoản</Link>
-          </Stack>
-        )}
+          {/* EXTRA LINKS */}
+          {type === 'login' && (
+            <Stack direction='row' justifyContent='space-between'>
+              <Link href='/auth/forgot-password'>Quên mật khẩu?</Link>
+              <Link href='/auth/signup'>Tạo tài khoản</Link>
+            </Stack>
+          )}
 
-        {type === 'signup' && (
-          <Stack direction='row' justifyContent='space-between'>
-            <Link href='/auth/login'>Đã có tài khoản? Đăng nhập</Link>
-          </Stack>
-        )}
+          {type === 'signup' && (
+            <Stack direction='row' justifyContent='space-between'>
+              <Link href='/auth/login'>Đã có tài khoản? Đăng nhập</Link>
+            </Stack>
+          )}
 
-        {type === 'forgot' && (
-          <Stack direction='row' justifyContent='center'>
-            <Link href='/auth/login'>Quay lại đăng nhập</Link>
-          </Stack>
-        )}
-      </Stack>
+          {type === 'forgot' && (
+            <Stack direction='row' justifyContent='center'>
+              <Link href='/auth/login'>Quay lại đăng nhập</Link>
+            </Stack>
+          )}
+        </Stack>
+      </Box>
     </Box>
   );
 }
