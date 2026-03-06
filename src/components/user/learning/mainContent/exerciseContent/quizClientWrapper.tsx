@@ -6,6 +6,7 @@ import QuizSession from './quizSession';
 import QuizResult from './quizResult';
 import { addSubmission } from '@/services/exercise.service';
 import { useNotification } from '@/contexts/notificationContext';
+import { useRouter } from 'next/navigation';
 
 interface QuizClientWrapperProps {
   exercise: any;
@@ -19,6 +20,7 @@ export default function QuizClientWrapper({ exercise, nav, slug, submissionsProm
   const [isQuizSubmitted, setIsQuizSubmitted] = useState(false);
   const [quizResult, setQuizResult] = useState<any>(null);
   const { notify } = useNotification();
+  const router = useRouter();
 
   const handleStartQuiz = () => {
     setIsQuizStarted(true);
@@ -49,7 +51,6 @@ export default function QuizClientWrapper({ exercise, nav, slug, submissionsProm
       submittedAt: new Date().toISOString(),
     };
     const quizResultsMetadata = { result, quizzes: exercise?.quizzes };
-    console.log('exercise: ', exercise);
     try {
       const res = await addSubmission(exercise.id, {
         score,
@@ -57,6 +58,7 @@ export default function QuizClientWrapper({ exercise, nav, slug, submissionsProm
       });
 
       if (!res?.success) throw new Error(res?.error?.message || 'Nộp bài thất bại, vui lòng thử lại');
+      router.refresh();
 
       setQuizResult(result);
       setIsQuizSubmitted(true);

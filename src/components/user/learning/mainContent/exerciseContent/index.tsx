@@ -168,7 +168,7 @@ export default async function MainContent({ params }: MainContentProps) {
               Chương {breadcrumb?.section?.order}: {breadcrumb?.section?.title}
             </Link>
             <Link
-              href={`/courses/${slug}/learn/lessons/${breadcrumb?.unit?.id}`}
+              href={`/courses/${slug}/learn/exercises/${breadcrumb?.unit?.id}`}
               color='text.secondary'
               sx={{
                 fontSize: '0.875rem',
