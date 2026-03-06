@@ -11,8 +11,8 @@ export default function ProfileTabs() {
   const [value, setValue] = useState(0);
 
   const tabs = [
-    { label: 'Tổng quan', href: '/profile' },
-    { label: 'Khóa học của tôi', href: '/profile/my-courses' },
+    { label: 'Hồ sơ', href: '/profile' },
+    // { label: 'Khóa học của tôi', href: '/profile/my-courses' },
     { label: 'Chỉnh sửa hồ sơ', href: '/profile/edit' },
     { label: 'Cài đặt', href: '/profile/settings' },
   ];

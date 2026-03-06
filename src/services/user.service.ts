@@ -103,6 +103,29 @@ export const getMyProfile = cache(async (): Promise<any> => {
   }
 });
 
+export const getMyLearningCourses = cache(
+  async (query?: { page?: number; limit?: number; status?: string }): Promise<any> => {
+    try {
+      return await apiFetch(`/api/users/me/learn/courses`, {
+        auth: true,
+        query,
+      });
+    } catch (err) {
+      if (err instanceof ApiError) {
+        return {
+          success: false,
+          error: {
+            message: 'Có lỗi xảy ra',
+            code: err.code,
+            credentials: 'include',
+          },
+        };
+      }
+      throw err;
+    }
+  }
+);
+
 export const getMyLearningProgressByStepId = async (stepId: string): Promise<any> => {
   try {
     return await apiFetch(`/api/users/me/steps/${stepId}/progress`, {

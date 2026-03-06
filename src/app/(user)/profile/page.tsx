@@ -13,6 +13,12 @@ import {
 } from '@mui/icons-material';
 import { Suspense } from 'react';
 import Bio from '@/components/user/profile/bio';
+import CourseStatusTabs from '@/components/user/profile/courses/courseStatusTabs';
+import { getCoursesByStatus } from '@/components/user/profile/courses/data';
+import CourseCard from '@/components/user/profile/courses/courseCard';
+import EmptyCourseState from '@/components/user/profile/courses/emptyCourseState';
+import { CourseCardHorizontal } from '@/components/user/common/courseCard/courseCardHorizontal';
+import { getMyLearningCourses } from '@/services/user.service';
 
 // Component Thẻ thống kê
 function StatCard({
@@ -112,7 +118,37 @@ function BadgeCard({
   );
 }
 
-export default function ProfilePage() {
+interface PageProps {
+  searchParams: Promise<{ tab?: string }>;
+}
+
+async function CourseList({ searchParams }: PageProps) {
+  const params = await searchParams;
+  const activeTab = params.tab || 'active';
+
+  // const courses = getCoursesByStatus(activeTab as any);
+
+  const res = await getMyLearningCourses({ page: 1, limit: 10, status: activeTab });
+  const courses = res?.data || [];
+  return (
+    <>
+      <Box>
+        {courses.length > 0 ? (
+          <Stack spacing={3}>
+            {courses.map((course: any) => (
+              // <CourseCard key={course.id} course={course} status={activeTab as any} />
+              <CourseCardHorizontal key={course.id} course={course} />
+            ))}
+          </Stack>
+        ) : (
+          <EmptyCourseState />
+        )}
+      </Box>
+    </>
+  );
+}
+
+export default function ProfilePage({ searchParams }: PageProps) {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
       {/* Phần giới thiệu */}
@@ -120,8 +156,17 @@ export default function ProfilePage() {
         <Bio />
       </Suspense>
 
-      {/* Cấp độ danh tiếng và cách tính điểm */}
-      <Grid container spacing={3}>
+      <Stack spacing={4}>
+        {/* Tabs con */}
+        <Suspense>
+          <CourseStatusTabs />
+        </Suspense>
+        <Suspense>
+          <CourseList searchParams={searchParams} />
+        </Suspense>
+      </Stack>
+
+      {/* <Grid container spacing={3}>
         <Grid size={{ xs: 12, sm: 6 }}>
           <Card
             variant='outlined'
@@ -142,7 +187,7 @@ export default function ProfilePage() {
               </Stack>
 
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} alignItems='center'>
-                {/* Avatar cấp độ */}
+               
                 <Box sx={{ position: 'relative', flexShrink: 0 }}>
                   <Avatar
                     sx={{
@@ -174,7 +219,7 @@ export default function ProfilePage() {
                   />
                 </Box>
 
-                {/* Thanh tiến trình */}
+           
                 <Box sx={{ flexGrow: 1, width: '100%' }}>
                   <Stack direction='row' justifyContent='space-between' mb={1}>
                     <Typography variant='body2' fontWeight='bold'>
@@ -262,20 +307,20 @@ export default function ProfilePage() {
             </CardContent>
           </Card>
         </Grid>
-      </Grid>
+      </Grid> */}
 
       {/* Thống kê */}
-      <Grid container spacing={2}>
+      {/* <Grid container spacing={2}>
         <Grid size={{ xs: 12, sm: 6 }}>
           <StatCard icon={<School />} label='Khóa học hoàn thành' value='12' color='#3b82f6' />
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
           <StatCard icon={<Schedule />} label='Giờ học tích lũy' value='340h' color='#10b981' />
         </Grid>
-      </Grid>
+      </Grid> */}
 
       {/* Bộ sưu tập huy hiệu */}
-      <Card
+      {/* <Card
         variant='outlined'
         sx={{
           borderRadius: 1,
@@ -319,7 +364,7 @@ export default function ProfilePage() {
             </Grid>
           </Grid>
         </CardContent>
-      </Card>
+      </Card> */}
     </Box>
   );
 }
