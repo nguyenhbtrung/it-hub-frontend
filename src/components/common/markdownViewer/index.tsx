@@ -8,12 +8,13 @@ import Box from '@mui/material/Box';
 
 interface MarkdownViewerProps {
   content: string;
+  hightlightCount?: number;
 }
 
-export default function MarkdownViewer({ content }: MarkdownViewerProps) {
+export default function MarkdownViewer({ content, hightlightCount }: MarkdownViewerProps) {
   useEffect(() => {
     hljs.highlightAll();
-  }, []);
+  }, [hightlightCount]);
 
   return (
     <Box className='tiptap'>

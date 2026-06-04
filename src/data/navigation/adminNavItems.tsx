@@ -45,11 +45,10 @@ export const navItems: NavItem[] = [
   {
     label: 'Danh mục & Tag',
     icon: Category,
-    href: '/admin/forum',
+    href: '/admin/categories',
     children: [
-      { label: 'Tất cả bài viết', href: '/admin/forum' },
-      { label: 'Chủ đề', href: '/admin/forum/topics' },
-      { label: 'Báo cáo', href: '/admin/forum/reports' },
+      { label: 'Danh mục', href: '/admin/categories' },
+      { label: 'Tag', href: '/admin/tags' },
     ],
   },
   {

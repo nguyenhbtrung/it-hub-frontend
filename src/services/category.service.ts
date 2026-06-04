@@ -104,12 +104,18 @@ export async function getCategories({
   all,
   root,
   parentId,
+  sortBy,
+  sortOrder,
+  q,
 }: {
   page?: number;
   limit?: number;
-  all: boolean;
-  root: boolean;
+  all?: boolean;
+  root?: boolean;
   parentId?: string;
+  sortBy?: any;
+  sortOrder?: any;
+  q?: any;
 }): Promise<any> {
   try {
     return await apiFetch(`/api/categories`, {

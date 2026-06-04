@@ -33,6 +33,7 @@ export function AIChatDialog({ open, onClose, selectedText, accessToken, stepId 
   const [contextText, setContextText] = useState('');
   const [flexibility, setFlexibility] = useState<Flexibility>('GUIDED');
   const [scope, setScope] = useState<Scope>('step');
+  const [hightlightCount, setHighlightCount] = useState<number>(0);
 
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -94,6 +95,7 @@ export function AIChatDialog({ open, onClose, selectedText, accessToken, stepId 
           return [...prev.slice(0, -1), updated];
         });
       }
+      setHighlightCount((prev) => prev + 1);
     } catch (error) {
       setMessages((prev) => [
         ...prev,
@@ -144,7 +146,7 @@ export function AIChatDialog({ open, onClose, selectedText, accessToken, stepId 
         ) : (
           <Box sx={{ flex: 1, overflowY: 'auto', p: 3 }}>
             {messages.map((msg, idx) => (
-              <ChatMessageRow key={idx} message={msg} />
+              <ChatMessageRow key={idx} message={msg} hightlightCount={hightlightCount} />
             ))}
             <div ref={bottomRef} />
           </Box>
@@ -200,7 +202,7 @@ export function AIChatDialog({ open, onClose, selectedText, accessToken, stepId 
   );
 }
 
-function ChatMessageRow({ message }: { message: ChatMessage }) {
+function ChatMessageRow({ message, hightlightCount }: { message: ChatMessage; hightlightCount: number }) {
   if (message.role === 'assistant') {
     return (
       <Box
@@ -209,7 +211,7 @@ function ChatMessageRow({ message }: { message: ChatMessage }) {
           mb: 2,
         }}
       >
-        <MarkdownViewer content={message.content} />
+        <MarkdownViewer content={message.content} hightlightCount={hightlightCount} />
       </Box>
     );
   }

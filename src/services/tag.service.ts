@@ -7,9 +7,11 @@ interface GetTagsParams {
   page?: number;
   limit?: number;
   q?: string;
+  sortBy?: any;
+  sortOrder?: any;
 }
 
-export async function getTags({ page = 1, limit = 10, q }: GetTagsParams): Promise<any> {
+export async function getTags({ page = 1, limit = 10, q, sortBy, sortOrder }: GetTagsParams): Promise<any> {
   try {
     return await apiFetch(`/api/tags`, {
       auth: false,
