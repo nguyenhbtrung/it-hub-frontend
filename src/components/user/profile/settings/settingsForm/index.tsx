@@ -25,8 +25,8 @@ import ChangePasswordDialog from '../changePassword/dialog';
 import { SettingsData } from '../types';
 import { defaultSettings } from '../data';
 import { ChangePasswordFormData } from '../changePassword/schemas';
-import { changePassword } from '@/services/auth.service';
 import { signOut } from 'next-auth/react';
+import { changePasswordAction } from '@/features/auth';
 
 interface SettingsFormProps {
   initialData?: SettingsData;
@@ -62,16 +62,13 @@ export default function SettingsForm({ initialData = defaultSettings }: Settings
   };
 
   const handleChangePassword = async (data: ChangePasswordFormData) => {
-    // Giả lập API call để đổi mật khẩu
-    console.log('Changing password:', data);
+    const result = await changePasswordAction(data);
 
-    const res = await changePassword(data);
-    if (res?.success) {
-      // Đóng dialog
+    if (result.success) {
       setShowPasswordDialog(false);
       setShowPasswordSuccessDialog(true);
     } else {
-      throw new Error(res?.error?.message || 'Đổi mật khẩu không thành công');
+      throw new Error(result.error.message);
     }
   };
 

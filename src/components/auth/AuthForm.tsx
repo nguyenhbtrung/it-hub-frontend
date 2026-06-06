@@ -5,10 +5,10 @@ import { AuthFormProps } from '@/types/auth';
 import { Box, TextField, Button, Link, Stack, InputAdornment, IconButton } from '@mui/material';
 import { Suspense, useState } from 'react';
 import { useNotification } from '@/contexts/notificationContext';
-import { SignUp } from '@/services/auth.service';
 import { useRouter } from 'next/navigation';
 import AuthNotify from './AuthNotify';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { signUpAction } from '@/features/auth';
 
 export default function AuthForm({ type }: AuthFormProps) {
   const [form, setForm] = useState({
@@ -53,16 +53,17 @@ export default function AuthForm({ type }: AuthFormProps) {
         notify('error', 'Mật khẩu không khớp', { vertical: 'top', horizontal: 'center' });
         return;
       }
-      const res = await SignUp({
+
+      const result = await signUpAction({
         email: form.email,
         password: form.password,
       });
-      if (res?.success) {
+
+      if (result?.success) {
         notify('success', 'Đăng ký tài khoản thành công', { vertical: 'top', horizontal: 'center' });
         router.push('/auth/login');
       } else {
-        notify('error', res?.error?.message || 'Đăng ký tài khoản thất bại', { vertical: 'top', horizontal: 'center' });
-        console.log('res', res);
+        notify('error', result.error.message, { vertical: 'top', horizontal: 'center' });
       }
     }
   };

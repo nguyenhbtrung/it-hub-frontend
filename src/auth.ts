@@ -1,10 +1,10 @@
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import 'next-auth/jwt';
-import { signInUser } from './services/auth.service';
 import { jwtDecode } from 'jwt-decode';
 import { refreshAccessToken } from './lib/fetcher/refreshToken';
 import { API_BASE_URL, REFRESH_ENDPOINT } from './lib/fetcher/constants';
+import { authApi } from '@/features/auth';
 
 declare module 'next-auth' {
   interface User {
@@ -41,7 +41,12 @@ export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
       },
       authorize: async (credentials) => {
         console.log('credential', credentials);
-        const res = await signInUser(credentials);
+
+        const res = await authApi.signIn({
+          email: credentials.email as string,
+          password: credentials.password as string,
+        });
+
         if (res?.success && res?.data) {
           return {
             accessToken: res.data.accessToken,
