@@ -26,7 +26,7 @@ import { SettingsData } from '../types';
 import { defaultSettings } from '../data';
 import { ChangePasswordFormData } from '../changePassword/schemas';
 import { signOut } from 'next-auth/react';
-import { changePasswordAction } from '@/features/auth';
+import { changePasswordAction, getAuthErrorMessage } from '@/features/auth';
 
 interface SettingsFormProps {
   initialData?: SettingsData;
@@ -68,7 +68,7 @@ export default function SettingsForm({ initialData = defaultSettings }: Settings
       setShowPasswordDialog(false);
       setShowPasswordSuccessDialog(true);
     } else {
-      throw new Error(result.error.message);
+      throw new Error(getAuthErrorMessage(result));
     }
   };
 

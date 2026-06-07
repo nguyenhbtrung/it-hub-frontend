@@ -1,6 +1,6 @@
-import { ApiError } from '@/lib/errors/ApiError';
+import { ApiErrorResponse } from '@/lib/api/types';
 
-export function getAuthErrorMessage(error: ApiError) {
+export function getAuthErrorMessage(error: ApiErrorResponse) {
   switch (error.code) {
     case 'INVALID_CREDENTIALS':
       return 'Email hoặc mật khẩu không đúng';
@@ -22,7 +22,7 @@ export function getAuthErrorMessage(error: ApiError) {
   }
 }
 
-function mapValidation(error: ApiError) {
+function mapValidation(error: ApiErrorResponse) {
   switch (error.errors?.[0]?.message) {
     case 'Invalid email format':
       return 'Định dạng email không hợp lệ';

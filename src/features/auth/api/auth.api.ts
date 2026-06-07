@@ -30,8 +30,8 @@ export const authApi = {
 
   signUp(payload: SignUpPayload) {
     return ApiClient.request('/api/auth/register', {
-      auth: false,
       method: 'POST',
+      auth: false,
       body: JSON.stringify(payload),
     });
   },
@@ -39,6 +39,7 @@ export const authApi = {
   changePassword(payload: ChangePasswordPayload) {
     return ApiClient.request('/api/auth/change-password', {
       method: 'POST',
+      auth: true,
       body: JSON.stringify(payload),
     });
   },

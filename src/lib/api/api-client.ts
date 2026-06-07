@@ -1,49 +1,54 @@
 import { auth } from '@/auth';
-import { ApiError } from '@/lib/errors/ApiError';
 import { API_BASE_URL } from './constants';
-import { ApiRequestOptions } from './types';
+import { ApiRequestOptions, ApiResponse } from './types';
 
 export class ApiClient {
-  static async request<T>(endpoint: string, options: ApiRequestOptions = {}): Promise<T> {
+  static async request<T>(endpoint: string, options: ApiRequestOptions = {}): Promise<ApiResponse<T>> {
     const { auth: needAuth = true, retry = true, headers, query, signal, ...rest } = options;
 
-    const session = needAuth ? await auth() : null;
+    try {
+      const session = needAuth ? await auth() : null;
 
-    const url = API_BASE_URL + endpoint + buildQueryString(query);
+      const url = API_BASE_URL + endpoint + buildQueryString(query);
 
-    const res = await fetch(url, {
-      ...rest,
-      signal,
-      cache: 'no-store',
-      credentials: 'include',
-      headers: {
-        ...(session?.accessToken && {
-          Authorization: `Bearer ${session.accessToken}`,
-        }),
-        Cookie: `refreshToken=${session?.refreshToken ?? ''}`,
-        ...(headers ?? {}),
-        ...(!(rest.body instanceof FormData)
-          ? {
-              'Content-Type': 'application/json',
-            }
-          : {}),
-      },
-    });
-
-    if (res.status === 401 && needAuth && retry) {
-      return ApiClient.request<T>(endpoint, {
-        ...options,
-        retry: false,
+      const res = await fetch(url, {
+        ...rest,
+        signal,
+        cache: 'no-store',
+        credentials: 'include',
+        headers: {
+          ...(session?.accessToken && {
+            Authorization: `Bearer ${session.accessToken}`,
+          }),
+          Cookie: `refreshToken=${session?.refreshToken ?? ''}`,
+          ...(headers ?? {}),
+          ...(!(rest.body instanceof FormData)
+            ? {
+                'Content-Type': 'application/json',
+              }
+            : {}),
+        },
       });
+
+      const json = await parseResponse(res);
+
+      if (res.status === 401 && needAuth && retry) {
+        return ApiClient.request<T>(endpoint, {
+          ...options,
+          retry: false,
+        });
+      }
+
+      return json;
+    } catch {
+      return {
+        success: false,
+        code: 'NETWORK_ERROR',
+        message: 'Không thể kết nối máy chủ',
+        errors: [],
+        meta: {},
+      };
     }
-
-    if (!res.ok) {
-      const error = await parseError(res);
-
-      throw new ApiError(res.status, error.message, error.code, error.errors);
-    }
-
-    return res.json();
   }
 }
 
@@ -71,10 +76,16 @@ function buildQueryString(query?: Record<string, any>) {
   return qs ? `?${qs}` : '';
 }
 
-async function parseError(res: Response) {
+async function parseResponse(res: Response) {
   try {
     return await res.json();
   } catch {
-    return {};
+    return {
+      success: false,
+      code: 'INVALID_RESPONSE',
+      message: 'Phản hồi không hợp lệ',
+      errors: [],
+      meta: {},
+    };
   }
 }
