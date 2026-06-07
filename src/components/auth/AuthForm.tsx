@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import AuthNotify from './AuthNotify';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { getAuthErrorMessage, signUpAction } from '@/features/auth';
+import { getErrorMessage } from '@/lib/errors';
 
 export default function AuthForm({ type }: AuthFormProps) {
   const [form, setForm] = useState({
@@ -63,7 +64,7 @@ export default function AuthForm({ type }: AuthFormProps) {
         notify('success', 'Đăng ký tài khoản thành công', { vertical: 'top', horizontal: 'center' });
         router.push('/auth/login');
       } else {
-        notify('error', getAuthErrorMessage(result), { vertical: 'top', horizontal: 'center' });
+        notify('error', getErrorMessage(result, getAuthErrorMessage), { vertical: 'top', horizontal: 'center' });
       }
     }
   };
