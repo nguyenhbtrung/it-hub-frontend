@@ -1,4 +1,4 @@
-import { ApiErrorResponse } from '@/lib/api/types';
+import { ApiErrorResponse } from '@/lib/api';
 
 export function getAuthErrorMessage(error: ApiErrorResponse) {
   switch (error.code) {

@@ -1,5 +1,4 @@
-import { ApiClient } from '@/lib/api/api-client';
-import { API_BASE_URL } from '@/lib/api/constants';
+import { ApiClient, API_BASE_URL } from '@/lib/api';
 import { ChangePasswordPayload, SignInPayload, SignUpPayload } from '../types/auth.types';
 
 export const authApi = {
