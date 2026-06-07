@@ -22,8 +22,7 @@ import AvatarUpload from '../avatarUpload';
 import SocialLinkField from '../socialLinkField';
 import { FormField } from '../types';
 import { formFields } from '../data';
-import { uploadFile } from '@/services/client/file.service';
-import { deleteFile } from '@/services/file.service';
+import { uploadFile, deleteFileAction } from '@/features/file';
 import { updateMyProfile } from '@/services/user.service';
 import { useRouter } from 'next/navigation';
 import { useNotification } from '@/contexts/notificationContext';
@@ -84,7 +83,7 @@ export default function EditProfileForm({ initialData, accessToken }: EditProfil
   const handleAvatarChange = async (file: File): Promise<string | null> => {
     try {
       if (avatarFileId) {
-        await deleteFile(avatarFileId);
+        await deleteFileAction(avatarFileId);
       }
       const res = await uploadFile(file, true, accessToken);
       if (res?.success) {
@@ -94,15 +93,15 @@ export default function EditProfileForm({ initialData, accessToken }: EditProfil
           router.refresh();
           return res?.data?.url;
         } else {
-          await deleteFile(res?.data?.id);
+          await deleteFileAction(res?.data?.id);
         }
       }
-    } catch (error) {}
+    } catch {}
     return null;
   };
 
   const handleAvatarRemove = async () => {
-    if (avatarFileId) await deleteFile(avatarFileId);
+    if (avatarFileId) await deleteFileAction(avatarFileId);
     router.refresh();
   };
 

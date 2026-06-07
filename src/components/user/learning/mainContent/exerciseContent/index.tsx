@@ -1,46 +1,9 @@
-import {
-  Box,
-  Typography,
-  Button,
-  Breadcrumbs,
-  Link,
-  Paper,
-  List,
-  ListItem,
-  Divider,
-  Chip,
-  CircularProgress,
-} from '@mui/material';
-import {
-  ArrowBack,
-  ArrowForward,
-  ChevronRight,
-  AccessTime,
-  School,
-  Download,
-  Code,
-  VideoLibrary,
-  Image,
-  Note,
-  List as ListIcon,
-  Quiz,
-  Terminal,
-} from '@mui/icons-material';
+import { Box, Typography, Breadcrumbs, Link } from '@mui/material';
+import { ChevronRight } from '@mui/icons-material';
 
 import { getCourseContentBreadcrumb, getNavigationByContentId } from '@/services/course.service';
 import { notFound } from 'next/navigation';
-import { formatDuration } from '@/lib/utils/formatDatetime';
-import StepContentRenderer from '@/components/common/richText/renderer/stepContentRenderer';
-import SelectToAskAI from '../selectToAskAI';
-import { auth } from '@/auth';
-import AiChatButton from '../aiChatButton';
-import { getSectionById } from '@/services/section.service';
-import { getUnitById } from '@/services/unit.service';
-import NextLink from '@/components/common/Link';
-import { getExerciseByUnitId, getMyExerciseSubmission } from '@/services/exercise.service';
-import DescriptionOutlined from '@mui/icons-material/DescriptionOutlined';
-import FolderZipIcon from '@mui/icons-material/FolderZip';
-import Submission from '../submission';
+import { getExerciseByUnitId } from '@/services/exercise.service';
 import AssignmentContent from './assignmentContent';
 import { Suspense } from 'react';
 import QuizContent from './quizContent';

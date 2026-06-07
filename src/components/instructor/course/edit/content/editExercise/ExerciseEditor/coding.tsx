@@ -9,8 +9,6 @@ import {
   Container,
   TextField,
   Typography,
-  Checkbox,
-  FormControlLabel,
   Button,
   List,
   ListItem,
@@ -26,10 +24,11 @@ import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 
 import { updateCourseTotalDuration } from '@/services/course.service';
 import { updateExercise } from '@/services/exercise.service';
-import { uploadFile } from '@/services/client/file.service';
+import { uploadFile } from '@/features/file';
 import { addMaterial } from '@/services/unit.service';
 import { useNotification } from '@/contexts/notificationContext';
-import { deleteFile } from '@/services/file.service';
+import { deleteFileAction, getFileErrorMessage } from '@/features/file';
+import { getErrorMessage } from '@/lib/errors';
 
 interface ExerciseEditorProps {
   exercise: any;
@@ -117,7 +116,10 @@ export default function CodingEditor({ exercise, courseId, accessToken }: Exerci
       for (const file of Array.from(files)) {
         // 1. Upload lên storage
         const fileRes = await uploadFile(file, true, accessToken);
-        if (!fileRes?.success) throw new Error(`Lỗi tải lên: ${file.name}`);
+        if (!fileRes?.success) {
+          const message = getErrorMessage(fileRes, getFileErrorMessage);
+          throw new Error(`Lỗi tải lên: ${file.name} - ${message}`);
+        }
 
         // 2. Liên kết file với Unit bài tập
         const materialRes = await addMaterial(exercise.unitId, { fileId: fileRes.data.id });
@@ -145,13 +147,13 @@ export default function CodingEditor({ exercise, courseId, accessToken }: Exerci
   };
 
   const handleRemoveAttachment = async (id: string, fileId: string, name: string) => {
-    try {
-      const res = await deleteFile(fileId);
-      if (!res?.success) throw new Error(`Lỗi khi xoá file: ${name}`);
-      setAttachments((prev) => prev.filter((item) => item.id !== id));
-    } catch (error: any) {
-      notify('error', error.message || 'Có lỗi xảy ra khi tải file');
+    const res = await deleteFileAction(fileId);
+    if (!res?.success) {
+      const message = getErrorMessage(res, getFileErrorMessage);
+      notify('error', `Lỗi khi xoá file: ${name} - ${message}`, { vertical: 'top', horizontal: 'center' });
+      return;
     }
+    setAttachments((prev) => prev.filter((item) => item.id !== id));
   };
 
   const formatFileSize = (bytes: number) => {

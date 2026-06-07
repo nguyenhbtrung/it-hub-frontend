@@ -12,28 +12,17 @@ import {
   Checkbox,
   FormControlLabel,
   Button,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemSecondaryAction,
   IconButton,
   Paper,
-  CircularProgress,
   Card,
   CardContent,
-  CardActions,
-  Divider,
   Alert,
-  Grid,
   Collapse,
   Chip,
 } from '@mui/material';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DeleteIcon from '@mui/icons-material/Delete';
-import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import AddIcon from '@mui/icons-material/Add';
 import DragHandleIcon from '@mui/icons-material/DragHandle';
-import ReorderIcon from '@mui/icons-material/Reorder';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
@@ -41,10 +30,7 @@ import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
 
 import { updateCourseTotalDuration } from '@/services/course.service';
 import { updateExercise } from '@/services/exercise.service';
-import { uploadFile } from '@/services/client/file.service';
-import { addMaterial } from '@/services/unit.service';
 import { useNotification } from '@/contexts/notificationContext';
-import { deleteFile } from '@/services/file.service';
 
 // DnD Kit imports
 import {

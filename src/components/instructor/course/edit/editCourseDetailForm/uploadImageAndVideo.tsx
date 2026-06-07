@@ -9,15 +9,14 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import LinearProgress from '@mui/material/LinearProgress';
-import CircularProgress from '@mui/material/CircularProgress';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import ClearIcon from '@mui/icons-material/Clear';
 import IconButton from '@mui/material/IconButton';
 import { styled } from '@mui/material/styles';
-import { uploadFile } from '@/services/client/file.service';
+import { deleteFileAction, getFileErrorMessage, uploadFile } from '@/features/file';
 import { useSession } from 'next-auth/react';
 import { updateCourseImage, updateCoursePromoVideo } from '@/services/course.service';
-import { deleteFile } from '@/services/file.service';
+import { getErrorMessage } from '@/lib/errors';
 
 // Styled component cho upload area
 const VisuallyHiddenInput = styled('input')({
@@ -46,14 +45,13 @@ const handleUpload = async (file: File, accessToken: string, onProgress: (progre
       onProgress(currentProgress);
     }, 100);
 
-    // Gọi API thực tế
     const res = await uploadFile(file, true, accessToken);
 
     clearInterval(progressInterval);
     onProgress(100);
 
     if (!res.success) {
-      throw new Error(res.error.message || `Upload failed`);
+      throw new Error(getErrorMessage(res, getFileErrorMessage));
     }
 
     return res?.data;
@@ -110,7 +108,7 @@ const UploadArea = ({
 
   const handleDeleteFile = async () => {
     if (!uploadedId) return;
-    await deleteFile(uploadedId);
+    await deleteFileAction(uploadedId);
     setUploadedId('');
   };
 

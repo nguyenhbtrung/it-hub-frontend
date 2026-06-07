@@ -20,12 +20,13 @@ import { useEffect, useState, useRef } from 'react';
 import { useForm, useFieldArray, Controller } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { uploadFile } from '@/services/client/file.service';
+import { getFileErrorMessage, uploadFile } from '@/features/file';
 import { getSession } from 'next-auth/react';
 import { useNotification } from '@/contexts/notificationContext';
 import { addSubmission, deleteSubmission, getMyExerciseSubmission } from '@/services/exercise.service';
 import SubmissionDetailDialog from './submissionDetailDialog';
 import SubmissionHistoryDialog from './submissionHistoryDialog';
+import { getErrorMessage } from '@/lib/errors';
 
 // Giả sử có hàm deleteFile để xử lý xoá file
 async function deleteFile(id: string) {
@@ -116,7 +117,7 @@ export default function Submission({ submissions, exercise, initialAttemptCount 
         const session = await getSession();
         const accessToken = session?.accessToken || '';
         const res = await uploadFile(file, false, accessToken);
-        if (!res?.success) throw new Error(res?.error?.message || 'Tải lên thất bại');
+        if (!res?.success) throw new Error(getErrorMessage(res, getFileErrorMessage));
         const newAttachment = { id: crypto.randomUUID(), file: res?.data };
         setAttachments((prev) => [...prev, newAttachment]);
       } catch (error: any) {
@@ -137,7 +138,7 @@ export default function Submission({ submissions, exercise, initialAttemptCount 
         const session = await getSession();
         const accessToken = session?.accessToken || '';
         const res = await uploadFile(file, false, accessToken);
-        if (!res?.success) throw new Error(res?.error?.message || 'Tải lên thất bại');
+        if (!res?.success) throw new Error(getErrorMessage(res, getFileErrorMessage));
         const newAttachment = { id: crypto.randomUUID(), file: res?.data };
         setAttachments((prev) => [...prev, newAttachment]);
       } catch (error: any) {
