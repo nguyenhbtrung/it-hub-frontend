@@ -4,8 +4,8 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { Suspense } from 'react';
 import CourseList from './courseList';
-import { getCategorySummary } from '@/services/category.service';
 import { notFound } from 'next/navigation';
+import { categoryApi } from '@/features/category';
 
 interface AllCoursesProps {
   id: string;
@@ -23,8 +23,8 @@ const courseTitle: Record<string, string> = {
 };
 
 export default async function AllCourses({ id, searchParams }: AllCoursesProps) {
-  const res = await getCategorySummary(id);
-  if (!res?.success || !res?.data) {
+  const res = await categoryApi.getCategorySummary(id);
+  if (!res.success || !res?.data) {
     notFound();
   }
   return (

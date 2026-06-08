@@ -18,10 +18,12 @@ import {
   Typography,
 } from '@mui/material';
 import { AddCircle } from '@mui/icons-material';
-import { getCategories } from '@/services/category.service';
 import { createCourse } from '@/services/course.service';
 import { useRouter } from 'next/navigation';
 import { Category } from '@/types/category';
+import { categoryApi, getCategoryErrorMessage } from '@/features/category';
+import { getErrorMessage } from '@/lib/errors';
+import { ApiErrorResponse } from '@/lib/api';
 
 export default function AddCourse({ onCreated }: { onCreated?: () => void }) {
   const [open, setOpen] = useState(false);
@@ -48,25 +50,13 @@ export default function AddCourse({ onCreated }: { onCreated?: () => void }) {
     async function fetchRoot() {
       setLoadingCategories(true);
       setError(null);
-      const res = await getCategories({ all: true, root: true });
-      if (res?.success && res?.data && mounted) {
+      const res = await categoryApi.getCategories({ all: true, root: true });
+      if (res.success && res.data && mounted) {
         setCategories(res.data || []);
       } else {
-        setError('Có lỗi xảy ra');
+        setError(getErrorMessage(res as ApiErrorResponse, getCategoryErrorMessage));
       }
       if (mounted) setLoadingCategories(false);
-      //   try {
-      //     const res = await fetch('/api/categories?all=true&root=true', {
-      //       credentials: 'include',
-      //     });
-      //     const json = await res.json();
-      //     if (!res.ok) throw new Error(json?.message || 'Lỗi khi lấy danh mục');
-      //     if (mounted) setCategories(json.data || []);
-      //   } catch (err: any) {
-      //     setError(err?.message || 'Có lỗi xảy ra');
-      //   } finally {
-      //     if (mounted) setLoadingCategories(false);
-      //   }
     }
 
     fetchRoot();
@@ -88,15 +78,15 @@ export default function AddCourse({ onCreated }: { onCreated?: () => void }) {
       setLoadingSubCategories(true);
       setError(null);
 
-      const res = await getCategories({ all: true, parentId: categoryId, root: false });
-      if (res?.success && res?.data && mounted) {
+      const res = await categoryApi.getCategories({ all: true, parentId: categoryId, root: false });
+      if (res.success && res.data && mounted) {
         setSubCategories(res.data || []);
         // reset selected subcategory if not in new list
         if (!res.data?.some((c: Category) => c.id === subCategoryId)) {
           setSubCategoryId('');
         }
       } else {
-        setError('Có lỗi xảy ra');
+        setError(getErrorMessage(res as ApiErrorResponse, getCategoryErrorMessage));
       }
       if (mounted) setLoadingSubCategories(false);
       //   try {

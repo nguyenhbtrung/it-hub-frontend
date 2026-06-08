@@ -24,7 +24,6 @@ import { Tag } from '@/types/tag';
 import { getTags } from '@/services/tag.service';
 import { CourseDetail } from './types';
 import { Category } from '@/types/category';
-import { getCategories } from '@/services/category.service';
 import { levelLabelsMap } from '@/lib/const/course';
 import { CourseLevel } from '@/types/course';
 import { useSaveStore } from '@/store/useSaveStore';
@@ -35,6 +34,7 @@ import { useNotification } from '@/contexts/notificationContext';
 import { useRouter } from 'next/navigation';
 import UploadImageAndVideo from './uploadImageAndVideo';
 import { SessionProvider } from 'next-auth/react';
+import { categoryApi } from '@/features/category';
 
 interface EditCourseDetailFormProps {
   courseDetail: CourseDetail | null;
@@ -106,8 +106,8 @@ export default function EditCourseDetailForm({ courseDetail }: EditCourseDetailF
   useEffect(() => {
     async function fetchRoot() {
       setLoadingCategories(true);
-      const res = await getCategories({ all: true, root: true });
-      if (res?.success && res?.data) {
+      const res = await categoryApi.getCategories({ all: true, root: true });
+      if (res.success && res.data) {
         setCategories(res.data || []);
       }
       setLoadingCategories(false);
@@ -126,7 +126,7 @@ export default function EditCourseDetailForm({ courseDetail }: EditCourseDetailF
     async function fetchChildren() {
       setLoadingSubCategories(true);
 
-      const res = await getCategories({ all: true, parentId: categoryId, root: false });
+      const res = await categoryApi.getCategories({ all: true, parentId: categoryId, root: false });
       if (res?.success && res?.data) {
         setSubCategories(res.data || []);
         // reset selected subcategory if not in new list
