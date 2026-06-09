@@ -1,6 +1,6 @@
 'use server';
 
-import { authApi } from '../api/auth.api';
+import * as authApi from '../services/auth.service';
 import { ChangePasswordPayload, SignUpPayload } from '../types/auth.types';
 
 export async function signUpAction(payload: SignUpPayload) {

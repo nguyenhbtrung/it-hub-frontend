@@ -1,4 +1,4 @@
-export { authApi } from './api/auth.api';
+export { signIn } from './services/auth.service';
 
 export { signUpAction, changePasswordAction } from './actions/auth.actions';
 

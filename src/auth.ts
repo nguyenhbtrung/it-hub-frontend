@@ -4,7 +4,7 @@ import 'next-auth/jwt';
 import { jwtDecode } from 'jwt-decode';
 import { refreshAccessToken } from './lib/fetcher/refreshToken';
 import { API_BASE_URL, REFRESH_ENDPOINT } from './lib/fetcher/constants';
-import { authApi } from '@/features/auth';
+import { signIn as signInService } from '@/features/auth';
 
 declare module 'next-auth' {
   interface User {
@@ -42,7 +42,7 @@ export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
       authorize: async (credentials) => {
         console.log('credential', credentials);
 
-        const res = await authApi.signIn({
+        const res = await signInService({
           email: credentials.email as string,
           password: credentials.password as string,
         });
