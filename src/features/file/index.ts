@@ -1,5 +1,3 @@
-export { fileApi } from './api/file.api';
-
 export { deleteFileAction } from './actions/file.actions';
 
 export { uploadFile } from './client/upload-file';

@@ -1,7 +1,7 @@
 'use server';
 
 import { ApiResponse } from '@/lib/api';
-import { fileApi } from '../api/file.api';
+import * as fileApi from '../services/file.service';
 import { ConfirmUploadPayload, GenerateSignedUploadPayload } from '../types/file.types';
 
 export async function generateSignedUploadAction(payload: GenerateSignedUploadPayload): Promise<ApiResponse<any>> {
