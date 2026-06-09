@@ -6,11 +6,11 @@ import Logo from '@/components/common/Logo';
 import { instructorNavItems, mapCategoryTreeToNavItems, studentNavItems } from '@/data/navigation/userNavItems';
 import { auth } from '@/auth';
 import { getMyProfile } from '@/services/user.service';
-import { categoryApi } from '@/features/category';
 import { notFound } from 'next/navigation';
+import { getCategoryTree } from '@/features/category';
 
 export default async function NavbarContent() {
-  const res = await categoryApi.getCategoryTree();
+  const res = await getCategoryTree();
 
   if (!res.success) {
     notFound();

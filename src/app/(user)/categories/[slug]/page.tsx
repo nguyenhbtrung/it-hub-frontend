@@ -1,7 +1,7 @@
 import AllCourses from '@/components/user/explore/category/allCourses';
 import CategoryHeader from '@/components/user/explore/category/categoryHeader';
 import RecommendedCourses from '@/components/user/explore/category/recommendedCourses';
-import { categoryApi } from '@/features/category';
+import { getCategoryIdBySlug } from '@/features/category';
 
 import { Container, Box } from '@mui/material';
 import { notFound } from 'next/navigation';
@@ -24,7 +24,7 @@ export default async function BrowseByCategoryPage({ params, searchParams }: Bro
 
 async function BrowseByCategoryPageWrapper({ params, searchParams }: BrowseByCategoryPageProps) {
   const { slug } = await params;
-  const res = await categoryApi.getCategoryIdBySlug(slug);
+  const res = await getCategoryIdBySlug(slug);
   if (!res?.success) {
     notFound();
   }

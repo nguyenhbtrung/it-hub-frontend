@@ -3,7 +3,7 @@ import EmptyState from './emptyState';
 import AppPagination from '@/components/common/pagination';
 import { CourseCardHorizontal } from '@/components/user/common/courseCard/courseCardHorizontal';
 import CourseSortSelect from '@/components/user/common/courseSortSelect';
-import { categoryApi } from '@/features/category';
+import { getCoursesByCategoryId } from '@/features/category';
 
 interface SearchResultsProps {
   id: string;
@@ -18,7 +18,7 @@ export default async function CourseList({ id, searchParams }: SearchResultsProp
     currentPage = 1;
   }
 
-  const res = await categoryApi.getCoursesByCategoryId(id, {
+  const res = await getCoursesByCategoryId(id, {
     page: currentPage,
     limit: 5,
     duration,

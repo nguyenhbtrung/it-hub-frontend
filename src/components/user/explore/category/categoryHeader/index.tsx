@@ -5,14 +5,14 @@ import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import Star from '@mui/icons-material/Star';
 import { notFound } from 'next/navigation';
-import { categoryApi } from '@/features/category';
+import { getCategorySummary } from '@/features/category';
 
 interface CategoryHeaderProps {
   id: string;
 }
 
 export default async function CategoryHeader({ id }: CategoryHeaderProps) {
-  const res = await categoryApi.getCategorySummary(id);
+  const res = await getCategorySummary(id);
   if (!res.success || !res?.data) {
     notFound();
   }

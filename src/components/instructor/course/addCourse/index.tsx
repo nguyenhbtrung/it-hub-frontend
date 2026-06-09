@@ -21,7 +21,7 @@ import { AddCircle } from '@mui/icons-material';
 import { createCourse } from '@/services/course.service';
 import { useRouter } from 'next/navigation';
 import { Category } from '@/types/category';
-import { categoryApi, getCategoryErrorMessage } from '@/features/category';
+import { getCategories, getCategoryErrorMessage } from '@/features/category';
 import { getErrorMessage } from '@/lib/errors';
 import { ApiErrorResponse } from '@/lib/api';
 
@@ -50,7 +50,7 @@ export default function AddCourse({ onCreated }: { onCreated?: () => void }) {
     async function fetchRoot() {
       setLoadingCategories(true);
       setError(null);
-      const res = await categoryApi.getCategories({ all: true, root: true });
+      const res = await getCategories({ all: true, root: true });
       if (res.success && res.data && mounted) {
         setCategories(res.data || []);
       } else {
@@ -78,7 +78,7 @@ export default function AddCourse({ onCreated }: { onCreated?: () => void }) {
       setLoadingSubCategories(true);
       setError(null);
 
-      const res = await categoryApi.getCategories({ all: true, parentId: categoryId, root: false });
+      const res = await getCategories({ all: true, parentId: categoryId, root: false });
       if (res.success && res.data && mounted) {
         setSubCategories(res.data || []);
         // reset selected subcategory if not in new list

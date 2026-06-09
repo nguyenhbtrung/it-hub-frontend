@@ -1,4 +1,4 @@
-export { categoryApi } from './api/category.api';
+export * from './services/category.service';
 
 export { getCategoryErrorMessage } from './mappers/category-error.mapper';
 

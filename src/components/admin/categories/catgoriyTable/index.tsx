@@ -18,7 +18,7 @@ import { getDefaultFilter } from '@/lib/utils/filter';
 import { useMounted } from '@/hooks/useMounted';
 import { useNotification } from '@/contexts/notificationContext';
 
-import { categoryApi } from '@/features/category';
+import { getCategories } from '@/features/category';
 
 interface Category {
   id: string;
@@ -99,7 +99,7 @@ export default function CategoryTable({ reloadKey }: { reloadKey: number }) {
         const sortOrder = sortModel[0]?.sort || 'asc';
         const search = filterModel.quickFilterValues?.join(' ');
 
-        const res = await categoryApi.getCategories({
+        const res = await getCategories({
           page: paginationModel.page + 1,
           limit: paginationModel.pageSize,
           sortBy: sortField,
