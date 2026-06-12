@@ -1,4 +1,4 @@
-export { ApiClient } from './api-client';
+export { ApiClient, clientApi, serverApi, api } from './api-client';
 
 export { API_BASE_URL, REFRESH_ENDPOINT } from './constants';
 

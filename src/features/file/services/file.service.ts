@@ -1,22 +1,14 @@
-import { ApiClient } from '@/lib/api/api-client';
+import { api } from '@/lib/api';
 import { ConfirmUploadPayload, GenerateSignedUploadPayload } from '../types/file.types';
 
 export function generateSignedUpload(payload: GenerateSignedUploadPayload) {
-  return ApiClient.request('/api/files/signed-upload', {
-    method: 'POST',
-    body: JSON.stringify(payload),
-  });
+  return api.post('/api/files/signed-upload', payload);
 }
 
 export function confirmUpload(payload: ConfirmUploadPayload) {
-  return ApiClient.request('/api/files/confirm-upload', {
-    method: 'POST',
-    body: JSON.stringify(payload),
-  });
+  return api.post('/api/files/confirm-upload', payload);
 }
 
 export function deleteFile(fileId: string) {
-  return ApiClient.request(`/api/files/${fileId}`, {
-    method: 'DELETE',
-  });
+  return api.delete(`/api/files/${fileId}`);
 }

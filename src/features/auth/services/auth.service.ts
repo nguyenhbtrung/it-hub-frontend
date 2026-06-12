@@ -1,4 +1,4 @@
-import { ApiClient, API_BASE_URL } from '@/lib/api';
+import { API_BASE_URL, api } from '@/lib/api';
 import { ChangePasswordPayload, SignInPayload, SignUpPayload } from '../types/auth.types';
 
 export async function signIn(payload: SignInPayload) {
@@ -27,17 +27,13 @@ export async function signIn(payload: SignInPayload) {
 }
 
 export function signUp(payload: SignUpPayload) {
-  return ApiClient.request('/api/auth/register', {
-    method: 'POST',
+  return api.post('/api/auth/register', payload, {
     auth: false,
-    body: JSON.stringify(payload),
   });
 }
 
 export function changePassword(payload: ChangePasswordPayload) {
-  return ApiClient.request('/api/auth/change-password', {
-    method: 'POST',
+  return api.post('/api/auth/change-password', payload, {
     auth: true,
-    body: JSON.stringify(payload),
   });
 }
