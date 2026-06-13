@@ -1,12 +1,11 @@
 import { Box, Typography, Paper, Avatar } from '@mui/material';
-import { School } from '@mui/icons-material';
 import { formatDistanceToNow } from 'date-fns';
 import { vi } from 'date-fns/locale';
-import { getRecentActivitiesOfInstructor } from '@/services/dashboard.service';
+import { getRecentActivitiesOfInstructor } from '@/features/dashboard';
 
 export default async function RecentActivity() {
   const res = await getRecentActivitiesOfInstructor();
-  const activities = res?.data ?? [];
+  const activities = res.success ? (res.data ?? []) : [];
 
   return (
     <Paper

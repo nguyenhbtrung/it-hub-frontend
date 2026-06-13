@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getCourseRegistrationGrowthOfAdmin } from '@/services/dashboard.service';
+import { getCourseRegistrationGrowthOfAdmin } from '@/features/dashboard';
 import { Box, Typography, Paper } from '@mui/material';
 
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
@@ -28,7 +28,7 @@ export default function CourseEnrollmentTrendChart() {
   useEffect(() => {
     const fetchData = async () => {
       const res = await getCourseRegistrationGrowthOfAdmin();
-      const registrationGrowth = res?.data ?? [];
+      const registrationGrowth = res.success ? (res.data ?? []) : [];
 
       const formatted = registrationGrowth.map((item: any) => ({
         month: monthLabels[item.month - 1],

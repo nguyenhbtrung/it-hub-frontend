@@ -1,39 +1,10 @@
 import { Box, Typography, Paper } from '@mui/material';
 import { Star } from '@mui/icons-material';
-import { getInstructorDashboardSummary } from '@/services/dashboard.service';
-
-// const stats = [
-//   {
-//     title: 'Học viên mới',
-//     value: '125',
-//     change: '+15.8%',
-//     changeColor: 'success.main',
-//     description: '',
-//   },
-//   {
-//     title: 'Số lượng khóa học',
-//     value: '24',
-//     description: 'Đang hoạt động',
-//   },
-//   {
-//     title: 'Bài tập đã nộp',
-//     value: '89',
-//     change: '-2%',
-//     changeColor: 'error.main',
-//     description: '',
-//   },
-//   {
-//     title: 'Điểm đánh giá trung bình',
-//     value: '4.8',
-//     icon: <Star sx={{ color: 'warning.main', fontSize: 28 }} />,
-//     description: '+0.1 so với tháng trước',
-//     changeColor: 'success.main',
-//   },
-// ];
+import { getInstructorDashboardSummary } from '@/features/dashboard';
 
 export default async function StatsCards() {
   const res = await getInstructorDashboardSummary();
-  const summary = res?.data;
+  const summary = res.success ? res.data : null;
 
   const stats = [
     {

@@ -1,7 +1,6 @@
-import { Box, Typography, Button, Paper } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { Suspense } from 'react';
 import TodayCard from '@/components/admin/dashboard/todayCard';
-import Star from '@mui/icons-material/Star';
 import CastForEducationOutlined from '@mui/icons-material/CastForEducationOutlined';
 import ArticleOutlined from '@mui/icons-material/ArticleOutlined';
 import MenuBookOutlined from '@mui/icons-material/MenuBookTwoTone';
@@ -9,7 +8,7 @@ import School from '@mui/icons-material/SchoolOutlined';
 import DashboardStatCard from '@/components/common/dashboardStatCard';
 import CourseEnrollmentTrendChart from '@/components/admin/dashboard/courseEnrollmentTrendChart';
 import UserRegitrationTrendChart from '@/components/admin/dashboard/userRegitrationTrendChart';
-import { getAdminDashboardSummary } from '@/services/dashboard.service';
+import { getAdminDashboardSummary } from '@/features/dashboard';
 
 export default async function UserManagementPage() {
   return (
@@ -52,7 +51,7 @@ export default async function UserManagementPage() {
 
 async function StatCards() {
   const res = await getAdminDashboardSummary();
-  const summary = res?.data;
+  const summary = res.success ? res.data : null;
   const stats = [
     {
       title: 'Tổng số học viên',
