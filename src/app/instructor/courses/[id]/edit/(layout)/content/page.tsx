@@ -1,7 +1,7 @@
 import CourseContentPage from '@/components/instructor/course/edit/content/courseContentPage';
 import { Suspense } from 'react';
-import { Container, Box, Skeleton, Typography } from '@mui/material';
-import { getCourseContent } from '@/services/course.service';
+import { Box, Skeleton } from '@mui/material';
+import { getCourseContent } from '@/features/course';
 
 interface ContentPageProps {
   params: Promise<{ id: string }>;
@@ -18,8 +18,7 @@ export default async function ContentPage({ params }: ContentPageProps) {
 async function PageWrapper({ params }: ContentPageProps) {
   const { id } = await params;
   const res = await getCourseContent(id, 'instructor');
-  const courseContent = res?.data;
-  console.log('course content: ', courseContent);
+  const courseContent = res.success ? res.data : null;
   return (
     <>
       <CourseContentPage initialSections={courseContent?.sections} courseId={id || ''} />

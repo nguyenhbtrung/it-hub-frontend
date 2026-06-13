@@ -15,8 +15,8 @@ import IconButton from '@mui/material/IconButton';
 import { styled } from '@mui/material/styles';
 import { deleteFileAction, getFileErrorMessage, uploadFile } from '@/features/file';
 import { useSession } from 'next-auth/react';
-import { updateCourseImage, updateCoursePromoVideo } from '@/services/course.service';
 import { getErrorMessage } from '@/lib/errors';
+import { updateCourseImageAction, updateCoursePromoVideoAction } from '@/features/course';
 
 // Styled component cho upload area
 const VisuallyHiddenInput = styled('input')({
@@ -396,22 +396,14 @@ export default function UploadImageAndVideo({ courseId, img, promoVideo }: uploa
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
 
-  // Giả sử có URL ảnh hiện tại
-  const currentImageUrl =
-    'https://lh3.googleusercontent.com/aida-public/AB6AXuDNhF2Qs5J-NTY_OoDBq0VvvuDVgjMZqYDO4RK1KtzNq3np6M4kx8auktG5pNncK7c04sD5inPvVqmZV083iyFfWa-C_Ujd1EXPp_J7SRDqiONChTsEOQ7Zlww0yHt8F9euaM4gG7P7MkaKYgM1XMztjG07N9SecOKMdPcgW3RDL2Rwb2iYESO5C1JG-RTUO2wWxyY8aOnUUjkXc8KWt7yQmmDXpa-qEN5K2EfL1prih64b1l7rCn9dBwGEa9Fc0WMW9Ra8uk7rBSI';
-
   const handleImageUploadComplete = async (file: any) => {
     setImageUrl(file?.url);
-    console.log('Image uploaded:', file);
-    await updateCourseImage(courseId, file?.id || '');
-    // Gọi API thực tế ở đây
+    await updateCourseImageAction(courseId, file?.id || '');
   };
 
   const handleVideoUploadComplete = async (file: any) => {
     setVideoUrl(file?.url);
-    console.log('Video uploaded:', file);
-    await updateCoursePromoVideo(courseId, file?.id || '');
-    // Gọi API thực tế ở đây
+    await updateCoursePromoVideoAction(courseId, file?.id || '');
   };
 
   return (

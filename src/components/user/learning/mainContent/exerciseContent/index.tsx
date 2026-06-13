@@ -1,12 +1,12 @@
 import { Box, Typography, Breadcrumbs, Link } from '@mui/material';
 import { ChevronRight } from '@mui/icons-material';
 
-import { getCourseContentBreadcrumb, getNavigationByContentId } from '@/services/course.service';
 import { notFound } from 'next/navigation';
 import { getExerciseByUnitId } from '@/services/exercise.service';
 import AssignmentContent from './assignmentContent';
 import { Suspense } from 'react';
 import QuizContent from './quizContent';
+import { getCourseContentBreadcrumb, getNavigationByContentId } from '@/features/course';
 
 interface MainContentProps {
   params: Promise<{ slug: string; id: string }>;
@@ -15,7 +15,10 @@ interface MainContentProps {
 export default async function MainContent({ params }: MainContentProps) {
   const { slug, id: unitId } = await params;
   const breadcrumbRes = await getCourseContentBreadcrumb(unitId, 'unit');
-  const breadcrumb = breadcrumbRes?.data;
+  if (!breadcrumbRes.success) {
+    notFound();
+  }
+  const breadcrumb = breadcrumbRes.data;
   const exerciseRes = await getExerciseByUnitId(unitId);
   if (!exerciseRes.success) {
     notFound();
@@ -82,7 +85,10 @@ export default async function MainContent({ params }: MainContentProps) {
   // }
 
   const navRes = await getNavigationByContentId(unitId, { contentType: 'unit' });
-  const nav = navRes?.data;
+  if (!navRes.success) {
+    notFound();
+  }
+  const nav = navRes.data;
 
   const renderExerciseContent = () => {
     switch (exercise.type) {

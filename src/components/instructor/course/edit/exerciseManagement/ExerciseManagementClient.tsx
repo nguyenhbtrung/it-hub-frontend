@@ -23,15 +23,14 @@ import {
 import {
   VisibilityOutlined,
   EditOutlined,
-  DeleteOutlined,
   KeyboardArrowDown,
   KeyboardArrowUp,
   CalendarTodayOutlined,
   EditNoteOutlined,
 } from '@mui/icons-material';
-import { getCourseExercisesGroupedBySection } from '@/services/course.service';
 import { updateUnit } from '@/services/unit.service';
 import { useRouter } from 'next/navigation';
+import { getCourseExercisesGroupedBySection } from '@/features/course';
 
 interface Exercise {
   id: string;
@@ -48,17 +47,10 @@ interface Section {
   exercises: Exercise[];
 }
 
-interface Meta {
-  total: number;
-  page: number;
-  limit: number;
-  timestamp: string;
-}
-
 interface ExerciseManagementClientProps {
   courseId: string;
   initialSections: Section[];
-  initialMeta: Meta;
+  initialMeta: any;
 }
 
 export default function ExerciseManagementClient({
@@ -101,7 +93,7 @@ export default function ExerciseManagementClient({
     try {
       const nextPage = page + 1;
       const res = await getCourseExercisesGroupedBySection(courseId, { page: nextPage, limit: initialMeta.limit });
-      const newSections = res?.data || [];
+      const newSections = res.success ? (res.data ?? []) : [];
       const newMeta = res?.meta;
       if (newSections.length > 0) {
         setSections((prev) => [...prev, ...newSections]);

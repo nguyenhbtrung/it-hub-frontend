@@ -1,6 +1,6 @@
 'use client';
-import { createOrUpdateReview } from '@/services/course.service';
-import { Card, Typography, Stack, Box, Rating, TextField, Button, Avatar, Divider } from '@mui/material';
+import { createOrUpdateReviewAction } from '@/features/course';
+import { Typography, Stack, Box, Rating, TextField, Button, Avatar } from '@mui/material';
 import { useState } from 'react';
 
 interface YourReviewProps {
@@ -17,8 +17,8 @@ export default function YourReview({ myReview: initialMyReview, courseId }: Your
   });
 
   const handleSubmit = async () => {
-    const res = await createOrUpdateReview(courseId, newReview);
-    if (res?.success && res?.data) {
+    const res = await createOrUpdateReviewAction(courseId, newReview);
+    if (res.success && res.data) {
       const r = res.data;
       setMyReview((prev: any) => ({ ...prev, rating: r.rating, comment: r.comment }));
       setOpenInput(false);

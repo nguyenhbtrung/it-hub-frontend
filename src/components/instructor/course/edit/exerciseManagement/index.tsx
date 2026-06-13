@@ -1,4 +1,4 @@
-import { getCourseExercisesGroupedBySection } from '@/services/course.service';
+import { getCourseExercisesGroupedBySection } from '@/features/course';
 import ExerciseManagementClient from './ExerciseManagementClient';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -10,7 +10,7 @@ interface ExerciseManagementProps {
 export default async function ExerciseManagement({ params }: ExerciseManagementProps) {
   const { id: courseId } = await params;
   const res = await getCourseExercisesGroupedBySection(courseId, { page: 1, limit: 5 });
-  const sections = res?.data || [];
+  const sections = res.success ? (res.data ?? []) : [];
   const meta = res?.meta;
 
   return (

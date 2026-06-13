@@ -22,13 +22,13 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DeleteIcon from '@mui/icons-material/Delete';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 
-import { updateCourseTotalDuration } from '@/services/course.service';
 import { updateExercise } from '@/services/exercise.service';
 import { uploadFile } from '@/features/file';
 import { addMaterial } from '@/services/unit.service';
 import { useNotification } from '@/contexts/notificationContext';
 import { deleteFileAction, getFileErrorMessage } from '@/features/file';
 import { getErrorMessage } from '@/lib/errors';
+import { updateCourseTotalDurationAction } from '@/features/course';
 
 interface ExerciseEditorProps {
   exercise: any;
@@ -97,7 +97,7 @@ export default function AssignmentEditor({ exercise, courseId, accessToken }: Ex
 
       if (res?.success) {
         notify('success', 'Lưu nội dung thành công');
-        await updateCourseTotalDuration(courseId);
+        await updateCourseTotalDurationAction(courseId);
       } else {
         throw new Error();
       }

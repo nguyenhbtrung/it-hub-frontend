@@ -8,7 +8,7 @@ import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import { updateStep } from '@/services/step.service';
 import { useNotification } from '@/contexts/notificationContext';
-import { updateCourseTotalDuration } from '@/services/course.service';
+import { updateCourseTotalDurationAction } from '@/features/course';
 
 interface LectureEditorProps {
   step: any;
@@ -33,7 +33,7 @@ export default function LectureEditor({ step, courseId }: LectureEditorProps) {
     } else {
       notify('error', 'Lưu nội dung thất bại, vui lòng thử lại.', { vertical: 'top', horizontal: 'right' });
     }
-    await updateCourseTotalDuration(courseId);
+    await updateCourseTotalDurationAction(courseId);
   };
 
   return (

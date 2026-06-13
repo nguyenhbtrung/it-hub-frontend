@@ -4,9 +4,7 @@ import { DataGrid, GridColDef, GridFilterModel, GridSortModel } from '@mui/x-dat
 import { Avatar, Box, Chip, IconButton, Tooltip, Typography } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/VisibilityOutlined';
 import CancelOutlined from '@mui/icons-material/CancelOutlined';
-import CheckCircleOutline from '@mui/icons-material/CheckCircleOutline';
 import { useEffect, useState } from 'react';
-import { toLocaleDateString } from '@/lib/utils/formatDatetime';
 import { useRouter, useSearchParams } from 'next/navigation';
 import DataGridToolbar from '@/components/common/customDataGrid/dataGridToolbar';
 import CustomFilterIconButton from '@/components/common/customDataGrid/customFilterIconButton';
@@ -15,8 +13,8 @@ import { FieldType, FilterItem } from '@/types/filter';
 import CustomColumnMenu from '@/components/common/customDataGrid/customColumnMenu';
 import { getDefaultFilter } from '@/lib/utils/filter';
 import { useMounted } from '@/hooks/useMounted';
-import { getCourses, updateCourseStatus } from '@/services/course.service';
 import { useNotification } from '@/contexts/notificationContext';
+import { getCourses, updateCourseStatusAction } from '@/features/course';
 
 interface ActiveCourse {
   id: number;
@@ -112,20 +110,11 @@ export default function ActiveCourseTable() {
         status: 'published',
       });
 
-      setData(res?.data || []);
+      console.log('res: ', res);
+
+      const data = res.success ? (res.data ?? []) : [];
+      setData(data);
       setTotal(res?.meta?.total || 0);
-
-      // const response = await fakeApi.getActiveCourses(
-      //   paginationModel.page + 1,
-      //   paginationModel.pageSize,
-      //   sortField,
-      //   sortOrder,
-      //   search,
-      //   filters
-      // );
-
-      // setData(response.activeCourses);
-      // setTotal(response.total);
     } catch (error) {
       console.error('Lỗi khi tải dữ liệu:', error);
     } finally {
@@ -172,7 +161,7 @@ export default function ActiveCourseTable() {
   }, [paginationModel, sortModel, filterModel, filters, isMounted, router]);
 
   const handleSuspendClick = async (id: string) => {
-    const res = await updateCourseStatus(id, { status: 'suspended' });
+    const res = await updateCourseStatusAction(id, { status: 'suspended' });
     if (res?.success) {
       notify('success', 'Đã đình chỉ khoá học', { vertical: 'top', horizontal: 'right' });
     } else {

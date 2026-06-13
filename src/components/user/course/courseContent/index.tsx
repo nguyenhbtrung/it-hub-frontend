@@ -11,13 +11,9 @@ import {
   ListItemText,
   Chip,
   Box,
-  IconButton,
   Stack,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
-import LockOpenIcon from '@mui/icons-material/LockOpen';
-import { CourseDetailSection } from '@/types/course';
 import { formatDuration } from '@/lib/utils/formatDatetime';
 import { notFound } from 'next/navigation';
 
@@ -29,8 +25,8 @@ export default function CourseContent({ courseContentOulinePromise }: CourseCont
   const [expanded, setExpanded] = useState<string | false>(false);
 
   const res = use(courseContentOulinePromise);
-  if (!res?.success || !res?.data) notFound();
-  const courseContent = res?.data;
+  if (!res.success || !res.data) notFound();
+  const courseContent = res.data;
 
   const handleChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
     setExpanded(isExpanded ? panel : false);

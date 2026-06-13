@@ -1,5 +1,4 @@
 import { Box, Breadcrumbs, Link, Typography, Stack, Container, Avatar, Button, IconButton } from '@mui/material';
-import { CourseDetail } from '@/types/course';
 import PersonIcon from '@mui/icons-material/Person';
 import UpdateIcon from '@mui/icons-material/Update';
 import StarIcon from '@mui/icons-material/Star';
@@ -9,11 +8,10 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import SidebarEnrollCard from '../sidebarEnrollCard';
 import PromoVideo from '../promoVideo';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import NextLink from '@/components/common/Link';
-import { getCourseDetail, getUserEnrollmentStatus } from '@/services/course.service';
 import { toLocaleDateString } from '@/lib/utils/formatDatetime';
 import { notFound } from 'next/navigation';
 import CourseHeaderAction from './action';
+import { getUserEnrollmentStatus, getCourseDetail } from '@/features/course';
 
 export default async function CourseHeader({ courseId }: { courseId: string }) {
   const res = await getCourseDetail(courseId, 'student');
@@ -22,7 +20,7 @@ export default async function CourseHeader({ courseId }: { courseId: string }) {
   }
   const course = res?.data;
   const enrollmentRes = await getUserEnrollmentStatus(courseId);
-  const enrollmentStatus = enrollmentRes?.data;
+  const enrollmentStatus = enrollmentRes.success ? enrollmentRes.data : null;
   return (
     <Box
       sx={{

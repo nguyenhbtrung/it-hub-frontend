@@ -3,15 +3,14 @@
 import { useState } from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-// import ChapterList from '../chapterList';
-import { Section, Lesson, Unit, LessonStep } from '../../types';
+import { Section, LessonStep } from '../../types';
 import dynamic from 'next/dynamic';
-import { addSection } from '@/services/course.service';
 import { useNotification } from '@/contexts/notificationContext';
 import { addUnit, deleteSection, updateSection, UpdateSectionPayload } from '@/services/section.service';
 import { UnitType } from '@/types/course';
 import { addStep, deleteUnit, updateUnit, UpdateUnitPayload } from '@/services/unit.service';
 import { deleteStep, updateStep, UpdateStepPayload } from '@/services/step.service';
+import { addSectionAction } from '@/features/course';
 
 const ChapterList = dynamic(() => import('../chapterList'), { ssr: false });
 
@@ -81,12 +80,12 @@ export default function CourseContentPage({ initialSections, courseId }: CourseC
   };
 
   const addNewSection = async () => {
-    const res = await addSection(courseId, {
+    const res = await addSectionAction(courseId, {
       title: 'Chương mới',
       description: '',
       objectives: [],
     });
-    if (res?.success && res?.data) {
+    if (res.success && res.data) {
       setSections([...sections, res.data]);
     } else {
       notify('error', 'Thêm chương mới thất bại, vui lòng thử lại', { vertical: 'top', horizontal: 'right' });

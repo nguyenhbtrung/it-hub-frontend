@@ -15,7 +15,6 @@ import { FieldType, FilterItem } from '@/types/filter';
 import CustomColumnMenu from '@/components/common/customDataGrid/customColumnMenu';
 import { getDefaultFilter } from '@/lib/utils/filter';
 import { useMounted } from '@/hooks/useMounted';
-import { getCourses } from '@/services/course.service';
 
 interface ActiveCourse {
   id: number;

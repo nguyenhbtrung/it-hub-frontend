@@ -28,7 +28,6 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
 
-import { updateCourseTotalDuration } from '@/services/course.service';
 import { updateExercise } from '@/services/exercise.service';
 import { useNotification } from '@/contexts/notificationContext';
 
@@ -50,6 +49,7 @@ import {
 } from '@dnd-kit/sortable';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { updateCourseTotalDurationAction } from '@/features/course';
 
 interface ExerciseEditorProps {
   exercise: any;
@@ -509,7 +509,7 @@ export default function QuizEditor({ exercise, courseId, accessToken }: Exercise
 
       if (res?.success) {
         notify('success', 'Lưu nội dung thành công');
-        await updateCourseTotalDuration(courseId);
+        await updateCourseTotalDurationAction(courseId);
       } else {
         throw new Error();
       }

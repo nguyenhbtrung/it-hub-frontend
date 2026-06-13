@@ -1,13 +1,11 @@
 'use client';
-import React, { Suspense, useEffect, useState } from 'react';
-import { Typography, Box, Avatar, Stack, Rating, Button, Divider, Chip } from '@mui/material';
-import VerifiedIcon from '@mui/icons-material/Verified';
+import { Suspense, useState } from 'react';
+import { Typography, Box, Avatar, Stack, Rating, Button, Divider } from '@mui/material';
 import SortIcon from '@mui/icons-material/Sort';
-import { Review } from '@/types/course';
 import Section from '@/components/common/section';
 import YourReview from './yourReview';
 import ReviewStatistics from './reviewStatistics';
-import { getCourseReviews } from '@/services/course.service';
+import { getCourseReviews } from '@/features/course';
 
 interface CourseReviewsContentProps {
   initialReview: any;
@@ -41,7 +39,8 @@ export default function CourseReviewsContent({
   const handleChangeSortBy = async (sortBy: string) => {
     setSortBy(sortBy);
     const res = await getCourseReviews(courseId, { limit: 4, sortBy });
-    setReviews(res?.data || []);
+    const data = res.success ? (res.data ?? []) : [];
+    setReviews(data);
   };
 
   return (
@@ -79,7 +78,7 @@ export default function CourseReviewsContent({
 
       {/* Reviews List */}
       <Stack spacing={4}>
-        {reviews?.length &&
+        {reviews?.length > 0 &&
           reviews.map((review: any, index: number) => (
             <Box key={index}>
               <Stack direction='row' spacing={2} alignItems='flex-start'>
