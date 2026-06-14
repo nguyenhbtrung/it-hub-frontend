@@ -1,9 +1,12 @@
 'use client';
 
-import { createEnrollment, deleteEnrollment } from '@/services/enrollment.service';
 import Button from '@mui/material/Button';
 import Link from '@/components/common/Link';
 import { useState } from 'react';
+import { createEnrollmentAction, deleteEnrollmentAction, getEnrollmentErrorMessage } from '@/features/enrollment';
+import { useNotification } from '@/contexts/notificationContext';
+import { getErrorMessage } from '@/lib/errors';
+import { signOut } from 'next-auth/react';
 
 interface CourseHeaderActionProps {
   course: any;
@@ -20,18 +23,24 @@ const getLassAccessPath = (lastAccess: any) => {
 
 export default function CourseHeaderAction({ course, enrollmentStatus, courseId }: CourseHeaderActionProps) {
   const [status, setStatus] = useState(enrollmentStatus?.status);
+  const { notify } = useNotification();
   const handleRegisterClick = async () => {
     try {
-      const res = await createEnrollment(courseId, { status: 'pending' });
-      if (res?.success) {
+      const res = await createEnrollmentAction(courseId, { status: 'pending' });
+      if (res.success) {
         setStatus('pending');
+        return;
       }
-    } catch (err) {}
+      if ((res.code = 'UNAUTHORIZED')) {
+        return signOut({ redirectTo: '/auth/login' });
+      }
+      notify('error', getErrorMessage(res, getEnrollmentErrorMessage), { vertical: 'top', horizontal: 'right' });
+    } catch {}
   };
 
   const handleCancelClick = async () => {
     try {
-      const res = await deleteEnrollment(courseId);
+      const res = await deleteEnrollmentAction(courseId);
       if (res?.success) {
         setStatus(null);
       }
