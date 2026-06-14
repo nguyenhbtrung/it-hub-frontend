@@ -51,14 +51,23 @@ export class ApiClient {
         },
       });
 
-      const json = await this.parseResponse(res);
-
-      if (res.status === 401 && needAuth && retry) {
-        return this.request<T>(endpoint, {
-          ...options,
-          retry: false,
-        });
+      if (res.status === 401) {
+        if (needAuth && retry) {
+          return this.request<T>(endpoint, {
+            ...options,
+            retry: false,
+          });
+        }
+        return {
+          success: false,
+          code: 'UNAUTHORIZED',
+          message: 'Người dùng chưa đăng nhập',
+          errors: [],
+          meta: {},
+        };
       }
+
+      const json = await this.parseResponse(res);
 
       return json;
     } catch {
