@@ -1,6 +1,5 @@
 import { Box, Typography, Button, Breadcrumbs, Link, Divider } from '@mui/material';
 import { ArrowBack, ArrowForward, ChevronRight, AccessTime } from '@mui/icons-material';
-import { getStepById } from '@/services/step.service';
 import { notFound } from 'next/navigation';
 import { formatDuration } from '@/lib/utils/formatDatetime';
 import StepContentRenderer from '@/components/common/richText/renderer/stepContentRenderer';
@@ -11,6 +10,7 @@ import NextLink from '@/components/common/Link';
 import { getMyLearningProgressByStepId } from '@/services/user.service';
 import LearningProgressAction from './learningProgressAction';
 import { getCourseContentBreadcrumb, getNavigationByContentId } from '@/features/course';
+import { getStepById } from '@/features/step';
 
 interface MainContentProps {
   params: Promise<{ slug: string; id: string }>;
@@ -29,7 +29,7 @@ export default async function MainContent({ params }: MainContentProps) {
   if (!stepRes.success) {
     notFound();
   }
-  const step = stepRes?.data;
+  const step = stepRes.data;
 
   const navRes = await getNavigationByContentId(stepId, { contentType: 'step' });
   if (!navRes.success) {

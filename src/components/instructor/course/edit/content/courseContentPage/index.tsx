@@ -8,7 +8,6 @@ import dynamic from 'next/dynamic';
 import { useNotification } from '@/contexts/notificationContext';
 import { UnitType } from '@/types/course';
 import { addStep, deleteUnit, updateUnit, UpdateUnitPayload } from '@/services/unit.service';
-import { deleteStep, updateStep, UpdateStepPayload } from '@/services/step.service';
 import { addSectionAction } from '@/features/course';
 import {
   addUnitAction,
@@ -18,6 +17,7 @@ import {
   UpdateSectionPayload,
 } from '@/features/section';
 import { getErrorMessage } from '@/lib/errors';
+import { deleteStepAction, getStepErrorMessage, updateStepAction, UpdateStepPayload } from '@/features/step';
 
 const ChapterList = dynamic(() => import('../chapterList'), { ssr: false });
 
@@ -59,8 +59,8 @@ export default function CourseContentPage({ initialSections, courseId }: CourseC
   };
 
   const handleUpdateStep = async (sectionId: string, unitId: string, stepId: string, updates: Partial<LessonStep>) => {
-    const res = await updateStep(stepId, updates as UpdateStepPayload);
-    if (res?.success) {
+    const res = await updateStepAction(stepId, updates as UpdateStepPayload);
+    if (res.success) {
       setSections(
         sections.map((section) => {
           if (section.id !== sectionId) return section;
@@ -79,10 +79,7 @@ export default function CourseContentPage({ initialSections, courseId }: CourseC
         })
       );
     } else {
-      notify('error', 'Lưu nội dung thất bại', {
-        vertical: 'top',
-        horizontal: 'right',
-      });
+      notify('error', getErrorMessage(res, getStepErrorMessage), { vertical: 'top', horizontal: 'right' });
     }
   };
 
@@ -208,8 +205,8 @@ export default function CourseContentPage({ initialSections, courseId }: CourseC
   };
 
   const handleDeleteStep = async (sectionId: string, unitId: string, stepId: string) => {
-    const res = await deleteStep(stepId);
-    if (res?.success) {
+    const res = await deleteStepAction(stepId);
+    if (res.success) {
       setSections(
         sections.map((section) => {
           if (section.id !== sectionId) return section;
@@ -228,10 +225,7 @@ export default function CourseContentPage({ initialSections, courseId }: CourseC
         })
       );
     } else {
-      notify('error', 'Xoá nội dung thất bại, vui lòng thử lại', {
-        vertical: 'top',
-        horizontal: 'right',
-      });
+      notify('error', getErrorMessage(res, getStepErrorMessage), { vertical: 'top', horizontal: 'right' });
     }
   };
 
