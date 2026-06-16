@@ -7,10 +7,10 @@ import SelectToAskAI from './selectToAskAI';
 import { auth } from '@/auth';
 import AiChatButton from './aiChatButton';
 import NextLink from '@/components/common/Link';
-import { getMyLearningProgressByStepId } from '@/services/user.service';
 import LearningProgressAction from './learningProgressAction';
 import { getCourseContentBreadcrumb, getNavigationByContentId } from '@/features/course';
 import { getStepById } from '@/features/step';
+import { getMyLearningProgressByStepId } from '@/features/user';
 
 interface MainContentProps {
   params: Promise<{ slug: string; id: string }>;

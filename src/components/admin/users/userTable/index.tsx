@@ -16,11 +16,12 @@ import CustomColumnMenu from '@/components/common/customDataGrid/customColumnMen
 import { getDefaultFilter } from '@/lib/utils/filter';
 import { useMounted } from '@/hooks/useMounted';
 import { useNotification } from '@/contexts/notificationContext';
-import { deleteUser, getUsers } from '@/services/user.service';
 import { roleLabelsMap } from '@/lib/const/user';
 import UpdateUserDialog from '../dialogs/updateUser';
 import { getRoleColor } from '@/lib/utils/userBadge';
 import ConfirmDialog from '@/components/common/dialog/confirm';
+import { deleteUserAction, getUserErrorMessage, getUsers } from '@/features/user';
+import { getErrorMessage } from '@/lib/errors';
 
 interface User {
   id: number;
@@ -131,21 +132,15 @@ export default function UserTable({ reloadKey }: { reloadKey: number }) {
     if (!deleteUserId) return;
 
     try {
-      const res = await deleteUser(deleteUserId);
+      const res = await deleteUserAction(deleteUserId);
 
-      if (!res?.success) {
-        throw new Error(res?.error?.message || 'Xoá thất bại');
+      if (!res.success) {
+        throw new Error(getErrorMessage(res, getUserErrorMessage));
       }
-      notify('success', 'Xoá người dùng thành công', {
-        vertical: 'top',
-        horizontal: 'right',
-      });
+      notify('success', 'Xoá người dùng thành công', { vertical: 'top', horizontal: 'right' });
       setPaginationModel((prev) => ({ ...prev }));
     } catch (error: any) {
-      notify('error', error?.message || 'Có lỗi xảy ra khi xoá người dùng', {
-        vertical: 'top',
-        horizontal: 'right',
-      });
+      notify('error', error?.message, { vertical: 'top', horizontal: 'right' });
     } finally {
       handleCloseDelete();
     }
@@ -167,16 +162,8 @@ export default function UserTable({ reloadKey }: { reloadKey: number }) {
           q: search ? search : undefined,
         });
 
-        // const response = await fakeApi.getUsers(
-        //   paginationModel.page + 1,
-        //   paginationModel.pageSize,
-        //   sortField,
-        //   sortOrder,
-        //   search,
-        //   filters
-        // );
-
-        setData(res?.data || []);
+        const data = res.success ? (res.data ?? []) : [];
+        setData(data);
         setTotal(res?.meta?.total || 0);
       } catch (error) {
         console.error('Lỗi khi tải dữ liệu:', error);

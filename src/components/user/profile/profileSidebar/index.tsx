@@ -6,14 +6,14 @@ import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { Person, School, Edit, GitHub, LinkedIn, Public } from '@mui/icons-material';
-import { getMyProfile } from '@/services/user.service';
 import { notFound } from 'next/navigation';
 import { roleLabelsMap } from '@/lib/const/user';
 import Link from '@/components/common/Link';
+import { getMyProfile } from '@/features/user';
 
 export default async function ProfileSidebar() {
   const res = await getMyProfile();
-  if (!res?.success || !res?.data) {
+  if (!res.success || !res.data) {
     notFound();
   }
   const user = res.data;
@@ -21,7 +21,7 @@ export default async function ProfileSidebar() {
   const formatUrlDisplay = (url: string) => {
     try {
       const u = new URL(url);
-      const host = u.host.replace(/^www\./, ''); // bỏ www.
+      const host = u.host.replace(/^www\./, '');
       return host + u.pathname;
     } catch {
       return url;

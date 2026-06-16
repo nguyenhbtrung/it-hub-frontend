@@ -1,7 +1,9 @@
 'use client';
 
 import { useNotification } from '@/contexts/notificationContext';
-import { createOrUpdateStepLearningProgress } from '@/services/user.service';
+import { createOrUpdateStepLearningProgressAction, getUserErrorMessage } from '@/features/user';
+import { ApiResponse } from '@/lib/api';
+import { getErrorMessage } from '@/lib/errors';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useRouter } from 'next/navigation';
@@ -9,12 +11,14 @@ import { use, useState } from 'react';
 
 interface Props {
   stepId: string;
-  learningProgressPromise: Promise<any>;
+  learningProgressPromise: Promise<ApiResponse<any>>;
 }
 
 export default function LearningProgressAction({ stepId, learningProgressPromise }: Props) {
   const res = use(learningProgressPromise);
-  const [status, setStatus] = useState(res?.data?.status || 'not_started');
+  const data = res.success ? res.data : null;
+
+  const [status, setStatus] = useState(data?.status || 'not_started');
   const [loading, setLoading] = useState<boolean>(false);
   const { notify } = useNotification();
   const router = useRouter();
@@ -23,16 +27,13 @@ export default function LearningProgressAction({ stepId, learningProgressPromise
     try {
       setLoading(true);
 
-      const res = await createOrUpdateStepLearningProgress(stepId, { status });
-      if (!res?.success) throw new Error('Cập nhật trạng thái thất bại, vui lòng thử lại');
+      const res = await createOrUpdateStepLearningProgressAction(stepId, { status });
+      if (!res.success) throw new Error(getErrorMessage(res, getUserErrorMessage));
 
       setStatus(status);
       router.refresh();
     } catch (error: any) {
-      notify('error', error?.message || 'Cập nhật trạng thái thất bại, vui lòng thử lại', {
-        vertical: 'bottom',
-        horizontal: 'center',
-      });
+      notify('error', error?.message, { vertical: 'bottom', horizontal: 'center' });
     } finally {
       setLoading(false);
     }

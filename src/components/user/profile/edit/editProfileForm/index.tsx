@@ -12,7 +12,6 @@ import {
   InputLabel,
   Button,
   CircularProgress,
-  Alert,
   Card,
 } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
@@ -23,9 +22,10 @@ import SocialLinkField from '../socialLinkField';
 import { FormField } from '../types';
 import { formFields } from '../data';
 import { uploadFile, deleteFileAction } from '@/features/file';
-import { updateMyProfile } from '@/services/user.service';
 import { useRouter } from 'next/navigation';
 import { useNotification } from '@/contexts/notificationContext';
+import { getUserErrorMessage, updateMyProfileAction } from '@/features/user';
+import { getErrorMessage } from '@/lib/errors';
 
 // Schema validation với Zod
 const profileSchema = z.object({
@@ -86,14 +86,14 @@ export default function EditProfileForm({ initialData, accessToken }: EditProfil
         await deleteFileAction(avatarFileId);
       }
       const res = await uploadFile(file, true, accessToken);
-      if (res?.success) {
-        const profileRes = await updateMyProfile({ avatarId: res?.data?.id });
-        if (profileRes?.success) {
-          setAvatarFileId(res?.data?.id);
+      if (res.success) {
+        const profileRes = await updateMyProfileAction({ avatarId: res?.data?.id });
+        if (profileRes.success) {
+          setAvatarFileId(res.data?.id);
           router.refresh();
-          return res?.data?.url;
+          return res.data?.url;
         } else {
-          await deleteFileAction(res?.data?.id);
+          await deleteFileAction(res.data?.id);
         }
       }
     } catch {}
@@ -108,24 +108,17 @@ export default function EditProfileForm({ initialData, accessToken }: EditProfil
   const onSubmit = async (data: ProfileFormData) => {
     setIsSubmitting(true);
 
-    try {
-      console.log('Submitting data:', data);
-
-      const res = await updateMyProfile(data);
-      if (!res?.success) throw new Error(res?.error?.message);
-
-      reset(data);
-      notify('success', 'Thay đổi đã được lưu thành công!', { vertical: 'top', horizontal: 'right' });
+    const res = await updateMyProfileAction(data);
+    if (!res.success) {
+      notify('error', getErrorMessage(res, getUserErrorMessage), { vertical: 'top', horizontal: 'right' });
       setIsSubmitting(false);
-      router.refresh();
-    } catch (error: any) {
-      console.error('Error submitting form:', error);
-      notify('error', error?.message || 'Lưu thay đổi không thành công, vui lòng thử lại', {
-        vertical: 'top',
-        horizontal: 'right',
-      });
-      setIsSubmitting(false);
+      return;
     }
+
+    reset(data);
+    notify('success', 'Thay đổi đã được lưu thành công!', { vertical: 'top', horizontal: 'right' });
+    setIsSubmitting(false);
+    router.refresh();
   };
 
   const handleCancel = () => {

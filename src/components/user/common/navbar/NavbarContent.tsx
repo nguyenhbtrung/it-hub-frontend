@@ -5,9 +5,9 @@ import MobileMenu from './MobileMenu';
 import Logo from '@/components/common/Logo';
 import { instructorNavItems, mapCategoryTreeToNavItems, studentNavItems } from '@/data/navigation/userNavItems';
 import { auth } from '@/auth';
-import { getMyProfile } from '@/services/user.service';
 import { notFound } from 'next/navigation';
 import { getCategoryTree } from '@/features/category';
+import { getMyProfile } from '@/features/user';
 
 export default async function NavbarContent() {
   const res = await getCategoryTree();
