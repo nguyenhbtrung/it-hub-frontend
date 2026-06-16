@@ -21,7 +21,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Suspense, useEffect, useState } from 'react';
 import debounce from 'lodash/debounce';
 import { Tag } from '@/types/tag';
-import { getTags } from '@/services/tag.service';
+import { getTags } from '@/features/tag';
 import { CourseDetail } from './types';
 import { Category } from '@/types/category';
 import { levelLabelsMap } from '@/lib/const/course';
@@ -144,7 +144,7 @@ export default function EditCourseDetailForm({ courseDetail }: EditCourseDetailF
 
   const handleSearch = debounce(async (keyword) => {
     const res = await getTags({ page: 1, limit: 10, q: keyword });
-    if (res?.success && res?.data) setSuggestedTags(res.data);
+    if (res.success && res.data) setSuggestedTags(res.data);
   }, 300);
 
   const addRequirement = () => {
