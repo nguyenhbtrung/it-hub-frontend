@@ -1,4 +1,4 @@
-import { getExerciseByUnitId, getSubmissionById } from '@/services/exercise.service';
+import { getExerciseByUnitId, getSubmissionById } from '@/features/exercise';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
@@ -8,6 +8,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
+import { notFound } from 'next/navigation';
 
 interface StudentInfoCardProps {
   params: Promise<{ id: string; unitId: string; attemptId: string }>;
@@ -16,7 +17,14 @@ interface StudentInfoCardProps {
 export default async function StudentInfoCard({ params }: StudentInfoCardProps) {
   const { unitId, attemptId } = await params;
   const exerciseRes = await getExerciseByUnitId(unitId);
+  if (!exerciseRes.success) {
+    notFound();
+  }
+
   const submissionRes = await getSubmissionById(attemptId);
+  if (!submissionRes.success) {
+    notFound();
+  }
 
   const exercise = exerciseRes?.data;
   const submission = submissionRes?.data;

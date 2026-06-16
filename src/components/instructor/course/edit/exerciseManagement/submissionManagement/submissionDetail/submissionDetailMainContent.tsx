@@ -1,7 +1,8 @@
-import { getExerciseByUnitId } from '@/services/exercise.service';
 import AssignmentExerciseContent from './assignmentExerciseContent';
 import { Typography } from '@mui/material';
 import QuizExerciseContent from './quizExerciseContent';
+import { getExerciseByUnitId } from '@/features/exercise';
+import { notFound } from 'next/navigation';
 
 interface SubmissionDetailMainContentProps {
   params: Promise<{ id: string; unitId: string; attemptId: string }>;
@@ -10,9 +11,11 @@ interface SubmissionDetailMainContentProps {
 export default async function SubmissionDetailMainContent({ params }: SubmissionDetailMainContentProps) {
   const { unitId } = await params;
   const exerciseRes = await getExerciseByUnitId(unitId);
+  if (!exerciseRes.success) {
+    notFound();
+  }
 
-  const exercise = exerciseRes?.data;
-  console.log('exercise: ', exercise);
+  const exercise = exerciseRes.data;
   switch (exercise?.type) {
     case 'assignment':
       return <AssignmentExerciseContent params={params} />;

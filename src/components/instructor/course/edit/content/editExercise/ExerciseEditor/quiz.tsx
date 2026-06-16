@@ -28,7 +28,6 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
 
-import { updateExercise } from '@/services/exercise.service';
 import { useNotification } from '@/contexts/notificationContext';
 
 // DnD Kit imports
@@ -50,6 +49,8 @@ import {
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { updateCourseTotalDurationAction } from '@/features/course';
+import { getExerciseErrorMessage, updateExerciseAction } from '@/features/exercise';
+import { getErrorMessage } from '@/lib/errors';
 
 interface ExerciseEditorProps {
   exercise: any;
@@ -387,6 +388,7 @@ export default function QuizEditor({ exercise, courseId, accessToken }: Exercise
   // Initialize with default question if empty
   useEffect(() => {
     if (quizzes.length === 0) {
+      // eslint-disable-next-line react-hooks/immutability
       addNewQuestion();
     }
   }, []);
@@ -487,34 +489,30 @@ export default function QuizEditor({ exercise, courseId, accessToken }: Exercise
 
   // --- Xử lý Lưu nội dung ---
   const handleSaveContent = async () => {
-    try {
-      if (!exercise?.unitId) {
-        notify('error', 'Không tìm thấy thông tin bài tập');
-        return;
-      }
+    if (!exercise?.unitId) {
+      notify('error', 'Không tìm thấy thông tin bài tập');
+      return;
+    }
 
-      // Validate quizzes
-      if (!validateQuizzes()) {
-        return;
-      }
+    // Validate quizzes
+    if (!validateQuizzes()) {
+      return;
+    }
 
-      const payload = {
-        description,
-        duration: Number(duration),
-        passingScore: Number(passingScore),
-        quizzes: JSON.stringify(quizzes.map(({ isExpanded, ...rest }) => rest)),
-      };
+    const payload = {
+      description,
+      duration: Number(duration),
+      passingScore: Number(passingScore),
+      quizzes: JSON.stringify(quizzes.map(({ isExpanded, ...rest }) => rest)),
+    };
 
-      const res = await updateExercise(exercise.unitId, payload);
+    const res = await updateExerciseAction(exercise.unitId, payload);
 
-      if (res?.success) {
-        notify('success', 'Lưu nội dung thành công');
-        await updateCourseTotalDurationAction(courseId);
-      } else {
-        throw new Error();
-      }
-    } catch (error) {
-      notify('error', 'Lưu thất bại, vui lòng thử lại');
+    if (res.success) {
+      notify('success', 'Lưu nội dung thành công', { vertical: 'top', horizontal: 'right' });
+      await updateCourseTotalDurationAction(courseId);
+    } else {
+      notify('error', getErrorMessage(res, getExerciseErrorMessage), { vertical: 'top', horizontal: 'right' });
     }
   };
 

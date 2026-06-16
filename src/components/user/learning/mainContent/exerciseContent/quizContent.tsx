@@ -1,4 +1,4 @@
-import { getMyExerciseSubmission } from '@/services/exercise.service';
+import { getMyExerciseSubmission } from '@/features/exercise';
 import QuizClientWrapper from './quizClientWrapper';
 
 interface QuizContentProps {

@@ -2,11 +2,11 @@ import { Box, Typography, Breadcrumbs, Link } from '@mui/material';
 import { ChevronRight } from '@mui/icons-material';
 
 import { notFound } from 'next/navigation';
-import { getExerciseByUnitId } from '@/services/exercise.service';
 import AssignmentContent from './assignmentContent';
 import { Suspense } from 'react';
 import QuizContent from './quizContent';
 import { getCourseContentBreadcrumb, getNavigationByContentId } from '@/features/course';
+import { getExerciseByUnitId } from '@/features/exercise';
 
 interface MainContentProps {
   params: Promise<{ slug: string; id: string }>;
@@ -24,65 +24,6 @@ export default async function MainContent({ params }: MainContentProps) {
     notFound();
   }
   const exercise = exerciseRes?.data;
-  console.log('exercise: ', exercise);
-  // exerciseRes: {
-  //     "success": true,
-  //     "message": "Success",
-  //     "data": {
-  //         "id": "ex1",
-  //         "unitId": "unit2",
-  //         "type": "project",
-  //         "title": "Bài tập: Cài đặt môi trường React",
-  //         "description": "Hoàn thành cài đặt Node.js và tạo project bằng Vite hoặc CRA. Nộp link repo.",
-  //         "content": {
-  //             "type": "doc",
-  //             "content": [
-  //                 {
-  //                     "type": "paragraph",
-  //                     "content": [
-  //                         {
-  //                             "text": "Hướng dẫn: cài Node 14+, chạy npm create vite@latest hoặc npx create-react-app my-app.",
-  //                             "type": "text"
-  //                         }
-  //                     ]
-  //                 }
-  //             ]
-  //         },
-  //         "deadline": null,
-  //         "duration": 300,
-  //         "passingScore": 5,
-  //         "unit": {
-  //             "title": "Bài tập cài đặt môi trường",
-  //             "materials": [
-  //                 {
-  //                     "id": "cmk6fjkti0003novm0jaofows",
-  //                     "file": {
-  //                         "id": "cmk6fjkki0002novmrtc8cy6z",
-  //                         "name": "courses.sql",
-  //                         "size": "3654",
-  //                         "type": "OTHER",
-  //                         "mimeType": "application/sql",
-  //                         "url": "http://localhost:8080/uploads/permanent/bab3a09e-218d-4a7b-9386-4036681b67b3.sql"
-  //                     }
-  //                 },
-  //                 {
-  //                     "id": "cmk6fk9uy0007novm52xv11ec",
-  //                     "file": {
-  //                         "id": "cmk6fk9rg0006novm8g28u4lu",
-  //                         "name": "material-theme.zip",
-  //                         "size": "4076",
-  //                         "type": "OTHER",
-  //                         "mimeType": "application/x-zip-compressed",
-  //                         "url": "http://localhost:8080/uploads/permanent/6af2cc8f-460a-46df-a902-55690d28dc73.zip"
-  //                     }
-  //                 }
-  //             ]
-  //         }
-  //     },
-  //     "meta": {
-  //         "timestamp": "2026-01-09T09:38:53.010Z"
-  //     }
-  // }
 
   const navRes = await getNavigationByContentId(unitId, { contentType: 'unit' });
   if (!navRes.success) {

@@ -6,8 +6,9 @@ import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import Box from '@mui/material/Box';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { getExerciseByUnitId } from '@/services/exercise.service';
+import { getExerciseByUnitId } from '@/features/exercise';
 import Link from '@/components/common/Link';
+import { notFound } from 'next/navigation';
 
 interface SubmissionDetailHeaderProps {
   params: Promise<{ id: string; unitId: string; attemptId: string }>;
@@ -16,8 +17,11 @@ interface SubmissionDetailHeaderProps {
 export default async function SubmissionDetailHeader({ params }: SubmissionDetailHeaderProps) {
   const { id, unitId } = await params;
   const exerciseRes = await getExerciseByUnitId(unitId);
+  if (!exerciseRes.success) {
+    notFound();
+  }
 
-  const exercise = exerciseRes?.data;
+  const exercise = exerciseRes.data;
 
   return (
     <Paper

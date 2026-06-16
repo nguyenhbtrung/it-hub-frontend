@@ -11,8 +11,8 @@ import Typography from '@mui/material/Typography';
 import { SubmissionsTable } from './submissionTable';
 import PaginationBar from './paginationBar';
 import LightbulbIcon from '@mui/icons-material/LightbulbOutline';
-import { getStudentSubmissions } from '@/services/exercise.service';
-import { Meta, Submission } from './types';
+import { Submission } from './types';
+import { getStudentSubmissions } from '@/features/exercise';
 
 interface AssignmentTableSectionProps {
   params: Promise<{ unitId: string; id: string }>;
@@ -34,8 +34,8 @@ export default async function SubmissionTableSection({ params, searchParams }: A
     status: status?.toString(),
   });
 
-  const submissions: Submission[] = submissionsRes?.data || [];
-  const meta: Meta = submissionsRes?.meta || { total: 0, page: 1, limit: 10, timestamp: '' };
+  const submissions: Submission[] = submissionsRes.success ? (submissionsRes.data ?? []) : [];
+  const meta = submissionsRes?.meta || { total: 0, page: 1, limit: 10, timestamp: '' };
 
   return (
     <Container maxWidth='lg' sx={{ flex: 1, pb: { xs: 3, md: 5 } }}>

@@ -13,7 +13,7 @@ import {
   Download as DownloadIcon,
   OpenInNew as OpenInNewIcon,
 } from '@mui/icons-material';
-import { getSubmissionById } from '@/services/exercise.service';
+import { getSubmissionById } from '@/features/exercise';
 import { notFound } from 'next/navigation';
 
 interface SubmissionDetailCardProps {
@@ -24,8 +24,10 @@ export default async function SubmissionDetailCard({ params }: SubmissionDetailC
   const { attemptId } = await params;
   const submissionRes = await getSubmissionById(attemptId);
 
-  const submission = submissionRes?.data;
-  if (!submission) notFound();
+  if (!submissionRes.success || !submissionRes.data) {
+    notFound();
+  }
+  const submission = submissionRes.data;
 
   return (
     <Paper sx={{ borderRadius: 1, overflow: 'hidden' }}>

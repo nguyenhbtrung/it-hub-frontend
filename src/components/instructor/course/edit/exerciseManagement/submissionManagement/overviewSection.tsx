@@ -1,10 +1,11 @@
-import { getSubmissionOverview } from '@/services/exercise.service';
+import { getSubmissionOverview } from '@/features/exercise';
 import Header from './header';
 import Container from '@mui/material/Container';
 import { Overview } from './types';
 import StatsCards from './statsCard';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import { notFound } from 'next/navigation';
 
 interface OverviewSectionProps {
   params: Promise<{ unitId: string; id: string }>;
@@ -13,7 +14,10 @@ interface OverviewSectionProps {
 export default async function OverviewSection({ params }: OverviewSectionProps) {
   const { unitId, id } = await params;
   const overviewRes = await getSubmissionOverview(unitId);
-  const overview: Overview = overviewRes?.data || {
+  if (!overviewRes.success) {
+    notFound();
+  }
+  const overview: Overview = overviewRes.data || {
     title: 'Bài tập',
     totalStudents: 0,
     submittedStudents: 0,

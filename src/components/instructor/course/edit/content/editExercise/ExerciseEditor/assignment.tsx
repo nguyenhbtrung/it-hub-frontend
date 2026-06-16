@@ -22,13 +22,13 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DeleteIcon from '@mui/icons-material/Delete';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 
-import { updateExercise } from '@/services/exercise.service';
 import { uploadFile } from '@/features/file';
 import { addMaterial } from '@/services/unit.service';
 import { useNotification } from '@/contexts/notificationContext';
 import { deleteFileAction, getFileErrorMessage } from '@/features/file';
 import { getErrorMessage } from '@/lib/errors';
 import { updateCourseTotalDurationAction } from '@/features/course';
+import { getExerciseErrorMessage, updateExerciseAction } from '@/features/exercise';
 
 interface ExerciseEditorProps {
   exercise: any;
@@ -80,29 +80,25 @@ export default function AssignmentEditor({ exercise, courseId, accessToken }: Ex
 
   // --- Xử lý Lưu nội dung ---
   const handleSaveContent = async () => {
-    try {
-      if (!exercise?.unitId) {
-        notify('error', 'Không tìm thấy thông tin bài tập');
-        return;
-      }
+    if (!exercise?.unitId) {
+      notify('error', 'Không tìm thấy thông tin bài tập');
+      return;
+    }
 
-      const payload = {
-        content: JSON.stringify(content),
-        description,
-        deadline: hasDeadline && deadline ? new Date(deadline).toISOString() : null,
-        passingScore: Number(passingScore),
-      };
+    const payload = {
+      content: JSON.stringify(content),
+      description,
+      deadline: hasDeadline && deadline ? new Date(deadline).toISOString() : null,
+      passingScore: Number(passingScore),
+    };
 
-      const res = await updateExercise(exercise.unitId, payload);
+    const res = await updateExerciseAction(exercise.unitId, payload);
 
-      if (res?.success) {
-        notify('success', 'Lưu nội dung thành công');
-        await updateCourseTotalDurationAction(courseId);
-      } else {
-        throw new Error();
-      }
-    } catch (error) {
-      notify('error', 'Lưu thất bại, vui lòng thử lại');
+    if (res.success) {
+      notify('success', 'Lưu nội dung thành công', { vertical: 'top', horizontal: 'right' });
+      await updateCourseTotalDurationAction(courseId);
+    } else {
+      notify('error', getErrorMessage(res, getExerciseErrorMessage), { vertical: 'top', horizontal: 'right' });
     }
   };
 
