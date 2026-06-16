@@ -6,11 +6,18 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { Section, LessonStep } from '../../types';
 import dynamic from 'next/dynamic';
 import { useNotification } from '@/contexts/notificationContext';
-import { addUnit, deleteSection, updateSection, UpdateSectionPayload } from '@/services/section.service';
 import { UnitType } from '@/types/course';
 import { addStep, deleteUnit, updateUnit, UpdateUnitPayload } from '@/services/unit.service';
 import { deleteStep, updateStep, UpdateStepPayload } from '@/services/step.service';
 import { addSectionAction } from '@/features/course';
+import {
+  addUnitAction,
+  deleteSectionAction,
+  getSectionErrorMessage,
+  updateSectionAction,
+  UpdateSectionPayload,
+} from '@/features/section';
+import { getErrorMessage } from '@/lib/errors';
 
 const ChapterList = dynamic(() => import('../chapterList'), { ssr: false });
 
@@ -24,11 +31,11 @@ export default function CourseContentPage({ initialSections, courseId }: CourseC
   const { notify } = useNotification();
 
   const handleUpdateSection = async (sectionId: string, updates: Partial<Section>) => {
-    const res = await updateSection(sectionId, updates as UpdateSectionPayload);
-    if (res?.success) {
+    const res = await updateSectionAction(sectionId, updates as UpdateSectionPayload);
+    if (res.success) {
       setSections(sections.map((chapter) => (chapter.id === sectionId ? { ...chapter, ...updates } : chapter)));
     } else {
-      notify('error', 'Lưu chương thất bại', { vertical: 'top', horizontal: 'right' });
+      notify('error', getErrorMessage(res, getSectionErrorMessage), { vertical: 'top', horizontal: 'right' });
     }
   };
 
@@ -98,7 +105,7 @@ export default function CourseContentPage({ initialSections, courseId }: CourseC
       description: '',
       type: 'lesson' as UnitType,
     };
-    const res = await addUnit(sectionId, payload);
+    const res = await addUnitAction(sectionId, payload);
     if (res?.success && res?.data) {
       setSections(
         sections.map((section) => {
@@ -154,7 +161,7 @@ export default function CourseContentPage({ initialSections, courseId }: CourseC
       description: '',
       type: 'excercise' as UnitType,
     };
-    const res = await addUnit(sectionId, payload);
+    const res = await addUnitAction(sectionId, payload);
     if (res?.success && res?.data) {
       setSections(
         sections.map((section) => {
@@ -173,8 +180,8 @@ export default function CourseContentPage({ initialSections, courseId }: CourseC
   };
 
   const handleDeleteSection = async (sectionId: string) => {
-    const res = await deleteSection(sectionId);
-    if (res?.success) {
+    const res = await deleteSectionAction(sectionId);
+    if (res.success) {
       setSections(sections.filter((section) => section.id !== sectionId));
     } else {
       notify('error', 'Xoá chương thất bại, vui lòng thử lại', { vertical: 'top', horizontal: 'right' });
