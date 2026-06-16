@@ -28,9 +28,11 @@ import {
   CalendarTodayOutlined,
   EditNoteOutlined,
 } from '@mui/icons-material';
-import { updateUnit } from '@/services/unit.service';
 import { useRouter } from 'next/navigation';
 import { getCourseExercisesGroupedBySection } from '@/features/course';
+import { getUnitErrorMessage, updateUnitAction } from '@/features/unit';
+import { getErrorMessage } from '@/lib/errors';
+import { useNotification } from '@/contexts/notificationContext';
 
 interface Exercise {
   id: string;
@@ -65,6 +67,7 @@ export default function ExerciseManagementClient({
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
   const [editingExerciseId, setEditingExerciseId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState<string>('');
+  const { notify } = useNotification();
 
   const router = useRouter();
 
@@ -158,19 +161,19 @@ export default function ExerciseManagementClient({
   };
 
   const handleSaveTitle = async (exercise: Exercise) => {
-    try {
-      const res = await updateUnit(exercise.unitId, { title: editingTitle });
-      if (!res?.success) throw new Error('');
+    const res = await updateUnitAction(exercise.unitId, { title: editingTitle });
+    if (!res.success) {
+      notify('error', getErrorMessage(res, getUnitErrorMessage), { vertical: 'top', horizontal: 'right' });
+    } else {
       setSections((prev) =>
         prev.map((section) => ({
           ...section,
           exercises: section.exercises.map((ex) => (ex.id === exercise.id ? { ...ex, title: editingTitle } : ex)),
         }))
       );
-    } catch (error) {
-    } finally {
-      setEditingExerciseId(null);
     }
+
+    setEditingExerciseId(null);
   };
 
   const handleEditContentClick = (unitId: string) => {

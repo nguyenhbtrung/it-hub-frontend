@@ -23,12 +23,12 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 
 import { uploadFile } from '@/features/file';
-import { addMaterial } from '@/services/unit.service';
 import { useNotification } from '@/contexts/notificationContext';
 import { deleteFileAction, getFileErrorMessage } from '@/features/file';
 import { getErrorMessage } from '@/lib/errors';
 import { updateCourseTotalDurationAction } from '@/features/course';
 import { getExerciseErrorMessage, updateExerciseAction } from '@/features/exercise';
+import { addMaterialAction } from '@/features/unit';
 
 interface ExerciseEditorProps {
   exercise: any;
@@ -118,8 +118,8 @@ export default function CodingEditor({ exercise, courseId, accessToken }: Exerci
         }
 
         // 2. Liên kết file với Unit bài tập
-        const materialRes = await addMaterial(exercise.unitId, { fileId: fileRes.data.id });
-        if (!materialRes?.success) throw new Error(`Lỗi lưu tài nguyên: ${file.name}`);
+        const materialRes = await addMaterialAction(exercise.unitId, { fileId: fileRes.data.id });
+        if (!materialRes.success) throw new Error(`Lỗi lưu tài nguyên: ${file.name}`);
 
         // 3. Cập nhật UI list
         const newAttachment: Attachment = {

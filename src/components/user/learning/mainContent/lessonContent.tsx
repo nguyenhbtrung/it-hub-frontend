@@ -6,9 +6,9 @@ import { formatDuration } from '@/lib/utils/formatDatetime';
 import StepContentRenderer from '@/components/common/richText/renderer/stepContentRenderer';
 import SelectToAskAI from './selectToAskAI';
 import { auth } from '@/auth';
-import { getUnitById } from '@/services/unit.service';
 import NextLink from '@/components/common/Link';
 import { getCourseContentBreadcrumb, getNavigationByContentId } from '@/features/course';
+import { getUnitById } from '@/features/unit';
 
 interface MainContentProps {
   params: Promise<{ slug: string; id: string }>;
@@ -27,7 +27,7 @@ export default async function MainContent({ params }: MainContentProps) {
   if (!lessonRes.success) {
     notFound();
   }
-  const lesson = lessonRes?.data;
+  const lesson = lessonRes.data;
 
   const navRes = await getNavigationByContentId(lessonId, { contentType: 'unit' });
   if (!navRes.success) {
