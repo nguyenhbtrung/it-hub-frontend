@@ -1,51 +1,9 @@
-import { Box, Stack } from '@mui/material';
+import { Box } from '@mui/material';
 import { CourseStatus } from '@/types/course';
 import CourseCard from './courseCard';
 import { CreatedCourse } from './types';
-import { getMyCreatedCourse } from '@/services/course.service';
 import AppPagination from '@/components/common/pagination';
-
-// const courses: CreatedCourse[] = [
-//   {
-//     id: 1,
-//     title: 'Lập trình Web Frontend Nâng cao',
-//     category: 'Phát triển Web',
-//     subCategory: 'Next.js',
-//     students: 258,
-//     status: 'published',
-//     imgUrl: 'https://picsum.photos/80/128?random=1',
-//   },
-//   {
-//     id: 2,
-//     title: 'Python cho Khoa học Dữ liệu',
-//     // description: 'Pandas, NumPy, Matplotlib',
-//     category: 'Khoa học dữ liệu',
-//     subCategory: 'Python',
-//     students: 172,
-//     status: 'published',
-//     imgUrl: 'https://picsum.photos/80/128?random=2',
-//   },
-//   {
-//     id: 3,
-//     title: 'Thiết kế Giao diện UI/UX Cơ bản',
-//     // description: 'Figma, Design Principles',
-//     category: 'UI/UX',
-//     subCategory: 'Figma',
-//     students: 310,
-//     status: 'draft',
-//     imgUrl: 'https://picsum.photos/80/128?random=3',
-//   },
-//   {
-//     id: 4,
-//     title: 'Quản lý Dự án Phần mềm',
-//     // description: 'Agile, Scrum, Kanban',
-//     category: 'Quản lý dự án',
-//     subCategory: 'Agile, Scrum',
-//     students: 95,
-//     status: 'hidden',
-//     imgUrl: 'https://picsum.photos/80/128?random=4',
-//   },
-// ];
+import { getMyCreatedCourse } from '@/features/course';
 
 interface CourseListProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -61,7 +19,7 @@ export default async function CourseList({ searchParams }: CourseListProps) {
 
   let courses: CreatedCourse[] = [];
   let count = 0;
-  if (res?.success && res?.data) {
+  if (res.success && res.data) {
     courses = res.data;
     const meta = res?.meta;
     if (typeof meta?.total === 'number' && typeof meta?.page === 'number' && meta.page > 0) {

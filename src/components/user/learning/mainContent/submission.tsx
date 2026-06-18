@@ -5,7 +5,6 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
 import Divider from '@mui/material/Divider';
-import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import InsertLinkIcon from '@mui/icons-material/InsertLink';
@@ -20,14 +19,19 @@ import { useEffect, useState, useRef } from 'react';
 import { useForm, useFieldArray, Controller } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { uploadFile } from '@/services/client/file.service';
+import { getFileErrorMessage, uploadFile } from '@/features/file';
 import { getSession } from 'next-auth/react';
 import { useNotification } from '@/contexts/notificationContext';
-import { addSubmission, deleteSubmission, getMyExerciseSubmission } from '@/services/exercise.service';
 import SubmissionDetailDialog from './submissionDetailDialog';
 import SubmissionHistoryDialog from './submissionHistoryDialog';
+import { getErrorMessage } from '@/lib/errors';
+import {
+  addSubmissionAction,
+  deleteSubmissionAction,
+  getExerciseErrorMessage,
+  getMyExerciseSubmission,
+} from '@/features/exercise';
 
-// Giả sử có hàm deleteFile để xử lý xoá file
 async function deleteFile(id: string) {
   return new Promise<void>((resolve) => {
     setTimeout(() => {
@@ -37,7 +41,6 @@ async function deleteFile(id: string) {
 }
 
 const schema = z.object({
-  // Thay đổi ở đây
   demoUrl: z
     .array(
       z.object({
@@ -82,7 +85,6 @@ export default function Submission({ submissions, exercise, initialAttemptCount 
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
-      // Chuyển mảng string từ API (nếu có) thành mảng object
       demoUrl: isGraded
         ? [{ value: '' }]
         : submission?.demoUrl?.map((url: string) => ({ value: url })) || [{ value: '' }],
@@ -116,7 +118,7 @@ export default function Submission({ submissions, exercise, initialAttemptCount 
         const session = await getSession();
         const accessToken = session?.accessToken || '';
         const res = await uploadFile(file, false, accessToken);
-        if (!res?.success) throw new Error(res?.error?.message || 'Tải lên thất bại');
+        if (!res?.success) throw new Error(getErrorMessage(res, getFileErrorMessage));
         const newAttachment = { id: crypto.randomUUID(), file: res?.data };
         setAttachments((prev) => [...prev, newAttachment]);
       } catch (error: any) {
@@ -137,7 +139,7 @@ export default function Submission({ submissions, exercise, initialAttemptCount 
         const session = await getSession();
         const accessToken = session?.accessToken || '';
         const res = await uploadFile(file, false, accessToken);
-        if (!res?.success) throw new Error(res?.error?.message || 'Tải lên thất bại');
+        if (!res?.success) throw new Error(getErrorMessage(res, getFileErrorMessage));
         const newAttachment = { id: crypto.randomUUID(), file: res?.data };
         setAttachments((prev) => [...prev, newAttachment]);
       } catch (error: any) {
@@ -172,9 +174,9 @@ export default function Submission({ submissions, exercise, initialAttemptCount 
         fileIds: attachments.map((att) => att.file.id),
       };
 
-      const res = await addSubmission(exercise.id, payload);
-      if (!res?.success) {
-        throw new Error('Nộp bài thất bại, vui lòng thử lại');
+      const res = await addSubmissionAction(exercise.id, payload);
+      if (!res.success) {
+        throw new Error(getErrorMessage(res, getExerciseErrorMessage));
       }
 
       reset({
@@ -187,7 +189,6 @@ export default function Submission({ submissions, exercise, initialAttemptCount 
       setSubmissionId(res?.data?.id);
       setSubmitted(true);
     } catch (error: any) {
-      console.error('Lỗi khi nộp bài:', error);
       notify('error', error.message || 'Nộp bài thất bại, vui lòng thử lại', {
         vertical: 'bottom',
         horizontal: 'right',
@@ -201,12 +202,12 @@ export default function Submission({ submissions, exercise, initialAttemptCount 
     e.preventDefault();
     setUndoing(true);
     try {
-      const res = await deleteSubmission(submissionId || '');
-      if (!res?.success) throw new Error('Hoàn tác thất bại, vui lòng thử lại');
+      const res = await deleteSubmissionAction(submissionId || '');
+      if (!res.success) throw new Error(getErrorMessage(res, getExerciseErrorMessage));
       const lastAttemptTime = attemptCount - 1;
 
       const submissionsRes = await getMyExerciseSubmission(exercise?.id || '');
-      const submissions = submissionsRes?.data || [];
+      const submissions = submissionsRes.success ? (submissionsRes.data ?? []) : [];
       const meta = submissionsRes?.meta;
       const currentSubmission = submissions?.[0];
       setSubmission(currentSubmission);

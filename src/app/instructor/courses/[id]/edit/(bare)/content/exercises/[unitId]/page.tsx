@@ -2,7 +2,7 @@ import { auth } from '@/auth';
 import AssignmentEditor from '@/components/instructor/course/edit/content/editExercise/ExerciseEditor/assignment';
 import CodingEditor from '@/components/instructor/course/edit/content/editExercise/ExerciseEditor/coding';
 import QuizEditor from '@/components/instructor/course/edit/content/editExercise/ExerciseEditor/quiz';
-import { getExerciseByUnitId } from '@/services/exercise.service';
+import { getExerciseByUnitId } from '@/features/exercise';
 
 import { Box } from '@mui/material';
 import { notFound } from 'next/navigation';
@@ -32,7 +32,10 @@ export default function EditStepPage({ params }: EditStepPageProps) {
 async function EditStepPageWrapper({ params }: EditStepPageProps) {
   const { unitId, id } = await params;
   const res = await getExerciseByUnitId(unitId);
-  const exercise = res?.data;
+  if (!res.success) {
+    notFound();
+  }
+  const exercise = res.data;
   if (!exercise) {
     notFound();
   }

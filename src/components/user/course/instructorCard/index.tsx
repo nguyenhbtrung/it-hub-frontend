@@ -6,7 +6,8 @@ import SchoolIcon from '@mui/icons-material/School';
 import WorkIcon from '@mui/icons-material/Work';
 import Link from '@/components/common/Link';
 import Section from '@/components/common/section';
-import { getCourseInstructor } from '@/services/course.service';
+import { getCourseInstructor } from '@/features/course';
+import { notFound } from 'next/navigation';
 
 interface InstructorCardProps {
   courseId: string;
@@ -14,7 +15,10 @@ interface InstructorCardProps {
 
 export default async function InstructorCard({ courseId }: InstructorCardProps) {
   const res = await getCourseInstructor(courseId);
-  const instructor = res?.data;
+  if (!res.success) {
+    notFound();
+  }
+  const instructor = res.data;
 
   return (
     <Section id='instructor'>

@@ -23,15 +23,16 @@ import {
 import {
   VisibilityOutlined,
   EditOutlined,
-  DeleteOutlined,
   KeyboardArrowDown,
   KeyboardArrowUp,
   CalendarTodayOutlined,
   EditNoteOutlined,
 } from '@mui/icons-material';
-import { getCourseExercisesGroupedBySection } from '@/services/course.service';
-import { updateUnit } from '@/services/unit.service';
 import { useRouter } from 'next/navigation';
+import { getCourseExercisesGroupedBySection } from '@/features/course';
+import { getUnitErrorMessage, updateUnitAction } from '@/features/unit';
+import { getErrorMessage } from '@/lib/errors';
+import { useNotification } from '@/contexts/notificationContext';
 
 interface Exercise {
   id: string;
@@ -48,17 +49,10 @@ interface Section {
   exercises: Exercise[];
 }
 
-interface Meta {
-  total: number;
-  page: number;
-  limit: number;
-  timestamp: string;
-}
-
 interface ExerciseManagementClientProps {
   courseId: string;
   initialSections: Section[];
-  initialMeta: Meta;
+  initialMeta: any;
 }
 
 export default function ExerciseManagementClient({
@@ -73,6 +67,7 @@ export default function ExerciseManagementClient({
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
   const [editingExerciseId, setEditingExerciseId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState<string>('');
+  const { notify } = useNotification();
 
   const router = useRouter();
 
@@ -101,7 +96,7 @@ export default function ExerciseManagementClient({
     try {
       const nextPage = page + 1;
       const res = await getCourseExercisesGroupedBySection(courseId, { page: nextPage, limit: initialMeta.limit });
-      const newSections = res?.data || [];
+      const newSections = res.success ? (res.data ?? []) : [];
       const newMeta = res?.meta;
       if (newSections.length > 0) {
         setSections((prev) => [...prev, ...newSections]);
@@ -166,19 +161,19 @@ export default function ExerciseManagementClient({
   };
 
   const handleSaveTitle = async (exercise: Exercise) => {
-    try {
-      const res = await updateUnit(exercise.unitId, { title: editingTitle });
-      if (!res?.success) throw new Error('');
+    const res = await updateUnitAction(exercise.unitId, { title: editingTitle });
+    if (!res.success) {
+      notify('error', getErrorMessage(res, getUnitErrorMessage), { vertical: 'top', horizontal: 'right' });
+    } else {
       setSections((prev) =>
         prev.map((section) => ({
           ...section,
           exercises: section.exercises.map((ex) => (ex.id === exercise.id ? { ...ex, title: editingTitle } : ex)),
         }))
       );
-    } catch (error) {
-    } finally {
-      setEditingExerciseId(null);
     }
+
+    setEditingExerciseId(null);
   };
 
   const handleEditContentClick = (unitId: string) => {

@@ -4,7 +4,7 @@ import { CourseCardHorizontal } from '../../common/courseCard/courseCardHorizont
 import { CourseSummary } from '@/types/course';
 import AppPagination from '@/components/common/pagination';
 import CourseSortSelect from '../../common/courseSortSelect';
-import { getCourses } from '@/services/course.service';
+import { getCourses } from '@/features/course';
 
 interface SearchResultsProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -88,11 +88,13 @@ export default async function SearchResults({ searchParams }: SearchResultsProps
   });
   let isEmpty = false;
 
-  if (!res?.success || !res?.data) {
+  if (!res.success || !res.data?.length) {
     isEmpty = true;
   }
 
-  const courses = res?.data;
+  console.log(isEmpty);
+
+  const courses = res.success ? (res.data ?? []) : [];
   const meta = res?.meta;
   let count = 0;
   if (typeof meta?.total === 'number' && typeof meta?.page === 'number' && meta.page > 0) {

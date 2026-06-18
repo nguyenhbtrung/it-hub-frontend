@@ -30,6 +30,7 @@ import useLockBodyScroll from '@/hooks/useLockBodyScroll';
 import Logo from '@/components/common/Logo';
 import { Session } from 'next-auth';
 import { signOut } from 'next-auth/react';
+import { ApiResponse } from '@/lib/api';
 
 function MobileNavList({ items, onNavigate, level = 0 }: { items: NavItem[]; onNavigate: () => void; level?: number }) {
   const [openMap, setOpenMap] = useState<Record<string, boolean>>({});
@@ -132,7 +133,7 @@ function AccountMenu({ onBack, onNavigate }: { onBack: () => void; onNavigate: (
 interface MobileMenuProps {
   navItems: NavItem[];
   session: Session | null;
-  profilePromise: Promise<any>;
+  profilePromise: Promise<ApiResponse<any>>;
 }
 
 export default function MobileMenu({ navItems, session, profilePromise }: MobileMenuProps) {
@@ -142,7 +143,7 @@ export default function MobileMenu({ navItems, session, profilePromise }: Mobile
   useLockBodyScroll(open);
 
   const res = use(profilePromise);
-  const user = res?.data;
+  const user = res.success ? res.data : null;
 
   const handleAccountClick = () => {
     setCurrentMenu('account');

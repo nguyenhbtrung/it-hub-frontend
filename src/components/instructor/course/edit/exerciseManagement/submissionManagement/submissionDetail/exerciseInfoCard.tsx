@@ -7,7 +7,8 @@ import Typography from '@mui/material/Typography';
 import MuiLink from '@mui/material/Link';
 import FileIcon from './fileIcon';
 import DownloadIcon from '@mui/icons-material/Download';
-import { getExerciseByUnitId } from '@/services/exercise.service';
+import { getExerciseByUnitId } from '@/features/exercise';
+import { notFound } from 'next/navigation';
 
 interface ExerciseInfoCardProps {
   params: Promise<{ id: string; unitId: string; attemptId: string }>;
@@ -16,8 +17,11 @@ interface ExerciseInfoCardProps {
 export default async function ExerciseInfoCard({ params }: ExerciseInfoCardProps) {
   const { unitId } = await params;
   const exerciseRes = await getExerciseByUnitId(unitId);
+  if (!exerciseRes.success) {
+    notFound();
+  }
 
-  const exercise = exerciseRes?.data;
+  const exercise = exerciseRes.data;
   return (
     <Paper sx={{ borderRadius: 1, overflow: 'hidden' }}>
       <Box sx={{ p: { xs: 3, md: 4 }, bgcolor: 'grey.50', borderBottom: 1, borderColor: 'divider' }}>

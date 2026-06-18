@@ -3,7 +3,8 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 import Link from '@/components/common/Link';
 import HeaderAction from './headerAction';
-import { getCourseDetail } from '@/services/course.service';
+import { getCourseDetail } from '@/features/course';
+import { notFound } from 'next/navigation';
 
 interface CourseHeaderProps {
   params: Promise<{ id: string }>;
@@ -12,8 +13,11 @@ interface CourseHeaderProps {
 export default async function CourseHeader({ params }: CourseHeaderProps) {
   const { id } = await params;
   const res = await getCourseDetail(id, 'instructor');
-  const slug = res?.data?.slug || '';
-  const course = res?.data;
+  if (!res.success) {
+    notFound();
+  }
+  const slug = res.data.slug || '';
+  const course = res.data;
   return (
     <AppBar
       position='static'

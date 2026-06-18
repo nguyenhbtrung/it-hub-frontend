@@ -3,10 +3,9 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { useRouter } from 'next/navigation';
-import { Meta } from './types';
 import AppPagination from '@/components/common/pagination';
 
-export default function PaginationBar({ meta, currentPage }: { meta: Meta; currentPage: number }) {
+export default function PaginationBar({ meta, currentPage }: { meta: any; currentPage: number }) {
   const router = useRouter();
   const totalPages = Math.ceil(meta.total / meta.limit);
 

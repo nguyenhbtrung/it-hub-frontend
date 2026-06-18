@@ -9,7 +9,10 @@ import PromoVideo from '../promoVideo';
 import CourseIncludes from '../courseIncludes';
 import Link from '@/components/common/Link';
 import { useState } from 'react';
-import { createEnrollment, deleteEnrollment } from '@/services/enrollment.service';
+import { createEnrollmentAction, deleteEnrollmentAction, getEnrollmentErrorMessage } from '@/features/enrollment';
+import { getErrorMessage } from '@/lib/errors';
+import { useNotification } from '@/contexts/notificationContext';
+import { signOut } from 'next-auth/react';
 
 interface SidebarEnrollCardProp {
   course: any;
@@ -19,6 +22,7 @@ interface SidebarEnrollCardProp {
 
 export default function SidebarEnrollCard({ course, enrollmentStatus, courseId }: SidebarEnrollCardProp) {
   const [status, setStatus] = useState(enrollmentStatus?.status);
+  const { notify } = useNotification();
   const stats = {
     level: course?.level,
     totalDuration: course?.totalDuration,
@@ -34,16 +38,21 @@ export default function SidebarEnrollCard({ course, enrollmentStatus, courseId }
 
   const handleRegisterClick = async () => {
     try {
-      const res = await createEnrollment(courseId, { status: 'pending' });
-      if (res?.success) {
+      const res = await createEnrollmentAction(courseId, { status: 'pending' });
+      if (res.success) {
         setStatus('pending');
+        return;
       }
-    } catch (err) {}
+      if ((res.code = 'UNAUTHORIZED')) {
+        return signOut({ redirectTo: '/auth/login' });
+      }
+      notify('error', getErrorMessage(res, getEnrollmentErrorMessage), { vertical: 'top', horizontal: 'right' });
+    } catch {}
   };
 
   const handleCancelClick = async () => {
     try {
-      const res = await deleteEnrollment(courseId);
+      const res = await deleteEnrollmentAction(courseId);
       if (res?.success) {
         setStatus(null);
       }

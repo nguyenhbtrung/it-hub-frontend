@@ -4,15 +4,17 @@ import { useState } from 'react';
 import QuizIntro from './quizIntro';
 import QuizSession from './quizSession';
 import QuizResult from './quizResult';
-import { addSubmission } from '@/services/exercise.service';
 import { useNotification } from '@/contexts/notificationContext';
 import { useRouter } from 'next/navigation';
+import { ApiResponse } from '@/lib/api';
+import { addSubmissionAction, getExerciseErrorMessage } from '@/features/exercise';
+import { getErrorMessage } from '@/lib/errors';
 
 interface QuizClientWrapperProps {
   exercise: any;
   nav: any;
   slug: string;
-  submissionsPromise: Promise<any>;
+  submissionsPromise: Promise<ApiResponse<any>>;
 }
 
 export default function QuizClientWrapper({ exercise, nav, slug, submissionsPromise }: QuizClientWrapperProps) {
@@ -51,23 +53,19 @@ export default function QuizClientWrapper({ exercise, nav, slug, submissionsProm
       submittedAt: new Date().toISOString(),
     };
     const quizResultsMetadata = { result, quizzes: exercise?.quizzes };
-    try {
-      const res = await addSubmission(exercise.id, {
-        score,
-        quizResultsMetadata: JSON.stringify(quizResultsMetadata),
-      });
+    const res = await addSubmissionAction(exercise.id, {
+      score,
+      quizResultsMetadata: JSON.stringify(quizResultsMetadata),
+    });
 
-      if (!res?.success) throw new Error(res?.error?.message || 'Nộp bài thất bại, vui lòng thử lại');
-      router.refresh();
-
-      setQuizResult(result);
-      setIsQuizSubmitted(true);
-    } catch (error: any) {
-      notify('error', error?.message || 'Nộp bài thất bại, vui lòng thử lại', {
-        vertical: 'bottom',
-        horizontal: 'right',
-      });
+    if (!res.success) {
+      notify('error', getErrorMessage(res, getExerciseErrorMessage), { vertical: 'top', horizontal: 'right' });
+      return;
     }
+    router.refresh();
+
+    setQuizResult(result);
+    setIsQuizSubmitted(true);
   };
 
   const handleRestartQuiz = () => {

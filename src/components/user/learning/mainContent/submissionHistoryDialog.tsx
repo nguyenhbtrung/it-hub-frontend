@@ -22,7 +22,7 @@ import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import CircularProgress from '@mui/material/CircularProgress';
 import { vi } from 'date-fns/locale';
-import { getMyExerciseSubmission } from '@/services/exercise.service';
+import { getMyExerciseSubmission } from '@/features/exercise';
 
 interface Submission {
   id: string;
@@ -53,7 +53,8 @@ export default function SubmissionHistoryDialog({
       try {
         setLoading(true);
         const res = await getMyExerciseSubmission(exerciseId, { page: 1, limit: 100 });
-        setSubmissions(res?.data || []);
+        const data = res.success ? (res.data ?? []) : [];
+        setSubmissions(data);
       } catch (error) {
         console.error('Failed to fetch submissions:', error);
         setSubmissions([]);

@@ -1,11 +1,10 @@
-import { verifySession } from '@/lib/utils/dal';
 import { Box, Container } from '@mui/material';
 import EnrolledWelcomeSection from './EnrolledWelcomeSection';
 import NewStudentWelcomeSection from './NewStudentWelcomeSection';
 import { courseProgress } from '@/types/course';
 import { auth } from '@/auth';
 import { jwtPayload } from '@/types/jwt';
-import { getMyProfile } from '@/services/user.service';
+import { getMyProfile } from '@/features/user';
 
 async function getUserLearningData(userId: string): Promise<courseProgress[]> {
   await new Promise((resolve) => setTimeout(resolve, 300));
@@ -55,6 +54,7 @@ export default async function WelcomeSection() {
   // const hasCourses = learning.length > 0;
   const hasCourses = false;
   const res = await getMyProfile();
+  const userData = res.success ? res.data : null;
 
   return (
     <Container maxWidth='xl'>
@@ -68,7 +68,7 @@ export default async function WelcomeSection() {
         {hasCourses ? (
           <EnrolledWelcomeSection user={user} learning={learning} />
         ) : (
-          <NewStudentWelcomeSection user={res?.data || user} />
+          <NewStudentWelcomeSection user={userData || user} />
         )}
       </Box>
     </Container>

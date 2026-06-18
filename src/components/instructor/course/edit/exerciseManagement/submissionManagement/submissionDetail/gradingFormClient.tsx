@@ -4,7 +4,8 @@ import { useState } from 'react';
 import { Paper, Typography, TextField, Button, Stack, InputAdornment, Box } from '@mui/material';
 import { Save as SaveIcon } from '@mui/icons-material';
 import { useNotification } from '@/contexts/notificationContext';
-import { updateSubmission } from '@/services/exercise.service';
+import { getExerciseErrorMessage, updateSubmissionAction } from '@/features/exercise';
+import { getErrorMessage } from '@/lib/errors';
 
 interface GradingFormProps {
   submission: any;
@@ -18,27 +19,23 @@ export default function GradingFormClient({ submission, passingScore }: GradingF
 
   const handleSubmit = async () => {
     if (score === '' || isNaN(Number(score))) {
-      notify('error', 'Vui lòng nhập điểm', { vertical: 'bottom', horizontal: 'right' });
+      notify('error', 'Vui lòng nhập điểm', { vertical: 'top', horizontal: 'right' });
       return;
     }
 
     const numericScore = Number(score);
 
     if (numericScore < 0 || numericScore > 10) {
-      notify('error', 'Vui lòng nhập số điểm hợp lệ (0 - 10)', { vertical: 'bottom', horizontal: 'right' });
+      notify('error', 'Vui lòng nhập số điểm hợp lệ (0 - 10)', { vertical: 'top', horizontal: 'right' });
       return;
     }
 
-    try {
-      const res = await updateSubmission(submission.id || '', { score: numericScore, comment });
-      if (!res?.success) throw new Error(res?.error?.message || 'Lưu điểm thất bại, vui lòng thử lại');
-      notify('success', 'lưu điểm thành công', { vertical: 'bottom', horizontal: 'right' });
-    } catch (error: any) {
-      notify('error', error.message || 'Lưu điểm thất bại, vui lòng thử lại', {
-        vertical: 'bottom',
-        horizontal: 'right',
-      });
+    const res = await updateSubmissionAction(submission.id || '', { score: numericScore, comment });
+    if (!res.success) {
+      notify('error', getErrorMessage(res, getExerciseErrorMessage), { vertical: 'top', horizontal: 'right' });
+      return;
     }
+    notify('success', 'lưu điểm thành công', { vertical: 'top', horizontal: 'right' });
   };
 
   return (

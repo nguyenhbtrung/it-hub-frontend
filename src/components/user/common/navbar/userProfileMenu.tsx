@@ -14,9 +14,10 @@ import LogoutOutlined from '@mui/icons-material/LogoutOutlined';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
+import { ApiResponse } from '@/lib/api';
 
 interface UserProfileMenuProps {
-  profilePromise: Promise<any>;
+  profilePromise: Promise<ApiResponse<any>>;
 }
 
 export default function UserProfileMenu({ profilePromise }: UserProfileMenuProps) {
@@ -34,7 +35,7 @@ export default function UserProfileMenu({ profilePromise }: UserProfileMenuProps
   };
 
   const res = use(profilePromise);
-  const user = res?.data;
+  const user = res.success ? res.data : null;
 
   return (
     <>

@@ -10,12 +10,14 @@ import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 import BuildOutlinedIcon from '@mui/icons-material/BuildOutlined';
 import QuizIcon from '@mui/icons-material/QuizOutlined';
 import CodeOutlinedIcon from '@mui/icons-material/CodeOutlined';
-import { Section, Unit } from '../../types';
+import { Section } from '../../types';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useParams, useRouter } from 'next/navigation';
 import { ExcerciseType } from '@/types/course';
-import { updateExercise } from '@/services/exercise.service';
+import { useNotification } from '@/contexts/notificationContext';
+import { getErrorMessage } from '@/lib/errors';
+import { getExerciseErrorMessage, updateExerciseAction } from '@/features/exercise';
 
 interface LessonItemProps {
   excercise: any;
@@ -28,6 +30,7 @@ export default function ExcerciseItem({ excercise, section, onDeleteUnit, onUpda
   const [localTitle, setLocalTitle] = useState(excercise.title);
   const [type, setType] = useState<ExcerciseType>(excercise.excercises?.[0]?.type || 'assignment');
   const [isEditing, setIsEditing] = useState(false);
+  const { notify } = useNotification();
 
   console.log('unit', excercise);
 
@@ -53,11 +56,12 @@ export default function ExcerciseItem({ excercise, section, onDeleteUnit, onUpda
   };
 
   const handleTypeChange = async (newType: ExcerciseType) => {
-    try {
-      const res = await updateExercise(excercise.id, { type: newType });
-      if (!res?.success) throw new Error();
-      setType(newType);
-    } catch {}
+    const res = await updateExerciseAction(excercise.id, { type: newType });
+    if (!res.success) {
+      notify('error', getErrorMessage(res, getExerciseErrorMessage), { vertical: 'top', horizontal: 'right' });
+      return;
+    }
+    setType(newType);
   };
 
   const getExcerciseIcon = () => {

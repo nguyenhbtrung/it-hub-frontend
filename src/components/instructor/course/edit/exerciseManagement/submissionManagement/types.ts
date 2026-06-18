@@ -16,10 +16,3 @@ export interface Submission {
   score?: number | null;
   createdAt?: string;
 }
-
-export interface Meta {
-  total: number;
-  page: number;
-  limit: number;
-  timestamp: string;
-}

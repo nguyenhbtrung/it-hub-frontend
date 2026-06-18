@@ -1,7 +1,6 @@
 import { auth } from '@/auth';
-import { defaultUserProfile } from '@/components/user/profile/edit/data';
 import EditProfileForm from '@/components/user/profile/edit/editProfileForm';
-import { getMyProfile } from '@/services/user.service';
+import { getMyProfile } from '@/features/user';
 import { Stack } from '@mui/material';
 import { Suspense } from 'react';
 
@@ -17,7 +16,7 @@ export default function EditProfilePage() {
 
 async function EditProfileFormWrapper() {
   const res = await getMyProfile();
-  const user = res?.data;
+  const user = res.success ? res.data : null;
   const session = await auth();
   const accessToken = session?.accessToken || '';
   return (

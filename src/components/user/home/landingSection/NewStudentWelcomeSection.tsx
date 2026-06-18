@@ -54,7 +54,7 @@ export default function NewStudentWelcomeSection({ user }: NewStudentWelcomeSect
   const isSmallMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const isMedium = useMediaQuery(theme.breakpoints.down('lg'));
 
-  const name = user?.name || user?.fullname || 'Sinh viên';
+  const name = user?.name || user?.fullname || user?.email || 'Sinh viên';
 
   const swiperConfig = {
     slidesPerView: isSmallMobile ? 1 : isMedium ? 2 : 3,

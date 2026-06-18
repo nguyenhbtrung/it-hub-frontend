@@ -1,58 +1,6 @@
 import { Grid } from '@mui/material';
-import { CourseSummary } from '@/types/course';
 import { CourseCardSkeleton, CourseCardVertical } from '@/components/user/common/courseCard/CourseCardVertical';
-import { getRecommendedCourses } from '@/services/course.service';
-
-const courses: CourseSummary[] = [
-  {
-    id: 1,
-    title: 'Lập trình Web với React & Node.js',
-    category: 'Web Development',
-    level: 'Trung cấp',
-    students: 2345,
-    instructor: 'ThS. Nguyễn Văn A',
-    rating: 4.8,
-    duration: '12 tuần',
-    price: 'Miễn phí',
-    image: 'https://img-c.udemycdn.com/course/480x270/6704021_a06b.jpg',
-  },
-  {
-    id: 2,
-    title: 'Thuật toán và Cấu trúc Dữ liệu',
-    category: 'Computer Science',
-    level: 'Cơ bản',
-    students: 3421,
-    instructor: 'ThS. Hoàng Văn B',
-    rating: 4.9,
-    duration: '10 tuần',
-    price: 'Miễn phí',
-    image: 'https://img-c.udemycdn.com/course/480x270/1917546_682b_3.jpg',
-  },
-  {
-    id: 3,
-    title: 'Machine Learning cơ bản',
-    category: 'AI & ML',
-    level: 'Nâng cao',
-    students: 1876,
-    instructor: 'ThS. Lưu Thị C',
-    rating: 4.7,
-    duration: '16 tuần',
-    price: 'Miễn phí',
-    image: 'https://img-c.udemycdn.com/course/480x270/950390_270f_3.jpg',
-  },
-  {
-    id: 4,
-    title: 'Python cho Data Science',
-    category: 'Data Science',
-    level: 'Trung cấp',
-    students: 2901,
-    instructor: 'TS. Đỗ Thị D',
-    rating: 4.8,
-    duration: '14 tuần',
-    price: 'Miễn phí',
-    image: 'https://img-c.udemycdn.com/course/480x270/903744_8eb2.jpg',
-  },
-];
+import { getRecommendedCourses } from '@/features/course';
 
 interface CourseListProps {
   id: string;
@@ -61,7 +9,7 @@ interface CourseListProps {
 export async function CourseList({ id }: CourseListProps) {
   const res = await getRecommendedCourses({ categoryId: id });
 
-  const courses = res?.data || [];
+  const courses = res.success ? (res.data ?? []) : [];
 
   return (
     <Grid container spacing={2}>

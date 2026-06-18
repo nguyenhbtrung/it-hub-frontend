@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getStudentGrowthOfInstructor } from '@/services/dashboard.service';
+import { getStudentGrowthOfInstructor } from '@/features/dashboard';
 import { Box, Typography, Paper } from '@mui/material';
 
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
@@ -15,7 +15,7 @@ export default function GrowthChart() {
   useEffect(() => {
     const fetchData = async () => {
       const res = await getStudentGrowthOfInstructor();
-      const studentGrowth = res?.data ?? [];
+      const studentGrowth = res.success ? (res.data ?? []) : [];
 
       const formatted = studentGrowth.map((item: any) => ({
         month: monthLabels[item.month - 1],

@@ -9,8 +9,6 @@ import {
   Container,
   TextField,
   Typography,
-  Checkbox,
-  FormControlLabel,
   Button,
   List,
   ListItem,
@@ -24,12 +22,13 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DeleteIcon from '@mui/icons-material/Delete';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 
-import { updateCourseTotalDuration } from '@/services/course.service';
-import { updateExercise } from '@/services/exercise.service';
-import { uploadFile } from '@/services/client/file.service';
-import { addMaterial } from '@/services/unit.service';
+import { uploadFile } from '@/features/file';
 import { useNotification } from '@/contexts/notificationContext';
-import { deleteFile } from '@/services/file.service';
+import { deleteFileAction, getFileErrorMessage } from '@/features/file';
+import { getErrorMessage } from '@/lib/errors';
+import { updateCourseTotalDurationAction } from '@/features/course';
+import { getExerciseErrorMessage, updateExerciseAction } from '@/features/exercise';
+import { addMaterialAction } from '@/features/unit';
 
 interface ExerciseEditorProps {
   exercise: any;
@@ -81,29 +80,25 @@ export default function AssignmentEditor({ exercise, courseId, accessToken }: Ex
 
   // --- Xử lý Lưu nội dung ---
   const handleSaveContent = async () => {
-    try {
-      if (!exercise?.unitId) {
-        notify('error', 'Không tìm thấy thông tin bài tập');
-        return;
-      }
+    if (!exercise?.unitId) {
+      notify('error', 'Không tìm thấy thông tin bài tập');
+      return;
+    }
 
-      const payload = {
-        content: JSON.stringify(content),
-        description,
-        deadline: hasDeadline && deadline ? new Date(deadline).toISOString() : null,
-        passingScore: Number(passingScore),
-      };
+    const payload = {
+      content: JSON.stringify(content),
+      description,
+      deadline: hasDeadline && deadline ? new Date(deadline).toISOString() : null,
+      passingScore: Number(passingScore),
+    };
 
-      const res = await updateExercise(exercise.unitId, payload);
+    const res = await updateExerciseAction(exercise.unitId, payload);
 
-      if (res?.success) {
-        notify('success', 'Lưu nội dung thành công');
-        await updateCourseTotalDuration(courseId);
-      } else {
-        throw new Error();
-      }
-    } catch (error) {
-      notify('error', 'Lưu thất bại, vui lòng thử lại');
+    if (res.success) {
+      notify('success', 'Lưu nội dung thành công', { vertical: 'top', horizontal: 'right' });
+      await updateCourseTotalDurationAction(courseId);
+    } else {
+      notify('error', getErrorMessage(res, getExerciseErrorMessage), { vertical: 'top', horizontal: 'right' });
     }
   };
 
@@ -117,11 +112,13 @@ export default function AssignmentEditor({ exercise, courseId, accessToken }: Ex
       for (const file of Array.from(files)) {
         // 1. Upload lên storage
         const fileRes = await uploadFile(file, true, accessToken);
-        if (!fileRes?.success) throw new Error(`Lỗi tải lên: ${file.name}`);
-
+        if (!fileRes?.success) {
+          const message = getErrorMessage(fileRes, getFileErrorMessage);
+          throw new Error(`Lỗi tải lên: ${file.name} - ${message}`);
+        }
         // 2. Liên kết file với Unit bài tập
-        const materialRes = await addMaterial(exercise.unitId, { fileId: fileRes.data.id });
-        if (!materialRes?.success) throw new Error(`Lỗi lưu tài nguyên: ${file.name}`);
+        const materialRes = await addMaterialAction(exercise.unitId, { fileId: fileRes.data.id });
+        if (!materialRes.success) throw new Error(`Lỗi lưu tài nguyên: ${file.name}`);
 
         // 3. Cập nhật UI list
         const newAttachment: Attachment = {
@@ -135,9 +132,9 @@ export default function AssignmentEditor({ exercise, courseId, accessToken }: Ex
         };
         setAttachments((prev) => [...prev, newAttachment]);
       }
-      notify('success', 'Đã tải lên tài nguyên thành công');
+      notify('success', 'Đã tải lên tài nguyên thành công', { vertical: 'top', horizontal: 'center' });
     } catch (error: any) {
-      notify('error', error.message || 'Có lỗi xảy ra khi tải file');
+      notify('error', error.message || 'Có lỗi xảy ra khi tải file', { vertical: 'top', horizontal: 'center' });
     } finally {
       setUploading(false);
       event.target.value = '';
@@ -145,13 +142,13 @@ export default function AssignmentEditor({ exercise, courseId, accessToken }: Ex
   };
 
   const handleRemoveAttachment = async (id: string, fileId: string, name: string) => {
-    try {
-      const res = await deleteFile(fileId);
-      if (!res?.success) throw new Error(`Lỗi khi xoá file: ${name}`);
-      setAttachments((prev) => prev.filter((item) => item.id !== id));
-    } catch (error: any) {
-      notify('error', error.message || 'Có lỗi xảy ra khi tải file');
+    const res = await deleteFileAction(fileId);
+    if (!res?.success) {
+      const message = getErrorMessage(res, getFileErrorMessage);
+      notify('error', `Lỗi khi xoá file: ${name} - ${message}`, { vertical: 'top', horizontal: 'center' });
+      return;
     }
+    setAttachments((prev) => prev.filter((item) => item.id !== id));
   };
 
   const formatFileSize = (bytes: number) => {

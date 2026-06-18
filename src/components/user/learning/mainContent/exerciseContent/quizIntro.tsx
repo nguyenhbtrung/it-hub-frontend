@@ -31,13 +31,14 @@ import {
 import NextLink from '@/components/common/Link';
 import { use } from 'react';
 import { formatISOToDateTime, formatSecondsToMMSS } from '@/lib/utils/formatDatetime';
+import { ApiResponse } from '@/lib/api';
 
 interface QuizIntroProps {
   exercise: any;
   onStartQuiz: () => void;
   nav: any;
   slug: string;
-  submissionsPromise: Promise<any>;
+  submissionsPromise: Promise<ApiResponse<any>>;
 }
 
 export default function QuizIntro({ exercise, onStartQuiz, nav, slug, submissionsPromise }: QuizIntroProps) {
@@ -47,8 +48,7 @@ export default function QuizIntro({ exercise, onStartQuiz, nav, slug, submission
   const maxScore = 10;
 
   const res = use(submissionsPromise);
-  console.log('data: ', res?.data);
-  const submissions = res?.data || [];
+  const submissions = res.success ? (res.data ?? []) : [];
 
   return (
     <>

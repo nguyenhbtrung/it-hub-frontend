@@ -21,20 +21,21 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Suspense, useEffect, useState } from 'react';
 import debounce from 'lodash/debounce';
 import { Tag } from '@/types/tag';
-import { getTags } from '@/services/tag.service';
+import { getTags } from '@/features/tag';
 import { CourseDetail } from './types';
 import { Category } from '@/types/category';
-import { getCategories } from '@/services/category.service';
 import { levelLabelsMap } from '@/lib/const/course';
 import { CourseLevel } from '@/types/course';
 import { useSaveStore } from '@/store/useSaveStore';
 import EditorBase from '@/components/common/richText/editor/editorBase/textOnly';
 import { JSONContent } from '@tiptap/react';
-import { updateCourseDetail } from '@/services/course.service';
 import { useNotification } from '@/contexts/notificationContext';
 import { useRouter } from 'next/navigation';
 import UploadImageAndVideo from './uploadImageAndVideo';
 import { SessionProvider } from 'next-auth/react';
+import { getCategories } from '@/features/category';
+import { getCourseErrorMessage, updateCourseDetailAction } from '@/features/course';
+import { getErrorMessage } from '@/lib/errors';
 
 interface EditCourseDetailFormProps {
   courseDetail: CourseDetail | null;
@@ -86,15 +87,15 @@ export default function EditCourseDetailForm({ courseDetail }: EditCourseDetailF
         tags,
       };
       try {
-        const res = await updateCourseDetail(courseDetail?.id || '', payload);
-        if (res?.success) {
+        const res = await updateCourseDetailAction(courseDetail?.id || '', payload);
+        if (res.success) {
           notify('success', 'Lưu thành công!', { vertical: 'top', horizontal: 'right' });
           router.refresh();
         } else {
-          const msg = res?.error?.message || 'Lưu thất bại!';
+          const msg = getErrorMessage(res, getCourseErrorMessage);
           notify('error', msg, { vertical: 'top', horizontal: 'right' });
         }
-      } catch (error) {
+      } catch {
       } finally {
         setSubmitting(false);
       }
@@ -107,7 +108,7 @@ export default function EditCourseDetailForm({ courseDetail }: EditCourseDetailF
     async function fetchRoot() {
       setLoadingCategories(true);
       const res = await getCategories({ all: true, root: true });
-      if (res?.success && res?.data) {
+      if (res.success && res.data) {
         setCategories(res.data || []);
       }
       setLoadingCategories(false);
@@ -143,7 +144,7 @@ export default function EditCourseDetailForm({ courseDetail }: EditCourseDetailF
 
   const handleSearch = debounce(async (keyword) => {
     const res = await getTags({ page: 1, limit: 10, q: keyword });
-    if (res?.success && res?.data) setSuggestedTags(res.data);
+    if (res.success && res.data) setSuggestedTags(res.data);
   }, 300);
 
   const addRequirement = () => {

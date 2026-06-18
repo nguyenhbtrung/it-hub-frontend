@@ -20,6 +20,7 @@ import LinkButton from '@mui/material/Link';
 import { NavItem } from '@/types/navigation.user';
 import { Session } from 'next-auth';
 import UserProfileMenu from './userProfileMenu';
+import { ApiResponse } from '@/lib/api';
 
 const navButtonSx = {
   color: 'text.primary',
@@ -91,7 +92,7 @@ function SmallMenu({
 interface NavbarLinksProps {
   navItems: NavItem[];
   session: Session | null;
-  profilePromise: Promise<any>;
+  profilePromise: Promise<ApiResponse<any>>;
 }
 
 export default function NavbarLinks({ navItems, session, profilePromise }: NavbarLinksProps) {

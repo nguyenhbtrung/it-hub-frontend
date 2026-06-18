@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Box, Card, CardContent, Typography, IconButton, Button, Avatar, Stack, Alert, Collapse } from '@mui/material';
+import { Box, Card, CardContent, Typography, IconButton, Button, Avatar, Stack, Collapse } from '@mui/material';
 import {
   PersonAdd as PersonAddIcon,
   ExpandLess as ExpandLessIcon,
@@ -12,7 +12,8 @@ import {
 } from '@mui/icons-material';
 import { Registration } from '../types';
 import { useNotification } from '@/contexts/notificationContext';
-import { deleteEnrollment, updateEnrollment } from '@/services/enrollment.service';
+import { deleteEnrollmentAction, getEnrollmentErrorMessage, updateEnrollmentAction } from '@/features/enrollment';
+import { getErrorMessage } from '@/lib/errors';
 
 interface RegistrationApprovalProps {
   registrations: Registration[];
@@ -26,28 +27,28 @@ export default function RegistrationApproval({ registrations, courseId }: Regist
 
   const handleApprove = async (userId: string) => {
     try {
-      const res = await updateEnrollment(courseId, userId, { status: 'active' });
-      if (res?.success) {
+      const res = await updateEnrollmentAction(courseId, userId, { status: 'active' });
+      if (res.success) {
         notify('success', 'Đã duyệt học viên', { vertical: 'top', horizontal: 'right' });
         setPendingRegistrations((prev) => prev.filter((reg) => reg.id !== userId));
       } else {
-        notify('success', 'Duyệt học viên thất bại, vui lòng thử lại', { vertical: 'top', horizontal: 'right' });
+        notify('success', getErrorMessage(res, getEnrollmentErrorMessage), { vertical: 'top', horizontal: 'right' });
       }
-    } catch (error) {
+    } catch {
       notify('success', 'Đã có lỗi xảy ra, vui lòng thử lại sau', { vertical: 'top', horizontal: 'right' });
     }
   };
 
   const handleReject = async (userId: string) => {
     try {
-      const res = await deleteEnrollment(courseId, { userId });
+      const res = await deleteEnrollmentAction(courseId, { userId });
       if (res?.success) {
         notify('success', 'Đã từ chối', { vertical: 'top', horizontal: 'right' });
         setPendingRegistrations((prev) => prev.filter((reg) => reg.id !== userId));
       } else {
-        notify('success', 'Từ chối thất bại, vui lòng thử lại', { vertical: 'top', horizontal: 'right' });
+        notify('success', getErrorMessage(res, getEnrollmentErrorMessage), { vertical: 'top', horizontal: 'right' });
       }
-    } catch (error) {
+    } catch {
       notify('success', 'Đã có lỗi xảy ra, vui lòng thử lại sau', { vertical: 'top', horizontal: 'right' });
     }
   };
@@ -110,7 +111,7 @@ export default function RegistrationApproval({ registrations, courseId }: Regist
               >
                 <Stack direction='row' alignItems='center' spacing={2}>
                   <Avatar src={registration.avatar || undefined} sx={{ width: 40, height: 40 }}>
-                    {registration.fullname.charAt(0)}
+                    {registration.fullname?.charAt(0)}
                   </Avatar>
                   <Box>
                     <Typography variant='body1' fontWeight='medium'>

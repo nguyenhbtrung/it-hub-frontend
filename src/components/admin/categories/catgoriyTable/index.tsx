@@ -18,7 +18,7 @@ import { getDefaultFilter } from '@/lib/utils/filter';
 import { useMounted } from '@/hooks/useMounted';
 import { useNotification } from '@/contexts/notificationContext';
 
-import { getCategories } from '@/services/category.service';
+import { getCategories } from '@/features/category';
 
 interface Category {
   id: string;
@@ -107,8 +107,10 @@ export default function CategoryTable({ reloadKey }: { reloadKey: number }) {
           q: search ? search : undefined,
         });
 
-        setData(res?.data || []);
-        setTotal(res?.meta?.total || 0);
+        const data = res.success ? (res.data ?? []) : [];
+
+        setData(data);
+        setTotal(res.meta?.total || 0);
       } catch (error) {
         console.error('Lỗi khi tải danh mục:', error);
         // notify('Không thể tải danh mục', 'error');

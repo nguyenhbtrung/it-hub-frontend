@@ -2,9 +2,8 @@ import { Box, Alert, Typography, Divider, Button, Stack } from '@mui/material';
 import { Warning as WarningIcon, Download as DownloadIcon } from '@mui/icons-material';
 import RegistrationApproval from '@/components/instructor/course/edit/studentManagement/registrationApproval';
 import StudentList from '@/components/instructor/course/edit/studentManagement/studentList';
-import { ApiResponse, Registration, Student } from '@/components/instructor/course/edit/studentManagement/types';
-import { getRegistrationsByCourseId, getStudentsByCourseId } from '@/services/course.service';
 import { Suspense } from 'react';
+import { getRegistrationsByCourseId, getStudentsByCourseId } from '@/features/course';
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -26,14 +25,11 @@ async function ManageStudentsPageWrapper({ params, searchParams }: PageProps) {
   const page = parseInt(resolvedSearchParams.page || '1');
   const limit = parseInt(resolvedSearchParams.limit || '10');
 
-  let studentsResponse: ApiResponse<Student> | null = null;
-  let registrationsResponse: ApiResponse<Registration> | null = null;
+  const studentsResponse = await getStudentsByCourseId(courseId, { page, limit });
+  const registrationsResponse = await getRegistrationsByCourseId(courseId, { page: 1, limit: 100 });
 
-  studentsResponse = await getStudentsByCourseId(courseId, { page, limit });
-  registrationsResponse = await getRegistrationsByCourseId(courseId, { page: 1, limit: 100 });
-
-  const students = studentsResponse?.data || [];
-  const registrations = registrationsResponse?.data || [];
+  const students = studentsResponse.success ? (studentsResponse.data ?? []) : [];
+  const registrations = registrationsResponse.success ? (registrationsResponse.data ?? []) : [];
   const totalStudents = studentsResponse?.meta?.total || 0;
 
   const showWarning = true;

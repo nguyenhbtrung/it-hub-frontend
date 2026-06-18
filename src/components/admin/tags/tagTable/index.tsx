@@ -18,7 +18,7 @@ import { getDefaultFilter } from '@/lib/utils/filter';
 import { useMounted } from '@/hooks/useMounted';
 import { useNotification } from '@/contexts/notificationContext';
 
-import { getTags } from '@/services/tag.service';
+import { getTags } from '@/features/tag';
 
 interface Tag {
   id: string;
@@ -104,11 +104,10 @@ export default function TagTable({ reloadKey }: { reloadKey: number }) {
           q: search ? search : undefined,
         });
 
-        setData(res?.data || []);
+        const data = res.success ? (res.data ?? []) : [];
+        setData(data);
         setTotal(res?.meta?.total || 0);
-      } catch (error) {
-        console.error('Lỗi khi tải tag:', error);
-        // notify('Không thể tải danh sách tag', 'error');
+      } catch {
       } finally {
         setLoading(false);
       }
