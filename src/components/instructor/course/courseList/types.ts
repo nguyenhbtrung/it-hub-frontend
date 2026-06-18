@@ -2,6 +2,7 @@ import { CourseStatus } from '@/types/course';
 
 export interface CreatedCourse {
   id: number;
+  slug: string;
   title: string;
   category: string;
   subCategory: string;

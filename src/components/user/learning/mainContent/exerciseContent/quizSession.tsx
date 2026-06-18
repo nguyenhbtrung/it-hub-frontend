@@ -124,6 +124,7 @@ export default function QuizSession({ exercise, onSubmitQuiz }: QuizSessionProps
     setIsSubmitting(true);
     const timeSpent = Math.floor((Date.now() - startTime) / 1000);
     await onSubmitQuiz(answers, timeSpent);
+    setIsSubmitting(false);
   };
 
   const formatTime = (seconds: number) => {

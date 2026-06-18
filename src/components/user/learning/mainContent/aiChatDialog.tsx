@@ -9,6 +9,8 @@ import { ChatMenu } from './menu';
 import MarkdownViewer from '@/components/common/markdownViewer';
 import { API_BASE_URL } from '@/lib/fetcher/constants';
 import { ApiError } from '@/lib/errors/ApiError';
+import { ScopeMenu } from './scopeMenu';
+import { Scope } from './types';
 
 type ChatMessage = {
   role: 'user' | 'assistant';
@@ -30,6 +32,9 @@ export function AIChatDialog({ open, onClose, selectedText, accessToken, stepId 
   const [input, setInput] = useState('');
   const [contextText, setContextText] = useState('');
   const [flexibility, setFlexibility] = useState<Flexibility>('GUIDED');
+  const [scope, setScope] = useState<Scope>('step');
+  const [hightlightCount, setHighlightCount] = useState<number>(0);
+
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -47,7 +52,7 @@ export function AIChatDialog({ open, onClose, selectedText, accessToken, stepId 
 
     const payload = {
       stepId,
-      scope: 'lesson',
+      scope,
       question: input,
       selectedText: contextText || undefined,
       flexibility,
@@ -90,6 +95,7 @@ export function AIChatDialog({ open, onClose, selectedText, accessToken, stepId 
           return [...prev.slice(0, -1), updated];
         });
       }
+      setHighlightCount((prev) => prev + 1);
     } catch (error) {
       setMessages((prev) => [
         ...prev,
@@ -140,7 +146,7 @@ export function AIChatDialog({ open, onClose, selectedText, accessToken, stepId 
         ) : (
           <Box sx={{ flex: 1, overflowY: 'auto', p: 3 }}>
             {messages.map((msg, idx) => (
-              <ChatMessageRow key={idx} message={msg} />
+              <ChatMessageRow key={idx} message={msg} hightlightCount={hightlightCount} />
             ))}
             <div ref={bottomRef} />
           </Box>
@@ -151,18 +157,42 @@ export function AIChatDialog({ open, onClose, selectedText, accessToken, stepId 
           {contextText && <ContextPreview text={contextText} onClear={() => setContextText('')} />}
 
           {/* Input */}
-          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-            <ChatMenu value={flexibility} onChange={setFlexibility} />
+          <TextField
+            fullWidth
+            multiline
+            minRows={1}
+            maxRows={5}
+            variant='standard'
+            placeholder='Nhập câu hỏi cho AI...'
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && sendMessage()}
+            InputProps={{
+              disableUnderline: true,
+            }}
+            sx={{
+              mx: 1,
+              mb: 1,
+              fontSize: 16,
+            }}
+          />
 
-            <TextField
-              fullWidth
-              placeholder='Nhập câu hỏi cho AI...'
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-            />
+          {/* Controls row */}
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            {/* Left tools */}
+            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+              <ChatMenu value={flexibility} onChange={setFlexibility} />
+              <ScopeMenu value={scope} onChange={setScope} />
+            </Box>
 
-            <IconButton color='primary' onClick={sendMessage}>
+            {/* Send */}
+            <IconButton color='primary' onClick={sendMessage} disabled={!input.trim()}>
               <SendIcon />
             </IconButton>
           </Box>
@@ -172,7 +202,7 @@ export function AIChatDialog({ open, onClose, selectedText, accessToken, stepId 
   );
 }
 
-function ChatMessageRow({ message }: { message: ChatMessage }) {
+function ChatMessageRow({ message, hightlightCount }: { message: ChatMessage; hightlightCount: number }) {
   if (message.role === 'assistant') {
     return (
       <Box
@@ -181,7 +211,7 @@ function ChatMessageRow({ message }: { message: ChatMessage }) {
           mb: 2,
         }}
       >
-        <MarkdownViewer content={message.content} />
+        <MarkdownViewer content={message.content} hightlightCount={hightlightCount} />
       </Box>
     );
   }

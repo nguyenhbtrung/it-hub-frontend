@@ -1,34 +1,5 @@
-import {
-  Box,
-  Typography,
-  Button,
-  Breadcrumbs,
-  Link,
-  Paper,
-  List,
-  ListItem,
-  Divider,
-  Chip,
-  CircularProgress,
-} from '@mui/material';
-import {
-  ArrowBack,
-  ArrowForward,
-  ChevronRight,
-  AccessTime,
-  School,
-  Download,
-  Code,
-  VideoLibrary,
-  Image,
-  Note,
-  List as ListIcon,
-  Quiz,
-  Terminal,
-} from '@mui/icons-material';
-import { stepApi } from '@/lib/mockApi/leanring';
-import { getCourseContentBreadcrumb, getNavigationByContentId } from '@/services/course.service';
-import { getStepById } from '@/services/step.service';
+import { Box, Typography, Button, Breadcrumbs, Link, Divider } from '@mui/material';
+import { ArrowBack, ArrowForward, ChevronRight, AccessTime } from '@mui/icons-material';
 import { notFound } from 'next/navigation';
 import { formatDuration } from '@/lib/utils/formatDatetime';
 import StepContentRenderer from '@/components/common/richText/renderer/stepContentRenderer';
@@ -36,6 +7,10 @@ import SelectToAskAI from './selectToAskAI';
 import { auth } from '@/auth';
 import AiChatButton from './aiChatButton';
 import NextLink from '@/components/common/Link';
+import LearningProgressAction from './learningProgressAction';
+import { getCourseContentBreadcrumb, getNavigationByContentId } from '@/features/course';
+import { getStepById } from '@/features/step';
+import { getMyLearningProgressByStepId } from '@/features/user';
 
 interface MainContentProps {
   params: Promise<{ slug: string; id: string }>;
@@ -44,6 +19,9 @@ interface MainContentProps {
 export default async function MainContent({ params }: MainContentProps) {
   const { slug, id: stepId } = await params;
   const breadcrumbRes = await getCourseContentBreadcrumb(stepId, 'step');
+  if (!breadcrumbRes.success) {
+    notFound();
+  }
   const breadcrumb = breadcrumbRes?.data;
   const stepRes = await getStepById(stepId);
   const session = await auth();
@@ -51,10 +29,15 @@ export default async function MainContent({ params }: MainContentProps) {
   if (!stepRes.success) {
     notFound();
   }
-  const step = stepRes?.data;
+  const step = stepRes.data;
 
   const navRes = await getNavigationByContentId(stepId, { contentType: 'step' });
-  const nav = navRes?.data;
+  if (!navRes.success) {
+    notFound();
+  }
+  const nav = navRes.data;
+
+  const learningProgressPromise = getMyLearningProgressByStepId(stepId);
 
   return (
     <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
@@ -262,6 +245,8 @@ export default async function MainContent({ params }: MainContentProps) {
                 Quay lại
               </Button>
             )}
+
+            <LearningProgressAction stepId={stepId} learningProgressPromise={learningProgressPromise} />
 
             {nav?.nextType === 'step' && (
               <Button

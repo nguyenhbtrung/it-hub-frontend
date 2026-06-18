@@ -3,9 +3,10 @@
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, MenuItem, Grid } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { createUser } from '@/services/user.service';
 import { z } from 'zod';
 import { useNotification } from '@/contexts/notificationContext';
+import { createUserAction, getUserErrorMessage } from '@/features/user';
+import { getErrorMessage } from '@/lib/errors';
 
 export const createUserScheme = z.object({
   email: z.email('Email không đúng định dạng'),
@@ -42,27 +43,17 @@ export default function AddUserDialog({ open, onClose, onSuccess }: Props) {
   });
 
   const onSubmit = async (values: CreateUserForm) => {
-    try {
-      const res = await createUser({ ...values, scope: 'external' });
-      if (!res?.success) {
-        throw new Error(res?.error?.message);
-      }
-
-      notify('success', 'Thêm người dùng thành công', {
-        vertical: 'top',
-        horizontal: 'right',
-      });
-
-      reset();
-
-      onClose();
-      onSuccess?.();
-    } catch (error: any) {
-      notify('error', error.message || 'Thêm người dùng thất bại, vui lòng thử lại', {
-        vertical: 'top',
-        horizontal: 'right',
-      });
+    const res = await createUserAction({ ...values, scope: 'external' });
+    if (!res.success) {
+      notify('error', getErrorMessage(res, getUserErrorMessage), { vertical: 'top', horizontal: 'right' });
     }
+
+    notify('success', 'Thêm người dùng thành công', { vertical: 'top', horizontal: 'right' });
+
+    reset();
+
+    onClose();
+    onSuccess?.();
   };
 
   return (

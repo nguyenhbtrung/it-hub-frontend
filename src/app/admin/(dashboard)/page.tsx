@@ -1,7 +1,6 @@
-import { Box, Typography, Button, Paper } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { Suspense } from 'react';
 import TodayCard from '@/components/admin/dashboard/todayCard';
-import Star from '@mui/icons-material/Star';
 import CastForEducationOutlined from '@mui/icons-material/CastForEducationOutlined';
 import ArticleOutlined from '@mui/icons-material/ArticleOutlined';
 import MenuBookOutlined from '@mui/icons-material/MenuBookTwoTone';
@@ -9,57 +8,7 @@ import School from '@mui/icons-material/SchoolOutlined';
 import DashboardStatCard from '@/components/common/dashboardStatCard';
 import CourseEnrollmentTrendChart from '@/components/admin/dashboard/courseEnrollmentTrendChart';
 import UserRegitrationTrendChart from '@/components/admin/dashboard/userRegitrationTrendChart';
-
-const stats = [
-  {
-    title: 'Tổng số học viên',
-    value: '12450',
-    change: '+12% so với tháng trước',
-    icon: (
-      <Box sx={{ display: 'flex', bgcolor: '#eff6ff', borderRadius: 0.5, p: 0.5 }}>
-        <School sx={{ color: '#137fec', fontSize: 24 }} />
-      </Box>
-    ),
-    changeColor: 'success.main',
-    // description: '+12% so với tháng trước',
-  },
-  {
-    title: 'Tổng số khoá học',
-    value: '345',
-    change: '5 đang chờ phê duyệt',
-    icon: (
-      <Box sx={{ display: 'flex', bgcolor: '#fff7ed', borderRadius: 0.5, p: 0.5 }}>
-        <MenuBookOutlined sx={{ color: '#f97316', fontSize: 24 }} />
-      </Box>
-    ),
-    changeColor: 'error.main',
-    // description: '5 đang chờ phê duyệt',
-  },
-  {
-    title: 'Bài viết mới tháng này',
-    value: '50',
-    change: '+5 trong ngày hôm nay',
-    icon: (
-      <Box sx={{ display: 'flex', bgcolor: '#ecfdf5', borderRadius: 0.5, p: 0.5 }}>
-        <ArticleOutlined sx={{ color: '#10b981', fontSize: 24 }} />
-      </Box>
-    ),
-    changeColor: 'success.main',
-    // description: '+15% tháng này',
-  },
-  {
-    title: 'Giảng viên hoạt động',
-    value: '89',
-    change: '+0.1 so với tháng trước',
-    icon: (
-      <Box sx={{ display: 'flex', bgcolor: 'rgb(250 245 255)', borderRadius: 0.5, p: 0.5 }}>
-        <CastForEducationOutlined sx={{ color: 'rgb(168 85 247)', fontSize: 24 }} />
-      </Box>
-    ),
-    // description: '+0.1 so với tháng trước',
-    changeColor: 'success.main',
-  },
-];
+import { getAdminDashboardSummary } from '@/features/dashboard';
 
 export default async function UserManagementPage() {
   return (
@@ -69,7 +18,7 @@ export default async function UserManagementPage() {
       </Typography>
       <Box display='flex' justifyContent='space-between' alignItems='center' sx={{ mb: 2 }}>
         <Typography variant='body1' color='text.secondary' noWrap>
-          Chào mừng trở lại Admin. Dưới đây là những gì đang diễn ra trên hệ thống hôm nay.
+          Chào mừng trở lại. Dưới đây là những gì đang diễn ra trên hệ thống hôm nay.
         </Typography>
 
         <Suspense>
@@ -78,11 +27,9 @@ export default async function UserManagementPage() {
       </Box>
 
       <Box sx={{ mb: 4 }}>
-        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', lg: 'repeat(4, 1fr)' }, gap: 3 }}>
-          {stats.map((stat, index) => (
-            <DashboardStatCard stat={stat} key={index} />
-          ))}
-        </Box>
+        <Suspense>
+          <StatCards />
+        </Suspense>
       </Box>
       <Box
         sx={{
@@ -91,9 +38,76 @@ export default async function UserManagementPage() {
           gap: 3,
         }}
       >
-        <CourseEnrollmentTrendChart />
-        <UserRegitrationTrendChart />
+        <Suspense>
+          <CourseEnrollmentTrendChart />
+        </Suspense>
+        <Suspense>
+          <UserRegitrationTrendChart />
+        </Suspense>
       </Box>
+    </Box>
+  );
+}
+
+async function StatCards() {
+  const res = await getAdminDashboardSummary();
+  const summary = res.success ? res.data : null;
+  const stats = [
+    {
+      title: 'Tổng số học viên',
+      value: summary?.totalStudents?.value ?? 0,
+      change: `+${summary?.totalStudents?.growth ?? 0}% so với tháng trước`,
+      icon: (
+        <Box sx={{ display: 'flex', bgcolor: '#eff6ff', borderRadius: 0.5, p: 0.5 }}>
+          <School sx={{ color: '#137fec', fontSize: 24 }} />
+        </Box>
+      ),
+      changeColor: 'success.main',
+      // description: '+12% so với tháng trước',
+    },
+    {
+      title: 'Tổng số khoá học',
+      value: summary?.totalCourses?.value ?? 0,
+      change: `${summary?.totalCourses?.pending} đang chờ phê duyệt`,
+      icon: (
+        <Box sx={{ display: 'flex', bgcolor: '#fff7ed', borderRadius: 0.5, p: 0.5 }}>
+          <MenuBookOutlined sx={{ color: '#f97316', fontSize: 24 }} />
+        </Box>
+      ),
+      changeColor: 'error.main',
+      // description: '5 đang chờ phê duyệt',
+    },
+    {
+      title: 'Đăng ký giảng viên tháng này',
+      value: summary?.instructorSignupsThisMonth ?? 0,
+      change: '',
+      icon: (
+        <Box sx={{ display: 'flex', bgcolor: '#ecfdf5', borderRadius: 0.5, p: 0.5 }}>
+          <ArticleOutlined sx={{ color: '#10b981', fontSize: 24 }} />
+        </Box>
+      ),
+      changeColor: 'success.main',
+      // description: '+15% tháng này',
+    },
+    {
+      title: 'Giảng viên hoạt động',
+      value: summary?.activeInstructors?.value,
+      change: `+${summary?.activeInstructors?.growth} so với tháng trước`,
+      icon: (
+        <Box sx={{ display: 'flex', bgcolor: 'rgb(250 245 255)', borderRadius: 0.5, p: 0.5 }}>
+          <CastForEducationOutlined sx={{ color: 'rgb(168 85 247)', fontSize: 24 }} />
+        </Box>
+      ),
+      // description: '+0.1 so với tháng trước',
+      changeColor: 'success.main',
+    },
+  ];
+
+  return (
+    <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', lg: 'repeat(4, 1fr)' }, gap: 3 }}>
+      {stats.map((stat, index) => (
+        <DashboardStatCard stat={stat} key={index} />
+      ))}
     </Box>
   );
 }

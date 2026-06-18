@@ -4,25 +4,11 @@ import Typography from '@mui/material/Typography';
 import Submission from '../submission';
 import Divider from '@mui/material/Divider';
 import Button from '@mui/material/Button';
-import {
-  ArrowBack,
-  ArrowForward,
-  ChevronRight,
-  AccessTime,
-  School,
-  Download,
-  Code,
-  VideoLibrary,
-  Image,
-  Note,
-  List as ListIcon,
-  Quiz,
-  Terminal,
-} from '@mui/icons-material';
+import { ArrowBack, ArrowForward } from '@mui/icons-material';
 import DescriptionOutlined from '@mui/icons-material/DescriptionOutlined';
 import FolderZipIcon from '@mui/icons-material/FolderZip';
 import NextLink from '@/components/common/Link';
-import { getMyExerciseSubmission } from '@/services/exercise.service';
+import { getMyExerciseSubmission } from '@/features/exercise';
 
 interface AssignmentContentProps {
   exercise: any;
@@ -32,52 +18,9 @@ interface AssignmentContentProps {
 
 export default async function AssignmentContent({ exercise, nav, slug }: AssignmentContentProps) {
   const submissionRes = await getMyExerciseSubmission(exercise?.id || '');
-  const submission = submissionRes?.data;
-  //   submissionRes: {
-  //     "success": true,
-  //     "message": "Success",
-  //     "data": {
-  //         "id": "cmk6o12wn0002qwvm9nyssraf",
-  //         "excerciseId": "ex1",
-  //         "studentId": "cmjmsqb0i0001hkvm9qy48dmz",
-  //         "score": null,
-  //         "comment": null,
-  //         "quizResults": null,
-  //         "demoUrl": [
-  //             "a",
-  //             "b"
-  //         ],
-  //         "note": "abc",
-  //         "createdAt": "2026-01-09T09:20:15.031Z",
-  //         "attachments": [
-  //             {
-  //                 "id": "cmk6o12ww0003qwvmze1xw4h7",
-  //                 "file": {
-  //                     "id": "cmk6nvujx0000qwvmaivwwatv",
-  //                     "name": "update-category-1.sql",
-  //                     "size": "2144",
-  //                     "type": "OTHER",
-  //                     "mimeType": "application/x-sql",
-  //                     "url": "http://localhost:8080/uploads/permanent/1b4d061e-54a8-4af6-a964-63273c56a900.sql"
-  //                 }
-  //             },
-  //             {
-  //                 "id": "cmk6o12ww0004qwvm581k6wav",
-  //                 "file": {
-  //                     "id": "cmk6nwavg0001qwvmndu999uc",
-  //                     "name": "course-content.sql",
-  //                     "size": "7640",
-  //                     "type": "OTHER",
-  //                     "mimeType": "application/x-sql",
-  //                     "url": "http://localhost:8080/uploads/permanent/636c97f4-a2cf-49af-9217-9c778da0dad3.sql"
-  //                 }
-  //             }
-  //         ]
-  //     },
-  //     "meta": {
-  //         "timestamp": "2026-01-09T09:42:33.549Z"
-  //     }
-  // }
+  const submissions = submissionRes.success ? (submissionRes.data ?? []) : [];
+  const meta = submissionRes?.meta;
+
   const formatFileSize = (bytes: number) => {
     if (bytes === 0) return '0 B';
     const k = 1024;
@@ -228,7 +171,7 @@ export default async function AssignmentContent({ exercise, nav, slug }: Assignm
           </Box>
         </Box>
         {/* RIGHT */}
-        <Submission exercise={exercise} submission={submission} />
+        <Submission exercise={exercise} submissions={submissions} initialAttemptCount={meta?.total || 0} />
       </Box>
 
       {/* Navigation Buttons */}

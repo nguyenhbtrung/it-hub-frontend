@@ -41,7 +41,7 @@ export default function EmptyState() {
         lọc.
       </Typography>
 
-      <Button
+      {/* <Button
         variant='contained'
         sx={{
           fontWeight: 600,
@@ -49,7 +49,7 @@ export default function EmptyState() {
         }}
       >
         Xóa bộ lọc
-      </Button>
+      </Button> */}
     </Paper>
   );
 }

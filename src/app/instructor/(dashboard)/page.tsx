@@ -3,6 +3,7 @@ import { AddCircle } from '@mui/icons-material';
 import StatsCards from '@/components/instructor/dashboard/statsCard';
 import GrowthChart from '@/components/instructor/dashboard/growthChart';
 import RecentActivity from '@/components/instructor/dashboard/recentActivity';
+import { Suspense } from 'react';
 
 export default function InstructorDashboard() {
   return (
@@ -16,7 +17,7 @@ export default function InstructorDashboard() {
             </Typography>
             <Typography color='text.secondary'>Đây là tổng quan nhanh về hoạt động của bạn.</Typography>
           </Box>
-          <Button
+          {/* <Button
             variant='contained'
             startIcon={<AddCircle />}
             sx={{
@@ -26,12 +27,14 @@ export default function InstructorDashboard() {
             }}
           >
             Tạo khóa học mới
-          </Button>
+          </Button> */}
         </Box>
 
         {/* Stats Cards */}
         <Box sx={{ mb: 4 }}>
-          <StatsCards />
+          <Suspense>
+            <StatsCards />
+          </Suspense>
         </Box>
 
         {/* Charts and Activity */}
@@ -43,7 +46,9 @@ export default function InstructorDashboard() {
           }}
         >
           <GrowthChart />
-          <RecentActivity />
+          <Suspense>
+            <RecentActivity />
+          </Suspense>
         </Box>
       </Container>
     </Box>

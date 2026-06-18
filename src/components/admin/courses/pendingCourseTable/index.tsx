@@ -15,8 +15,8 @@ import { FieldType, FilterItem } from '@/types/filter';
 import CustomColumnMenu from '@/components/common/customDataGrid/customColumnMenu';
 import { getDefaultFilter } from '@/lib/utils/filter';
 import { useMounted } from '@/hooks/useMounted';
-import { getCourses, updateCourseStatus } from '@/services/course.service';
 import { useNotification } from '@/contexts/notificationContext';
+import { getCourses, updateCourseStatusAction } from '@/features/course';
 
 interface Course {
   id: number;
@@ -240,7 +240,8 @@ export default function PendingCourseTable() {
         status: 'pending',
       });
 
-      setData(res?.data || []);
+      const data = res.success ? (res.data ?? []) : [];
+      setData(data);
       setTotal(res?.meta?.total || 0);
     } catch (error) {
       console.error('Lỗi khi tải dữ liệu:', error);
@@ -287,7 +288,7 @@ export default function PendingCourseTable() {
   }, [paginationModel, sortModel, filterModel, filters, isMounted, router]);
 
   const handleApproveClick = async (id: string) => {
-    const res = await updateCourseStatus(id, { status: 'published' });
+    const res = await updateCourseStatusAction(id, { status: 'published' });
     if (res?.success) {
       notify('success', 'Duyệt khoá học thành công', { vertical: 'top', horizontal: 'right' });
     } else {
@@ -297,7 +298,7 @@ export default function PendingCourseTable() {
   };
 
   const handleSuspendClick = async (id: string) => {
-    const res = await updateCourseStatus(id, { status: 'suspended' });
+    const res = await updateCourseStatusAction(id, { status: 'suspended' });
     if (res?.success) {
       notify('success', 'Đã đình chỉ khoá học', { vertical: 'top', horizontal: 'right' });
     } else {

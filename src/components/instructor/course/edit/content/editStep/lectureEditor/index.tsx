@@ -6,9 +6,10 @@ import EditorBase from '@/components/common/richText/editor/editorBase';
 import EditStepHeader from '../header';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
-import { updateStep } from '@/services/step.service';
 import { useNotification } from '@/contexts/notificationContext';
-import { updateCourseTotalDuration } from '@/services/course.service';
+import { updateCourseTotalDurationAction } from '@/features/course';
+import { getStepErrorMessage, updateStepAction } from '@/features/step';
+import { getErrorMessage } from '@/lib/errors';
 
 interface LectureEditorProps {
   step: any;
@@ -27,13 +28,13 @@ export default function LectureEditor({ step, courseId }: LectureEditorProps) {
     const payload = {
       content: JSON.stringify(content),
     };
-    const res = await updateStep(step.id, payload);
-    if (res?.success) {
+    const res = await updateStepAction(step.id, payload);
+    if (res.success) {
       notify('success', 'Lưu nội dung thành công', { vertical: 'top', horizontal: 'right' });
     } else {
-      notify('error', 'Lưu nội dung thất bại, vui lòng thử lại.', { vertical: 'top', horizontal: 'right' });
+      notify('error', getErrorMessage(res, getStepErrorMessage), { vertical: 'top', horizontal: 'right' });
     }
-    await updateCourseTotalDuration(courseId);
+    await updateCourseTotalDurationAction(courseId);
   };
 
   return (

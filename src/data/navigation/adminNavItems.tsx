@@ -3,6 +3,7 @@ import People from '@mui/icons-material/People';
 import School from '@mui/icons-material/School';
 import EmojiEvents from '@mui/icons-material/EmojiEvents';
 import Forum from '@mui/icons-material/Forum';
+import Category from '@mui/icons-material/Category';
 import Settings from '@mui/icons-material/Settings';
 import { NavItem } from '@/types/navigation.admin';
 
@@ -42,13 +43,12 @@ export const navItems: NavItem[] = [
   //   ],
   // },
   {
-    label: 'Diễn đàn',
-    icon: Forum,
-    href: '/admin/forum',
+    label: 'Danh mục & Tag',
+    icon: Category,
+    href: '/admin/categories',
     children: [
-      { label: 'Tất cả bài viết', href: '/admin/forum' },
-      { label: 'Chủ đề', href: '/admin/forum/topics' },
-      { label: 'Báo cáo', href: '/admin/forum/reports' },
+      { label: 'Danh mục', href: '/admin/categories' },
+      { label: 'Tag', href: '/admin/tags' },
     ],
   },
   {

@@ -38,10 +38,10 @@ interface QuizResultProps {
 
 export default function QuizResult({ result, exercise, onRestart, onContinueNext, hasNext }: QuizResultProps) {
   const [expandedQuestion, setExpandedQuestion] = useState<number | null>(null);
-  const scorePercentage = result.score || 0;
+  const scorePercentage = result.score * 10 || 0;
   const isPassed = scorePercentage >= (exercise?.passingScore || 5) * 10;
-  const totalQuestions = exercise?.quizzes?.length || 0;
-  const correctAnswers = Math.round((scorePercentage / 100) * totalQuestions);
+  const totalQuestions = result?.totalQuestions || 0;
+  const correctAnswers = result?.correctAnswers || 0;
   const timeSpentMinutes = Math.floor((result.timeSpent || 0) / 60);
   const timeSpentSeconds = (result.timeSpent || 0) % 60;
 

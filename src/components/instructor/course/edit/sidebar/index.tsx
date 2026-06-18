@@ -9,12 +9,12 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import GroupIcon from '@mui/icons-material/Group';
 import Link from 'next/link';
 import { useNotification } from '@/contexts/notificationContext';
-import { getCourseDetail, updateCourseStatus } from '@/services/course.service';
+import { getCourseDetail, updateCourseStatusAction } from '@/features/course';
 
 const rawMenuItems = [
   { icon: <InfoIcon />, text: 'Thông tin tổng quan', href: '/' },
   { icon: <ViewListIcon />, text: 'Nội dung khóa học', href: '/content' },
-  // { icon: <AssignmentIcon />, text: 'Quản lý bài tập', href: '/assignments' },
+  { icon: <AssignmentIcon />, text: 'Quản lý bài tập', href: '/exercises' },
   { icon: <GroupIcon />, text: 'Quản lý học viên', href: '/students' },
 ];
 
@@ -39,14 +39,16 @@ export default function CourseSidebar() {
   useEffect(() => {
     const fetchStatus = async () => {
       const res = await getCourseDetail(id as string, 'instructor');
-      setStatus(res?.data?.status || '');
+      if (res.success) {
+        setStatus(res.data.status || '');
+      }
     };
     fetchStatus();
   }, []);
 
   const handleSubmitClick = async () => {
     try {
-      const res = await updateCourseStatus(id as string, { status: 'pending' });
+      const res = await updateCourseStatusAction(id as string, { status: 'pending' });
       if (res?.success) {
         notify('success', 'Đã gửi yêu cầu phê duyệt khoá học', { vertical: 'top', horizontal: 'right' });
         setStatus('pending');
@@ -66,7 +68,7 @@ export default function CourseSidebar() {
 
   const handleCancelClick = async () => {
     try {
-      const res = await updateCourseStatus(id as string, { status: 'draft' });
+      const res = await updateCourseStatusAction(id as string, { status: 'draft' });
       if (res?.success) {
         notify('success', 'Đã huỷ yêu cầu phê duyệt khoá học', { vertical: 'top', horizontal: 'right' });
         setStatus('draft');

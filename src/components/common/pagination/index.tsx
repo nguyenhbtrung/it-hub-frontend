@@ -9,9 +9,11 @@ interface AppPaginationProps {
   count: number;
   page: number;
   onChange?: (event: React.ChangeEvent<unknown>, value: number) => void;
+  size?: number;
+  borderRadius?: number;
 }
 
-export default function AppPagination({ count, page, onChange }: AppPaginationProps) {
+export default function AppPagination({ count, page, onChange, size = 40, borderRadius = 1 }: AppPaginationProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const handleChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
@@ -43,9 +45,9 @@ export default function AppPagination({ count, page, onChange }: AppPaginationPr
                 },
                 border: '1px solid',
                 borderColor: 'divider',
-                borderRadius: 1,
-                minWidth: 40,
-                height: 40,
+                borderRadius,
+                minWidth: size,
+                height: size,
               }}
             />
           )}

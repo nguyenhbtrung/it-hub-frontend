@@ -92,12 +92,12 @@ export default function TopBar({ onMenuClick }: TopBarProps) {
         {/* Left buttons */}
         <Box display='flex' alignItems='center' gap={2} ml='auto'>
           {/* Toggle theme */}
-          <IconButton onClick={handleToggleTheme}>{darkMode ? <DarkModeOutlined /> : <LightModeOutlined />}</IconButton>
+          {/* <IconButton onClick={handleToggleTheme}>{darkMode ? <DarkModeOutlined /> : <LightModeOutlined />}</IconButton> */}
 
           {/* Notifications */}
-          <IconButton>
+          {/* <IconButton>
             <NotificationsOutlined />
-          </IconButton>
+          </IconButton> */}
 
           {/* Profile */}
           <Box display='flex' alignItems='center' gap={1} sx={{ cursor: 'pointer' }} onClick={handleProfileClick}>

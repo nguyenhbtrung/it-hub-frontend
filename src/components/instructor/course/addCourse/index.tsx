@@ -18,10 +18,12 @@ import {
   Typography,
 } from '@mui/material';
 import { AddCircle } from '@mui/icons-material';
-import { getCategories } from '@/services/category.service';
-import { createCourse } from '@/services/course.service';
 import { useRouter } from 'next/navigation';
 import { Category } from '@/types/category';
+import { getCategories, getCategoryErrorMessage } from '@/features/category';
+import { getErrorMessage } from '@/lib/errors';
+import { ApiErrorResponse } from '@/lib/api';
+import { createCourseAction } from '@/features/course';
 
 export default function AddCourse({ onCreated }: { onCreated?: () => void }) {
   const [open, setOpen] = useState(false);
@@ -49,24 +51,12 @@ export default function AddCourse({ onCreated }: { onCreated?: () => void }) {
       setLoadingCategories(true);
       setError(null);
       const res = await getCategories({ all: true, root: true });
-      if (res?.success && res?.data && mounted) {
+      if (res.success && res.data && mounted) {
         setCategories(res.data || []);
       } else {
-        setError('Có lỗi xảy ra');
+        setError(getErrorMessage(res as ApiErrorResponse, getCategoryErrorMessage));
       }
       if (mounted) setLoadingCategories(false);
-      //   try {
-      //     const res = await fetch('/api/categories?all=true&root=true', {
-      //       credentials: 'include',
-      //     });
-      //     const json = await res.json();
-      //     if (!res.ok) throw new Error(json?.message || 'Lỗi khi lấy danh mục');
-      //     if (mounted) setCategories(json.data || []);
-      //   } catch (err: any) {
-      //     setError(err?.message || 'Có lỗi xảy ra');
-      //   } finally {
-      //     if (mounted) setLoadingCategories(false);
-      //   }
     }
 
     fetchRoot();
@@ -89,14 +79,14 @@ export default function AddCourse({ onCreated }: { onCreated?: () => void }) {
       setError(null);
 
       const res = await getCategories({ all: true, parentId: categoryId, root: false });
-      if (res?.success && res?.data && mounted) {
+      if (res.success && res.data && mounted) {
         setSubCategories(res.data || []);
         // reset selected subcategory if not in new list
         if (!res.data?.some((c: Category) => c.id === subCategoryId)) {
           setSubCategoryId('');
         }
       } else {
-        setError('Có lỗi xảy ra');
+        setError(getErrorMessage(res as ApiErrorResponse, getCategoryErrorMessage));
       }
       if (mounted) setLoadingSubCategories(false);
       //   try {
@@ -135,9 +125,8 @@ export default function AddCourse({ onCreated }: { onCreated?: () => void }) {
       categoryId,
       subCategoryId,
     };
-    const res = await createCourse(payload);
+    const res = await createCourseAction(payload);
     if (!res.success) {
-      console.log(res);
       setError('Thêm khoá học thất bại');
       return;
     }
@@ -146,39 +135,6 @@ export default function AddCourse({ onCreated }: { onCreated?: () => void }) {
     setSubCategoryId('');
     setOpen(false);
     router.refresh();
-
-    // try {
-    //   // Gọi API tạo khoá học (thay endpoint nếu bạn có API khác)
-    //   const payload = {
-    //     title: title.trim(),
-    //     categoryId,
-    //     subCategoryId,
-    //   };
-
-    //   const res = await fetch('/api/courses', {
-    //     method: 'POST',
-    //     credentials: 'include',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify(payload),
-    //   });
-
-    //   const json = await res.json();
-    //   if (!res.ok) {
-    //     throw new Error(json?.message || 'Tạo khóa học thất bại');
-    //   }
-
-    //   // reset form và đóng dialog
-    //   setTitle('');
-    //   setCategoryId('');
-    //   setSubCategoryId('');
-    //   setOpen(false);
-
-    //   if (onCreated) onCreated();
-    // } catch (err: any) {
-    //   setError(err?.message || 'Có lỗi xảy ra khi tạo khóa học');
-    // }
   }
 
   return (

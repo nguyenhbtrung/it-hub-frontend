@@ -26,11 +26,11 @@ export default function FeaturedCourses() {
       </Suspense>
 
       {/* Footer button */}
-      <Box textAlign='center' mt={10}>
+      {/* <Box textAlign='center' mt={10}>
         <Button variant='outlined' size='large'>
           Xem tất cả khóa học
         </Button>
-      </Box>
+      </Box> */}
     </Box>
   );
 }

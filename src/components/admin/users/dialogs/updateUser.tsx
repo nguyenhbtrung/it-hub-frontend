@@ -14,10 +14,11 @@ import {
 } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { updateUser, getUserById } from '@/services/user.service';
 import { z } from 'zod';
 import { useEffect, useState } from 'react';
 import { useNotification } from '@/contexts/notificationContext';
+import { getUserById, getUserErrorMessage, updateUserAction } from '@/features/user';
+import { getErrorMessage } from '@/lib/errors';
 
 const optionalUrl = z.url('URL không hợp lệ').optional().nullable();
 
@@ -83,12 +84,12 @@ export default function UpdateUserDialog({ open, userId, onClose, onSuccess }: P
       try {
         const res = await getUserById(userId);
 
-        if (res?.success === false) {
-          notify('error', res.error.message, { vertical: 'top', horizontal: 'right' });
+        if (!res.success) {
+          notify('error', getErrorMessage(res, getUserErrorMessage), { vertical: 'top', horizontal: 'right' });
           return;
         }
 
-        const user = res?.data;
+        const user = res.data;
         const profile = user?.profile ?? {};
 
         reset({
@@ -115,17 +116,14 @@ export default function UpdateUserDialog({ open, userId, onClose, onSuccess }: P
   const onSubmit = async (values: UpdateUserForm) => {
     if (!userId) return;
 
-    const res = await updateUser(userId, values);
+    const res = await updateUserAction(userId, values);
 
-    if (res?.success === false) {
-      notify('error', res.error.message, { vertical: 'top', horizontal: 'right' });
+    if (!res.success) {
+      notify('error', getErrorMessage(res, getUserErrorMessage), { vertical: 'top', horizontal: 'right' });
       return;
     }
 
-    notify('success', 'Cập nhật người dùng thành công', {
-      vertical: 'top',
-      horizontal: 'right',
-    });
+    notify('success', 'Cập nhật người dùng thành công', { vertical: 'top', horizontal: 'right' });
 
     onClose();
     onSuccess?.();

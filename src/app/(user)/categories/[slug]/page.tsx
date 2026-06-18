@@ -1,8 +1,8 @@
 import AllCourses from '@/components/user/explore/category/allCourses';
 import CategoryHeader from '@/components/user/explore/category/categoryHeader';
 import RecommendedCourses from '@/components/user/explore/category/recommendedCourses';
+import { getCategoryIdBySlug } from '@/features/category';
 
-import { getCategoryIdBySlug } from '@/services/category.service';
 import { Container, Box } from '@mui/material';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';

@@ -11,7 +11,7 @@ export default function CourseStatusTabs() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const activeTab = searchParams.get('tab') || 'in-progress';
+  const activeTab = searchParams.get('tab') || 'active';
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -64,9 +64,9 @@ export default function CourseStatusTabs() {
             value={tab.id}
             label={
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                {getIcon(tab.icon)}
+                {/* {getIcon(tab.icon)} */}
                 <span>{tab.label}</span>
-                {tab.count > 0 && (
+                {/* {tab.count > 0 && (
                   <Chip
                     label={tab.count}
                     size='small'
@@ -78,7 +78,7 @@ export default function CourseStatusTabs() {
                       color: 'primary.main',
                     }}
                   />
-                )}
+                )} */}
               </Box>
             }
           />

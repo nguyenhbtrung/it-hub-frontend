@@ -1,8 +1,8 @@
-import EditStepHeader from '@/components/instructor/course/edit/content/editStep/header';
 import LectureEditor from '@/components/instructor/course/edit/content/editStep/lectureEditor';
-import { getStepById } from '@/services/step.service';
+import { getStepById } from '@/features/step';
 
-import { Container, Grid, Box, Paper } from '@mui/material';
+import { Box } from '@mui/material';
+import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
 interface EditStepPageProps {
@@ -22,7 +22,10 @@ export default function EditStepPage({ params }: EditStepPageProps) {
 async function EditStepPageWrapper({ params }: EditStepPageProps) {
   const { stepId, id } = await params;
   const res = await getStepById(stepId);
-  const step = res?.data;
+  if (!res.success) {
+    notFound();
+  }
+  const step = res.data;
   return (
     <>
       <LectureEditor step={step} courseId={id} />

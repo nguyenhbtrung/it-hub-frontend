@@ -3,23 +3,23 @@ import { Course, CourseStatus, CourseTab } from './types';
 
 export const courseTabs: CourseTab[] = [
   {
-    id: 'in-progress',
+    id: 'active',
     label: 'Đang học',
     icon: 'play_circle',
     count: 2,
   },
   {
-    id: 'registered',
+    id: 'pending',
     label: 'Đã đăng ký',
     icon: 'app_registration',
     count: 1,
   },
-  {
-    id: 'completed',
-    label: 'Đã hoàn thành',
-    icon: 'verified',
-    count: 1,
-  },
+  // {
+  //   id: 'completed',
+  //   label: 'Đã hoàn thành',
+  //   icon: 'verified',
+  //   count: 1,
+  // },
 ];
 
 export const courses: Course[] = [
@@ -87,9 +87,9 @@ export const courses: Course[] = [
 
 export const getCoursesByStatus = (status: CourseStatus): Course[] => {
   switch (status) {
-    case 'in-progress':
+    case 'active':
       return courses.filter((course) => course.progress !== undefined && course.progress < 100);
-    case 'registered':
+    case 'pending':
       return courses.filter((course) => course.registrationDate !== undefined && !course.completedDate);
     case 'completed':
       return courses.filter((course) => course.completedDate !== undefined);

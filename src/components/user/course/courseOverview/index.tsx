@@ -1,13 +1,12 @@
 import Section from '@/components/common/section';
 import { Typography, Grid, List, ListItem, ListItemIcon, ListItemText, Card, Box } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
-import { fetchCourse } from '@/lib/utils/fakeApi';
 import CourseIncludes from '../courseIncludes';
 import ReadMoreDescription from './readMoreDescription';
-import { getCourseDetail } from '@/services/course.service';
 import { Key } from 'react';
 import { notFound } from 'next/navigation';
 import { JSONContent } from '@tiptap/core';
+import { getCourseDetail } from '@/features/course';
 
 export default async function CourseOverview({ courseId }: { courseId: string }) {
   const res = await getCourseDetail(courseId, 'student');

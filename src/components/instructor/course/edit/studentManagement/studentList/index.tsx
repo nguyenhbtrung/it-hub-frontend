@@ -64,7 +64,7 @@ export default function StudentList({ students, total, page, limit }: StudentLis
 
   const filteredStudents = students.filter((student) => {
     const matchesSearch =
-      student.fullname.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      student.fullname?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       student.email.toLowerCase().includes(searchTerm.toLowerCase());
 
     if (progressFilter === 'completed') return matchesSearch && student.progressPercent >= 90;
@@ -146,7 +146,7 @@ export default function StudentList({ students, total, page, limit }: StudentLis
                 <TableCell>
                   <Stack direction='row' alignItems='center' spacing={2}>
                     <Avatar src={student.avatar || undefined} sx={{ width: 40, height: 40 }}>
-                      {student.fullname.charAt(0)}
+                      {student.fullname?.charAt(0)}
                     </Avatar>
                     <Box>
                       <Typography variant='body1' fontWeight='medium'>

@@ -15,8 +15,8 @@ import { FieldType, FilterItem } from '@/types/filter';
 import CustomColumnMenu from '@/components/common/customDataGrid/customColumnMenu';
 import { getDefaultFilter } from '@/lib/utils/filter';
 import { useMounted } from '@/hooks/useMounted';
-import { getInstructorRegistrations, updateUser } from '@/services/user.service';
 import { useNotification } from '@/contexts/notificationContext';
+import { getInstructorRegistrations, updateUserAction } from '@/features/user';
 
 interface InstructorRegistration {
   id: number;
@@ -88,7 +88,7 @@ export default function InstructorRegistrationTable() {
 
   const handleAccept = async (userId: string) => {
     try {
-      const res = await updateUser(userId, { role: 'instructor' });
+      const res = await updateUserAction(userId, { role: 'instructor' });
       if (!res?.success) throw new Error('Chấp thuận thất bại, vui lòng thử lại');
       setPaginationModel((prev) => ({ ...prev }));
     } catch (error: any) {
@@ -101,7 +101,7 @@ export default function InstructorRegistrationTable() {
 
   const handleReject = async (userId: string) => {
     try {
-      const res = await updateUser(userId, { instructorApplicationAt: null });
+      const res = await updateUserAction(userId, { instructorApplicationAt: null });
       if (!res?.success) throw new Error('Từ chối thất bại, vui lòng thử lại');
       setPaginationModel((prev) => ({ ...prev }));
     } catch (error: any) {
@@ -128,7 +128,8 @@ export default function InstructorRegistrationTable() {
           q: search ? search : undefined,
         });
 
-        setData(res?.data || []);
+        const data = res.success ? (res.data ?? []) : [];
+        setData(data);
         setTotal(res?.meta?.total || 0);
       } catch (error) {
         console.error('Lỗi khi tải dữ liệu:', error);

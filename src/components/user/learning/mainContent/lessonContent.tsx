@@ -1,42 +1,14 @@
-import {
-  Box,
-  Typography,
-  Button,
-  Breadcrumbs,
-  Link,
-  Paper,
-  List,
-  ListItem,
-  Divider,
-  Chip,
-  CircularProgress,
-} from '@mui/material';
-import {
-  ArrowBack,
-  ArrowForward,
-  ChevronRight,
-  AccessTime,
-  School,
-  Download,
-  Code,
-  VideoLibrary,
-  Image,
-  Note,
-  List as ListIcon,
-  Quiz,
-  Terminal,
-} from '@mui/icons-material';
+import { Box, Typography, Button, Breadcrumbs, Link, Paper, List, ListItem, Divider } from '@mui/material';
+import { ArrowBack, ArrowForward, ChevronRight, AccessTime, School } from '@mui/icons-material';
 
-import { getCourseContentBreadcrumb, getNavigationByContentId } from '@/services/course.service';
 import { notFound } from 'next/navigation';
 import { formatDuration } from '@/lib/utils/formatDatetime';
 import StepContentRenderer from '@/components/common/richText/renderer/stepContentRenderer';
 import SelectToAskAI from './selectToAskAI';
 import { auth } from '@/auth';
-import AiChatButton from './aiChatButton';
-import { getSectionById } from '@/services/section.service';
-import { getUnitById } from '@/services/unit.service';
 import NextLink from '@/components/common/Link';
+import { getCourseContentBreadcrumb, getNavigationByContentId } from '@/features/course';
+import { getUnitById } from '@/features/unit';
 
 interface MainContentProps {
   params: Promise<{ slug: string; id: string }>;
@@ -45,6 +17,9 @@ interface MainContentProps {
 export default async function MainContent({ params }: MainContentProps) {
   const { slug, id: lessonId } = await params;
   const breadcrumbRes = await getCourseContentBreadcrumb(lessonId, 'unit');
+  if (!breadcrumbRes.success) {
+    notFound();
+  }
   const breadcrumb = breadcrumbRes?.data;
   const lessonRes = await getUnitById(lessonId);
   const session = await auth();
@@ -52,10 +27,13 @@ export default async function MainContent({ params }: MainContentProps) {
   if (!lessonRes.success) {
     notFound();
   }
-  const lesson = lessonRes?.data;
+  const lesson = lessonRes.data;
 
   const navRes = await getNavigationByContentId(lessonId, { contentType: 'unit' });
-  const nav = navRes?.data;
+  if (!navRes.success) {
+    notFound();
+  }
+  const nav = navRes.data;
 
   return (
     <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>

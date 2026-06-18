@@ -1,11 +1,11 @@
-import { getMyProfile } from '@/services/user.service';
+import { getMyProfile } from '@/features/user';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { notFound } from 'next/navigation';
 
 export default async function Bio() {
   const res = await getMyProfile();
-  if (!res?.success || !res?.data) {
+  if (!res.success || !res.data) {
     notFound();
   }
   const user = res.data;

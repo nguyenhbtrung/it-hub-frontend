@@ -1,15 +1,15 @@
-import { Box, Chip, Container, Grid, Stack, Typography } from '@mui/material';
+import { Box, Container, Grid, Stack } from '@mui/material';
 import CourseHeader from '@/components/user/course/courseHeader';
 import CourseContent from '@/components/user/course/courseContent';
 import InstructorCard from '@/components/user/course/instructorCard';
 import CourseReviews from '@/components/user/course/courseReviews';
 import NavTabs from '@/components/user/course/navTabs';
 import Section from '@/components/common/section';
-import { fetchCourse } from '@/lib/utils/fakeApi';
 import CourseOverview from '@/components/user/course/courseOverview';
 import { Suspense } from 'react';
-import { getCourseContentOutline, getCourseIdBySlug } from '@/services/course.service';
 import CourseTagsSection from '@/components/user/course/courseTagsSection';
+import { getCourseContentOutline, getCourseIdBySlug } from '@/features/course';
+import { notFound } from 'next/navigation';
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -26,8 +26,10 @@ export default function CoursePage({ params }: Props) {
 async function CoursePageWrapper({ params }: Props) {
   const slug = (await params).slug;
   const idRes = await getCourseIdBySlug(slug);
-  const courseId = idRes?.data || '';
-  const course = await fetchCourse(slug);
+  if (!idRes.success) {
+    notFound();
+  }
+  const courseId = idRes.data;
   const courseContentOutlinePromise = getCourseContentOutline(courseId);
   return (
     <>

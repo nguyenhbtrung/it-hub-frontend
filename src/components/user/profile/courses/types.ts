@@ -1,6 +1,6 @@
 import { CourseLevel } from '@/types/course';
 
-export type CourseStatus = 'in-progress' | 'registered' | 'completed';
+export type CourseStatus = 'pending' | 'active' | 'completed';
 
 export interface Course {
   id: string;
