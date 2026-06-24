@@ -1,36 +1,117 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# IT Hub Frontend
 
-## Getting Started
+A modern E-Learning web platform for IT student built with Next.js, TypeScript, and MUI. This repository hosts the web application for user learning flows, instructor course management, and admin dashboards.
 
-First, run the development server:
+> Backend repository: https://github.com/nguyenhbtrung/it-hub-backend
+
+## What this project does
+
+IT Hub Frontend is a multi-role education marketplace client application with:
+
+- authenticated user experience for learners, instructors, and admins
+- course discovery, enrollment, lessons, and learning progress
+- instructor course creation, content management, and submission review
+- admin controls for users, categories, courses, tags, and instructor registration
+- profile management
+- AI learning assistant chatbot in learning screen
+
+## Why it is useful
+
+This app is useful when building or extending an e-learning platform because it provides:
+
+- a complete frontend foundation for role-based course workflows
+- integration with `next-auth` credential authentication and API-driven sessions
+- rich content editing and course management tools
+- integrated AI assistant, enabling students to ask questions and receive context-aware explanations while learning
+- responsive layouts using Material UI and modern React features
+- scalable route structure with Next.js App Router
+
+## Key features
+
+- User dashboard, course library and profile
+- Instructor workflows for course editing, exercises, and student submissions
+- Admin panels for moderation, course approval, and user management
+- File upload strategy support for direct or signed uploads
+- Rich text editor support via TipTap and dynamic content rendering
+- Global state management with Zustand
+- AI learning assistant chatbot in learning screen
+
+## Getting started
+
+### Requirements
+
+- Node.js 20+ (recommended)
+- npm, yarn, or pnpm
+
+### Install dependencies
+
+```bash
+npm install
+```
+
+### Configure environment variables
+
+Create a `.env.local` file in the repository root and set at least:
+
+```env
+NEXT_PUBLIC_API_BASE_URL=https://api.example.com
+```
+
+Optional variables:
+
+```env
+NEXT_PUBLIC_UPLOAD_STRATEGY=direct
+```
+
+> The frontend expects a backend API at `NEXT_PUBLIC_API_BASE_URL`.
+
+### Run locally
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000` in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Build for production
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm start
+```
 
-## Learn More
+## Project structure
 
-To learn more about Next.js, take a look at the following resources:
+- `src/app/` — Next.js App Router routes and layouts
+- `src/components/` — reusable UI components and page sections
+- `src/features/` — domain-specific API call, business logic and feature modules
+- `src/lib/` — API clients, fetchers, and shared utilities
+- `src/contexts/` — React context providers for UI and notifications
+- `src/theme/` — Material UI theme and design system configuration
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Technical stack
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Next.js 16
+- React 19
+- TypeScript
+- Material UI (MUI)
+- next-auth
+- Zustand
+- TipTap rich text editor
+- Sass for component styling
 
-## Deploy on Vercel
+## How to get help
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+If you need help with this project:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- open an issue in the repository
+- search for existing issues and discussions
+- inspect the `src/app/` routes and `src/components/` for UI behavior
+
+## Contributing
+
+Contributions are welcome via issues and pull requests. Keep changes focused on small, testable updates.
+
+## Notes
+
+- If backend services change, update `NEXT_PUBLIC_API_BASE_URL` accordingly.
