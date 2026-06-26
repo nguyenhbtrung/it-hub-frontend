@@ -1,24 +1,14 @@
 import AuthForm from '@/components/auth/AuthForm';
-import { Box, Typography, Paper } from '@mui/material';
+import { Typography } from '@mui/material';
 
 export default function ForgotPasswordPage() {
   return (
-    <Box
-      sx={{
-        minHeight: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        px: 2,
-      }}
-    >
-      <Paper sx={{ p: 5, maxWidth: 450, width: '100%' }} elevation={3}>
-        <Typography variant='h4' fontWeight={700} textAlign='center' mb={4}>
-          Quên mật khẩu
-        </Typography>
+    <>
+      <Typography variant='h3' mb={4} mx={{ xs: 0, md: 2, lg: 4, xl: 6 }}>
+        Quên mật khẩu
+      </Typography>
 
-        <AuthForm type='forgot' />
-      </Paper>
-    </Box>
+      <AuthForm type='forgot' />
+    </>
   );
 }

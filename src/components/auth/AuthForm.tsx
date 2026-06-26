@@ -74,10 +74,10 @@ export default function AuthForm({ type }: AuthFormProps) {
       <Suspense>
         <AuthNotify />
       </Suspense>
-      <Box component='form' onSubmit={handleSubmit}>
+      <Box component='form' onSubmit={handleSubmit} px={{ xs: 0, md: 2, lg: 4, xl: 6 }}>
         <Stack spacing={3}>
           {/* EMAIL */}
-          <TextField label='Email' name='email' fullWidth value={form.email} onChange={handleChange} />
+          <TextField label='Email' name='email' value={form.email} onChange={handleChange} />
 
           {/* PASSWORD: login + register */}
           {(type === 'login' || type === 'signup') && (
@@ -85,7 +85,6 @@ export default function AuthForm({ type }: AuthFormProps) {
               label='Mật khẩu'
               name='password'
               type={showPassword ? 'text' : 'password'}
-              fullWidth
               value={form.password}
               onChange={handleChange}
               slotProps={{
@@ -108,7 +107,6 @@ export default function AuthForm({ type }: AuthFormProps) {
               label='Xác nhận mật khẩu'
               name='confirmPassword'
               type={showConfirmPassword ? 'text' : 'password'}
-              fullWidth
               value={form.confirmPassword}
               onChange={handleChange}
               slotProps={{
@@ -126,7 +124,7 @@ export default function AuthForm({ type }: AuthFormProps) {
           )}
 
           {/* BUTTON */}
-          <Button variant='contained' size='large' fullWidth type='submit'>
+          <Button variant='contained' size='large' type='submit'>
             {type === 'login' ? 'Đăng nhập' : type === 'signup' ? 'Đăng ký' : 'Gửi yêu cầu đặt lại mật khẩu'}
           </Button>
 
