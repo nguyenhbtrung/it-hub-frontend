@@ -30,10 +30,14 @@ export default function AuthForm({ type }: AuthFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const email = form.email.trim();
+    const password = form.password.trim();
+
     if (type === 'login') {
       const res = await signIn('credentials', {
-        email: form.email,
-        password: form.password,
+        email,
+        password,
         redirect: false,
       });
       if (res?.ok) {
@@ -56,8 +60,8 @@ export default function AuthForm({ type }: AuthFormProps) {
       }
 
       const result = await signUpAction({
-        email: form.email,
-        password: form.password,
+        email,
+        password,
       });
 
       if (result?.success) {
