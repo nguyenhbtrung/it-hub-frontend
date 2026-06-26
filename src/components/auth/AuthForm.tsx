@@ -20,6 +20,7 @@ export default function AuthForm({ type }: AuthFormProps) {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const { notify } = useNotification();
   const router = useRouter();
@@ -30,6 +31,7 @@ export default function AuthForm({ type }: AuthFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitting(true);
 
     const email = form.email.trim();
     const password = form.password.trim();
@@ -43,19 +45,21 @@ export default function AuthForm({ type }: AuthFormProps) {
       if (res?.ok) {
         if (res?.error === 'CredentialsSignin' && res?.code === 'credentials') {
           notify('error', 'Email hoặc mật khẩu không đúng', { vertical: 'top', horizontal: 'center' });
+          setSubmitting(false);
         } else {
           const session = await getSession();
-          console.log('>>>session', session);
           if (session?.role === 'admin') window.location.href = '/admin';
           else window.location.href = '/';
         }
       } else {
         notify('error', 'Đăng nhập thất bại', { vertical: 'top', horizontal: 'center' });
+        setSubmitting(false);
       }
     }
     if (type === 'signup') {
       if (form.password !== form.confirmPassword) {
         notify('error', 'Mật khẩu không khớp', { vertical: 'top', horizontal: 'center' });
+        setSubmitting(false);
         return;
       }
 
@@ -70,6 +74,7 @@ export default function AuthForm({ type }: AuthFormProps) {
       } else {
         notify('error', getErrorMessage(result, getAuthErrorMessage), { vertical: 'top', horizontal: 'center' });
       }
+      setSubmitting(false);
     }
   };
 
@@ -128,7 +133,7 @@ export default function AuthForm({ type }: AuthFormProps) {
           )}
 
           {/* BUTTON */}
-          <Button variant='contained' size='large' type='submit'>
+          <Button variant='contained' size='large' type='submit' loading={submitting}>
             {type === 'login' ? 'Đăng nhập' : type === 'signup' ? 'Đăng ký' : 'Gửi yêu cầu đặt lại mật khẩu'}
           </Button>
 
