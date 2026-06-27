@@ -44,9 +44,9 @@ export default function EmptyCourseState() {
       <Typography variant='body2' color='text.secondary' sx={{ maxWidth: 320, mx: 'auto', mb: 4 }}>
         Danh sách này đang trống. Hãy tìm kiếm khóa học phù hợp và bắt đầu hành trình ngay!
       </Typography>
-      <Button variant='text' color='primary' endIcon={<ArrowForward />} sx={{ fontWeight: 'medium' }}>
+      {/* <Button variant='text' color='primary' endIcon={<ArrowForward />} sx={{ fontWeight: 'medium' }}>
         Khám phá khóa học
-      </Button>
+      </Button> */}
     </Box>
   );
 }
