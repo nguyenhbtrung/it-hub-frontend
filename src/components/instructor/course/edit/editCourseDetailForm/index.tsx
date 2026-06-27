@@ -222,6 +222,10 @@ export default function EditCourseDetailForm({ courseDetail }: EditCourseDetailF
             multiline
             rows={3}
             defaultValue={shortDescription}
+            slotProps={{
+              htmlInput: { maxLength: 120 },
+            }}
+            helperText={`${shortDescription.length}/120`}
             onChange={(e) => setShortDescription(e.target.value)}
             variant='outlined'
             size='small'
