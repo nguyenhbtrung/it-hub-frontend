@@ -1,6 +1,7 @@
 import { Box, Typography, Button, Grid, Stack } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Image from 'next/image';
+import Link from '@/components/common/Link';
 
 export default function HeroSection() {
   return (
@@ -76,6 +77,8 @@ export default function HeroSection() {
             {/* Buttons */}
             <Stack direction='row' spacing={2} flexWrap='wrap'>
               <Button
+                LinkComponent={Link}
+                href='/auth/signup'
                 size='large'
                 variant='contained'
                 endIcon={<ArrowForwardIcon />}

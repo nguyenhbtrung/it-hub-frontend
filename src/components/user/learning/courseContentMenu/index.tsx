@@ -18,12 +18,18 @@ export default async function CourseContentMenu({ params }: CourseContentMenuPro
   if (!res.success || !res.data) {
     notFound();
   }
-  const course = res.data;
-  course.contentId = id;
+
+  const { indexes, ...course } = res.data;
+  const contentId = id;
+
+  const expandedIds = [...(indexes?.ancestorMap?.[contentId] ?? []), contentId];
+
+  const learningCourse = { ...course, contentId, expandedIds };
+
   return (
     <>
-      <Sidebar course={course} />
-      <MobileMenu course={course} />
+      <Sidebar course={learningCourse} />
+      <MobileMenu course={learningCourse} />
     </>
   );
 }

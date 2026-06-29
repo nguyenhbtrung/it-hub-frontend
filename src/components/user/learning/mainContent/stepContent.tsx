@@ -76,7 +76,7 @@ export default async function MainContent({ params }: MainContentProps) {
                 color: 'text.primary',
               }}
             >
-              Bước {breadcrumb?.step?.order}: {breadcrumb?.step?.title}
+              {breadcrumb?.step?.title}
             </Typography>
           </Breadcrumbs>
 
