@@ -3,6 +3,7 @@ import { ExcerciseType, UnitType } from '@/types/course';
 export interface LearningCourse {
   id: string;
   contentId?: string;
+  expandedIds?: string[];
   title: string;
   slug: string;
   description?: string;

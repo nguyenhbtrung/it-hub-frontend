@@ -25,21 +25,14 @@ interface OpenState {
 }
 
 export default function MenuContent({ course }: MenuContentProps) {
-  const [openSections, setOpenSections] = useState<OpenState>({});
+  const [openItems, setOpenItems] = useState<OpenState>(() =>
+    Object.fromEntries((course.expandedIds ?? []).map((id) => [id, true]))
+  );
 
-  const [openLessons, setOpenLessons] = useState<OpenState>({});
-
-  const handleSectionClick = (sectionId: string) => {
-    setOpenSections((prev) => ({
+  const handleExpandableItemClick = (id: string) => {
+    setOpenItems((prev) => ({
       ...prev,
-      [sectionId]: !prev[sectionId],
-    }));
-  };
-
-  const handleLessonClick = (lessonId: string) => {
-    setOpenLessons((prev) => ({
-      ...prev,
-      [lessonId]: !prev[lessonId],
+      [id]: !prev[id],
     }));
   };
 
@@ -56,10 +49,6 @@ export default function MenuContent({ course }: MenuContentProps) {
       default:
         return <RadioButtonUnchecked {...iconProps} />;
     }
-  };
-
-  const isLessonActive = (lessonId: string) => {
-    return openLessons[lessonId] || false;
   };
 
   return (
@@ -98,7 +87,7 @@ export default function MenuContent({ course }: MenuContentProps) {
           {course.sections.map((section) => (
             <Box key={section.id} sx={{ mb: 1 }}>
               <ListItemButton
-                onClick={() => handleSectionClick(section.id)}
+                onClick={() => handleExpandableItemClick(section.id)}
                 sx={[
                   {
                     borderRadius: 1,
@@ -128,21 +117,21 @@ export default function MenuContent({ course }: MenuContentProps) {
 
                 <ExpandMore
                   sx={{
-                    transform: openSections[section.id] ? 'rotate(180deg)' : 'none',
+                    transform: openItems[section.id] ? 'rotate(180deg)' : 'none',
                     transition: 'transform 0.2s',
                     color: 'text.secondary',
                   }}
                 />
               </ListItemButton>
 
-              <Collapse in={openSections[section.id]}>
+              <Collapse in={openItems[section.id]}>
                 <List sx={{ pl: 3, pt: 0.5 }}>
                   {section.units.map((unit) => (
                     <ListItem key={unit.id} sx={{ p: 0, mb: 0.5 }}>
                       {unit.steps ? (
                         <Box sx={{ width: '100%' }}>
                           <ListItemButton
-                            onClick={() => handleLessonClick(unit.id)}
+                            onClick={() => handleExpandableItemClick(unit.id)}
                             sx={[
                               {
                                 borderRadius: 1,
@@ -196,7 +185,7 @@ export default function MenuContent({ course }: MenuContentProps) {
                               <ChevronRight
                                 fontSize='small'
                                 sx={{
-                                  transform: openLessons[unit.id] ? 'rotate(90deg)' : 'none',
+                                  transform: openItems[unit.id] ? 'rotate(90deg)' : 'none',
                                   transition: 'transform 0.2s',
                                   color: 'text.secondary',
                                 }}
@@ -204,7 +193,7 @@ export default function MenuContent({ course }: MenuContentProps) {
                             </Box>
                           </ListItemButton>
 
-                          <Collapse in={openLessons[unit.id]}>
+                          <Collapse in={openItems[unit.id]}>
                             <Box sx={{ pl: 3, mt: 0.5, borderLeft: '1px solid', borderColor: 'grey.200' }}>
                               {unit.steps.map((step) => (
                                 <ListItemButton
