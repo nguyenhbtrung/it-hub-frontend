@@ -44,7 +44,7 @@ export default function MobileMenu({ course }: MobileMenuProps) {
         }}
       />
       <Drawer open={openMenu} onClose={() => setOpenMenu(false)}>
-        <MenuContent course={course} />
+        <MenuContent course={course} onClose={() => setOpenMenu(false)} />
       </Drawer>
     </Box>
   );
