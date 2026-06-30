@@ -16,4 +16,5 @@ export interface GetCategoriesQuery {
   sortBy?: string;
   sortOrder?: string;
   q?: string;
+  includeParent?: boolean;
 }

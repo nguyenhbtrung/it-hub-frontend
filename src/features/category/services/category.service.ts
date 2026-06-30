@@ -17,9 +17,15 @@ export function getCategoryTree(): Promise<ApiResponse<any>> {
   return api.get('/api/categories/tree');
 }
 
-export function getCategories({ page = 1, limit = 10, all, root, parentId }: GetCategoriesQuery = {}): Promise<
-  ApiResponse<any>
-> {
+export function getCategories({
+  page = 1,
+  limit = 10,
+  all,
+  root,
+  parentId,
+  includeParent,
+  q,
+}: GetCategoriesQuery = {}): Promise<ApiResponse<any>> {
   return api.get('/api/categories', {
     auth: false,
     query: {
@@ -28,6 +34,8 @@ export function getCategories({ page = 1, limit = 10, all, root, parentId }: Get
       all,
       root,
       parentId,
+      includeParent,
+      q,
     },
   });
 }

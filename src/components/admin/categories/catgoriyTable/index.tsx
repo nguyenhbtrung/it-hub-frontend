@@ -23,6 +23,7 @@ import { getCategories } from '@/features/category';
 interface Category {
   id: string;
   parentId: string | null;
+  parent: { id: string; name: string } | null;
   name: string;
   slug: string;
   description: string;
@@ -31,6 +32,7 @@ interface Category {
 const categorySchema: Record<keyof Category, FieldType> = {
   id: 'string',
   parentId: 'string',
+  parent: 'string',
   name: 'string',
   slug: 'string',
   description: 'string',
@@ -38,7 +40,8 @@ const categorySchema: Record<keyof Category, FieldType> = {
 
 const categoryFieldsMap: Record<keyof Category, string> = {
   id: 'ID',
-  parentId: 'Danh mục cha',
+  parentId: 'ID Danh mục cha',
+  parent: 'Danh mục cha',
   name: 'Tên danh mục',
   slug: 'Slug',
   description: 'Mô tả',
@@ -105,6 +108,7 @@ export default function CategoryTable({ reloadKey }: { reloadKey: number }) {
           sortBy: sortField,
           sortOrder,
           q: search ? search : undefined,
+          includeParent: true,
         });
 
         const data = res.success ? (res.data ?? []) : [];
@@ -165,11 +169,11 @@ export default function CategoryTable({ reloadKey }: { reloadKey: number }) {
       minWidth: 180,
     },
     {
-      field: 'parentId',
+      field: 'parent',
       headerName: 'Danh mục cha',
-      width: 180,
-      renderCell: (params) =>
-        params.value ? <Chip label={params.value} size='small' /> : <Chip label='Root' size='small' />,
+      width: 200,
+      sortable: false,
+      renderCell: (params) => params.row.parent?.name ?? '-',
     },
     {
       field: 'description',
