@@ -135,147 +135,163 @@ export default async function MainContent({ params }: MainContentProps) {
 
           {/* Navigation Buttons */}
           <Divider sx={{ my: 6 }} />
-          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            {nav?.previousType === 'step' && (
-              <Button
-                LinkComponent={NextLink}
-                href={`/courses/${slug}/learn/steps/${nav?.previousId}`}
-                variant='outlined'
-                startIcon={<ArrowBack />}
-                sx={{
-                  borderColor: 'grey.300',
-                  color: 'text.secondary',
-                  '&:hover': {
-                    borderColor: 'grey.400',
-                    backgroundColor: 'grey.100',
-                  },
-                }}
-              >
-                Trước đó
-              </Button>
-            )}
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+            <Box sx={{ display: { xs: 'flex', sm: 'none' }, flexDirection: 'column' }}>
+              <LearningProgressAction stepId={stepId} learningProgressPromise={learningProgressPromise} />
+            </Box>
+            <Box
+              sx={{ display: 'flex', justifyContent: { xs: 'flex-start', sm: 'space-between' }, gap: { xs: 1, sm: 0 } }}
+            >
+              {nav?.previousType === 'step' && (
+                <Button
+                  LinkComponent={NextLink}
+                  href={`/courses/${slug}/learn/steps/${nav?.previousId}`}
+                  variant='outlined'
+                  startIcon={<ArrowBack />}
+                  sx={{
+                    flex: 1,
+                    borderColor: 'grey.300',
+                    color: 'text.secondary',
+                    '&:hover': {
+                      borderColor: 'grey.400',
+                      backgroundColor: 'grey.100',
+                    },
+                  }}
+                >
+                  Trước đó
+                </Button>
+              )}
 
-            {nav?.previousType === 'lesson' && (
-              <Button
-                LinkComponent={NextLink}
-                href={`/courses/${slug}/learn/lessons/${nav?.previousId}`}
-                variant='outlined'
-                startIcon={<ArrowBack />}
-                sx={{
-                  borderColor: 'grey.300',
-                  color: 'text.secondary',
-                  '&:hover': {
-                    borderColor: 'grey.400',
-                    backgroundColor: 'grey.100',
-                  },
-                }}
-              >
-                Quay lại
-              </Button>
-            )}
+              {nav?.previousType === 'lesson' && (
+                <Button
+                  LinkComponent={NextLink}
+                  href={`/courses/${slug}/learn/lessons/${nav?.previousId}`}
+                  variant='outlined'
+                  startIcon={<ArrowBack />}
+                  sx={{
+                    flex: { xs: 1, sm: 'none' },
+                    borderColor: 'grey.300',
+                    color: 'text.secondary',
+                    '&:hover': {
+                      borderColor: 'grey.400',
+                      backgroundColor: 'grey.100',
+                    },
+                  }}
+                >
+                  Quay lại
+                </Button>
+              )}
 
-            {nav?.previousType === 'exercise' && (
-              <Button
-                LinkComponent={NextLink}
-                href={`/courses/${slug}/learn/exercises/${nav?.previousId}`}
-                variant='outlined'
-                startIcon={<ArrowBack />}
-                sx={{
-                  borderColor: 'grey.300',
-                  color: 'text.secondary',
-                  '&:hover': {
-                    borderColor: 'grey.400',
-                    backgroundColor: 'grey.100',
-                  },
-                }}
-              >
-                Quay lại
-              </Button>
-            )}
+              {nav?.previousType === 'exercise' && (
+                <Button
+                  LinkComponent={NextLink}
+                  href={`/courses/${slug}/learn/exercises/${nav?.previousId}`}
+                  variant='outlined'
+                  startIcon={<ArrowBack />}
+                  sx={{
+                    flex: { xs: 1, sm: 'none' },
+                    borderColor: 'grey.300',
+                    color: 'text.secondary',
+                    '&:hover': {
+                      borderColor: 'grey.400',
+                      backgroundColor: 'grey.100',
+                    },
+                  }}
+                >
+                  Quay lại
+                </Button>
+              )}
 
-            {nav?.previousType === 'section' && (
-              <Button
-                LinkComponent={NextLink}
-                href={`/courses/${slug}/learn/sections/${nav?.previousId}`}
-                variant='outlined'
-                startIcon={<ArrowBack />}
-                sx={{
-                  borderColor: 'grey.300',
-                  color: 'text.secondary',
-                  '&:hover': {
-                    borderColor: 'grey.400',
-                    backgroundColor: 'grey.100',
-                  },
-                }}
-              >
-                Quay lại
-              </Button>
-            )}
+              {nav?.previousType === 'section' && (
+                <Button
+                  LinkComponent={NextLink}
+                  href={`/courses/${slug}/learn/sections/${nav?.previousId}`}
+                  variant='outlined'
+                  startIcon={<ArrowBack />}
+                  sx={{
+                    flex: { xs: 1, sm: 'none' },
+                    borderColor: 'grey.300',
+                    color: 'text.secondary',
+                    '&:hover': {
+                      borderColor: 'grey.400',
+                      backgroundColor: 'grey.100',
+                    },
+                  }}
+                >
+                  Quay lại
+                </Button>
+              )}
+              <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+                <LearningProgressAction stepId={stepId} learningProgressPromise={learningProgressPromise} />
+              </Box>
 
-            <LearningProgressAction stepId={stepId} learningProgressPromise={learningProgressPromise} />
+              {nav?.nextType === 'step' && (
+                <Button
+                  LinkComponent={NextLink}
+                  href={`/courses/${slug}/learn/steps/${nav?.nextId}`}
+                  variant='contained'
+                  endIcon={<ArrowForward />}
+                  size='large'
+                  sx={{
+                    flex: { xs: 1, sm: 'none' },
+                    backgroundColor: 'primary.main',
+                    '&:hover': { backgroundColor: 'primary.dark' },
+                  }}
+                >
+                  Tiếp theo
+                </Button>
+              )}
+              {nav?.nextType === 'lesson' && (
+                <Button
+                  LinkComponent={NextLink}
+                  href={`/courses/${slug}/learn/lessons/${nav?.nextId}`}
+                  variant='contained'
+                  endIcon={<ArrowForward />}
+                  size='large'
+                  sx={{
+                    flex: { xs: 1, sm: 'none' },
+                    backgroundColor: 'primary.main',
+                    '&:hover': { backgroundColor: 'primary.dark' },
+                  }}
+                >
+                  Tiếp theo
+                </Button>
+              )}
 
-            {nav?.nextType === 'step' && (
-              <Button
-                LinkComponent={NextLink}
-                href={`/courses/${slug}/learn/steps/${nav?.nextId}`}
-                variant='contained'
-                endIcon={<ArrowForward />}
-                size='large'
-                sx={{
-                  backgroundColor: 'primary.main',
-                  '&:hover': { backgroundColor: 'primary.dark' },
-                }}
-              >
-                Tiếp theo
-              </Button>
-            )}
-            {nav?.nextType === 'lesson' && (
-              <Button
-                LinkComponent={NextLink}
-                href={`/courses/${slug}/learn/lessons/${nav?.nextId}`}
-                variant='contained'
-                endIcon={<ArrowForward />}
-                size='large'
-                sx={{
-                  backgroundColor: 'primary.main',
-                  '&:hover': { backgroundColor: 'primary.dark' },
-                }}
-              >
-                Tiếp theo
-              </Button>
-            )}
+              {nav?.nextType === 'exercise' && (
+                <Button
+                  LinkComponent={NextLink}
+                  href={`/courses/${slug}/learn/exercises/${nav?.nextId}`}
+                  variant='contained'
+                  endIcon={<ArrowForward />}
+                  size='large'
+                  sx={{
+                    flex: { xs: 1, sm: 'none' },
+                    backgroundColor: 'primary.main',
+                    '&:hover': { backgroundColor: 'primary.dark' },
+                  }}
+                >
+                  Tiếp theo
+                </Button>
+              )}
 
-            {nav?.nextType === 'exercise' && (
-              <Button
-                LinkComponent={NextLink}
-                href={`/courses/${slug}/learn/exercises/${nav?.nextId}`}
-                variant='contained'
-                endIcon={<ArrowForward />}
-                size='large'
-                sx={{
-                  backgroundColor: 'primary.main',
-                  '&:hover': { backgroundColor: 'primary.dark' },
-                }}
-              >
-                Tiếp theo
-              </Button>
-            )}
-
-            {nav?.nextType === 'section' && (
-              <Button
-                LinkComponent={NextLink}
-                href={`/courses/${slug}/learn/sections/${nav?.nextId}`}
-                variant='contained'
-                endIcon={<ArrowForward />}
-                size='large'
-                sx={{
-                  backgroundColor: 'primary.main',
-                  '&:hover': { backgroundColor: 'primary.dark' },
-                }}
-              >
-                Tiếp theo
-              </Button>
-            )}
+              {nav?.nextType === 'section' && (
+                <Button
+                  LinkComponent={NextLink}
+                  href={`/courses/${slug}/learn/sections/${nav?.nextId}`}
+                  variant='contained'
+                  endIcon={<ArrowForward />}
+                  size='large'
+                  sx={{
+                    flex: { xs: 1, sm: 'none' },
+                    backgroundColor: 'primary.main',
+                    '&:hover': { backgroundColor: 'primary.dark' },
+                  }}
+                >
+                  Tiếp theo
+                </Button>
+              )}
+            </Box>
           </Box>
         </Box>
       </Box>
