@@ -1,4 +1,4 @@
-import { Box, Typography, Breadcrumbs, Link } from '@mui/material';
+import { Box, Typography, Breadcrumbs, Link, Tooltip } from '@mui/material';
 import { ChevronRight } from '@mui/icons-material';
 
 import { notFound } from 'next/navigation';
@@ -65,30 +65,46 @@ export default async function MainContent({ params }: MainContentProps) {
         <Box sx={{ maxWidth: 1200, mx: 'auto', p: { xs: 3, md: 6 } }}>
           {/* Breadcrumb */}
           <Breadcrumbs separator={<ChevronRight fontSize='small' />} sx={{ mb: 3 }}>
-            <Link
-              href={`/courses/${slug}/learn/sections/${breadcrumb?.section?.id}`}
-              color='text.secondary'
-              sx={{
-                fontSize: '0.875rem',
-                fontWeight: 500,
-                textDecoration: 'none',
-                '&:hover': { color: 'primary.main' },
-              }}
-            >
-              Chương {breadcrumb?.section?.order}: {breadcrumb?.section?.title}
-            </Link>
-            <Link
-              href={`/courses/${slug}/learn/exercises/${breadcrumb?.unit?.id}`}
-              color='text.secondary'
-              sx={{
-                fontSize: '0.875rem',
-                fontWeight: 500,
-                textDecoration: 'none',
-                '&:hover': { color: 'primary.main' },
-              }}
-            >
-              Bài tập: {breadcrumb?.unit?.title}
-            </Link>
+            <Tooltip title={`Chương ${breadcrumb?.section?.order}: ${breadcrumb?.section?.title}`}>
+              <Link
+                href={`/courses/${slug}/learn/sections/${breadcrumb?.section?.id}`}
+                color='text.secondary'
+                sx={{
+                  fontSize: '0.875rem',
+                  fontWeight: 500,
+                  textDecoration: 'none',
+                  '&:hover': { color: 'primary.main' },
+                  display: 'inline-block',
+                  verticalAlign: 'bottom',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  maxWidth: { xs: '100px', sm: '200px', md: '300px', lg: '350px', xl: '400px' },
+                }}
+              >
+                Chương {breadcrumb?.section?.order}: {breadcrumb?.section?.title}
+              </Link>
+            </Tooltip>
+            <Tooltip title={`Bài tập: ${breadcrumb?.unit?.title}`}>
+              <Link
+                href={`/courses/${slug}/learn/exercises/${breadcrumb?.unit?.id}`}
+                color='text.secondary'
+                sx={{
+                  fontSize: '0.875rem',
+                  fontWeight: 500,
+                  textDecoration: 'none',
+                  '&:hover': { color: 'primary.main' },
+                  display: 'inline-block',
+                  verticalAlign: 'bottom',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  maxWidth: { xs: '200px', sm: '300px', md: '350px', lg: '400px', xl: '500px' },
+                }}
+              >
+                Bài tập: {breadcrumb?.unit?.title}
+              </Link>
+            </Tooltip>
           </Breadcrumbs>
           {renderExerciseContent()}
         </Box>

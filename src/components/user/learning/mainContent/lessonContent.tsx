@@ -1,4 +1,4 @@
-import { Box, Typography, Button, Breadcrumbs, Link, Paper, List, ListItem, Divider } from '@mui/material';
+import { Box, Typography, Button, Breadcrumbs, Link, Paper, List, ListItem, Divider, Tooltip } from '@mui/material';
 import { ArrowBack, ArrowForward, ChevronRight, AccessTime, School } from '@mui/icons-material';
 
 import { notFound } from 'next/navigation';
@@ -41,30 +41,47 @@ export default async function MainContent({ params }: MainContentProps) {
         <Box sx={{ maxWidth: 800, mx: 'auto', p: { xs: 3, md: 6 } }}>
           {/* Breadcrumb */}
           <Breadcrumbs separator={<ChevronRight fontSize='small' />} sx={{ mb: 3 }}>
-            <Link
-              href={`/courses/${slug}/learn/sections/${breadcrumb?.section?.id}`}
-              color='text.secondary'
-              sx={{
-                fontSize: '0.875rem',
-                fontWeight: 500,
-                textDecoration: 'none',
-                '&:hover': { color: 'primary.main' },
-              }}
-            >
-              Chương {breadcrumb?.section?.order}: {breadcrumb?.section?.title}
-            </Link>
-            <Link
-              href={`/courses/${slug}/learn/lessons/${breadcrumb?.unit?.id}`}
-              color='text.secondary'
-              sx={{
-                fontSize: '0.875rem',
-                fontWeight: 500,
-                textDecoration: 'none',
-                '&:hover': { color: 'primary.main' },
-              }}
-            >
-              Bài {breadcrumb?.section?.order}.{breadcrumb?.unit?.order}: {breadcrumb?.unit?.title}
-            </Link>
+            <Tooltip title={`Chương ${breadcrumb?.section?.order}: ${breadcrumb?.section?.title}`}>
+              <Link
+                href={`/courses/${slug}/learn/sections/${breadcrumb?.section?.id}`}
+                color='text.secondary'
+                sx={{
+                  fontSize: '0.875rem',
+                  fontWeight: 500,
+                  textDecoration: 'none',
+                  '&:hover': { color: 'primary.main' },
+                  display: 'inline-block',
+                  verticalAlign: 'bottom',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  maxWidth: { xs: '100px', sm: '200px' },
+                }}
+              >
+                Chương {breadcrumb?.section?.order}: {breadcrumb?.section?.title}
+              </Link>
+            </Tooltip>
+
+            <Tooltip title={`Bài ${breadcrumb?.section?.order}.${breadcrumb?.unit?.order}: ${breadcrumb?.unit?.title}`}>
+              <Link
+                href={`/courses/${slug}/learn/lessons/${breadcrumb?.unit?.id}`}
+                color='text.secondary'
+                sx={{
+                  fontSize: '0.875rem',
+                  fontWeight: 500,
+                  textDecoration: 'none',
+                  '&:hover': { color: 'primary.main' },
+                  display: 'inline-block',
+                  verticalAlign: 'bottom',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  maxWidth: { xs: '200px', sm: '300px' },
+                }}
+              >
+                Bài {breadcrumb?.section?.order}.{breadcrumb?.unit?.order}: {breadcrumb?.unit?.title}
+              </Link>
+            </Tooltip>
           </Breadcrumbs>
 
           {/* Header với thông tin chi tiết */}
