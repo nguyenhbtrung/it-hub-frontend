@@ -11,20 +11,30 @@ import {
   Avatar,
   LinearProgress,
   Paper,
+  IconButton,
 } from '@mui/material';
-import { Book, ExpandMore, CheckCircle, PlayCircle, RadioButtonUnchecked, ChevronRight } from '@mui/icons-material';
+import {
+  Book,
+  ExpandMore,
+  CheckCircle,
+  PlayCircle,
+  RadioButtonUnchecked,
+  ChevronRight,
+  Close,
+} from '@mui/icons-material';
 import Link from '@/components/common/Link';
 import { CompletionStatus, LearningCourse } from './types';
 
 interface MenuContentProps {
   course: LearningCourse;
+  onClose?: () => void;
 }
 
 interface OpenState {
   [key: string]: boolean;
 }
 
-export default function MenuContent({ course }: MenuContentProps) {
+export default function MenuContent({ course, onClose }: MenuContentProps) {
   const [openItems, setOpenItems] = useState<OpenState>(() =>
     Object.fromEntries((course.expandedIds ?? []).map((id) => [id, true]))
   );
@@ -55,29 +65,45 @@ export default function MenuContent({ course }: MenuContentProps) {
     <>
       {/* Course Header */}
       <Box sx={{ p: 2, borderBottom: '1px solid', borderColor: 'divider' }}>
-        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-          <Avatar sx={{ width: 40, height: 40, bgcolor: 'hero.main' }}>
-            <Book sx={{ color: 'primary.main' }} />
-          </Avatar>
-          <Box>
-            <Typography variant='body2' color='text.secondary'>
-              Khoá học
-            </Typography>
-            <Link href={`/courses/${course?.slug}`} passHref>
-              <Typography
-                variant='subtitle1'
-                sx={{
-                  fontWeight: 500,
-                  textDecoration: 'none',
-                  '&:hover': {
-                    textDecoration: 'underline',
-                  },
-                }}
-              >
-                {course.title}
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
+          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+            <Avatar sx={{ width: 40, height: 40, bgcolor: 'hero.main' }}>
+              <Book sx={{ color: 'primary.main' }} />
+            </Avatar>
+
+            <Box>
+              <Typography variant='body2' color='text.secondary'>
+                Khoá học
               </Typography>
-            </Link>
+
+              <Link href={`/courses/${course?.slug}`} passHref>
+                <Typography
+                  variant='subtitle1'
+                  sx={{
+                    fontWeight: 500,
+                    textDecoration: 'none',
+                    '&:hover': {
+                      textDecoration: 'underline',
+                    },
+                  }}
+                >
+                  {course.title}
+                </Typography>
+              </Link>
+            </Box>
           </Box>
+
+          {onClose && (
+            <IconButton onClick={onClose} size='small'>
+              <Close />
+            </IconButton>
+          )}
         </Box>
       </Box>
 
