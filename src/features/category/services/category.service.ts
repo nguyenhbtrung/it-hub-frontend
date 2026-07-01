@@ -1,5 +1,5 @@
 import { api, ApiResponse } from '@/lib/api';
-import { GetCategoriesQuery, GetCoursesByCategoryIdQuery } from '../types/category.types';
+import { CreateCategoryPayload, GetCategoriesQuery, GetCoursesByCategoryIdQuery } from '../types/category.types';
 
 export function getCoursesByCategoryId(id: string, query: GetCoursesByCategoryIdQuery): Promise<ApiResponse<any>> {
   return api.get(`/api/categories/${id}/courses`, { query });
@@ -17,9 +17,15 @@ export function getCategoryTree(): Promise<ApiResponse<any>> {
   return api.get('/api/categories/tree');
 }
 
-export function getCategories({ page = 1, limit = 10, all, root, parentId }: GetCategoriesQuery = {}): Promise<
-  ApiResponse<any>
-> {
+export function getCategories({
+  page = 1,
+  limit = 10,
+  all,
+  root,
+  parentId,
+  includeParent,
+  q,
+}: GetCategoriesQuery = {}): Promise<ApiResponse<any>> {
   return api.get('/api/categories', {
     auth: false,
     query: {
@@ -28,6 +34,14 @@ export function getCategories({ page = 1, limit = 10, all, root, parentId }: Get
       all,
       root,
       parentId,
+      includeParent,
+      q,
     },
+  });
+}
+
+export function createCategory(payload: CreateCategoryPayload) {
+  return api.post('/api/categories', payload, {
+    auth: true,
   });
 }

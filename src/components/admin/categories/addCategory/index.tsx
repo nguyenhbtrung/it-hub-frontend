@@ -3,7 +3,7 @@
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import { useState } from 'react';
-// import AddUserDialog from '../dialogs/addUser';
+import AddCategoryDialog from '../dialogs/addCategory';
 
 interface AddUserProps {
   onSuccess: () => void;
@@ -16,7 +16,7 @@ export default function AddCategory({ onSuccess }: AddUserProps) {
       <Button startIcon={<AddIcon />} variant='contained' onClick={() => setOpen(true)}>
         Thêm Danh mục
       </Button>
-      {/* <AddUserDialog open={open} onClose={() => setOpen(false)} onSuccess={onSuccess} /> */}
+      <AddCategoryDialog open={open} onClose={() => setOpen(false)} onSuccess={onSuccess} />
     </>
   );
 }

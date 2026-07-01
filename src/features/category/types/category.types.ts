@@ -16,4 +16,12 @@ export interface GetCategoriesQuery {
   sortBy?: string;
   sortOrder?: string;
   q?: string;
+  includeParent?: boolean;
+}
+
+export interface CreateCategoryPayload {
+  name: string;
+  slug: string;
+  description: string;
+  parentId?: string | null | undefined;
 }
