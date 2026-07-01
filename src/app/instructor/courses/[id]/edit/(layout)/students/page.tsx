@@ -32,7 +32,7 @@ async function ManageStudentsPageWrapper({ params, searchParams }: PageProps) {
   const registrations = registrationsResponse.success ? (registrationsResponse.data ?? []) : [];
   const totalStudents = studentsResponse?.meta?.total || 0;
 
-  const showWarning = true;
+  const showWarning = students.length === 0 && registrations.length === 0;
 
   return (
     <Box>
