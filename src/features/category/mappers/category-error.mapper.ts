@@ -5,6 +5,9 @@ export function getCategoryErrorMessage(error: ApiErrorResponse) {
     case 'NOT_FOUND':
       return 'Không tìm thấy danh mục';
 
+    case 'BAD_REQUEST':
+      return 'Slug đã được sử dụng';
+
     case 'UNAUTHORIZED':
       return 'Bạn chưa đăng nhập';
 

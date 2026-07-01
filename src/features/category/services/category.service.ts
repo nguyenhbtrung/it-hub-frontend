@@ -1,5 +1,5 @@
 import { api, ApiResponse } from '@/lib/api';
-import { GetCategoriesQuery, GetCoursesByCategoryIdQuery } from '../types/category.types';
+import { CreateCategoryPayload, GetCategoriesQuery, GetCoursesByCategoryIdQuery } from '../types/category.types';
 
 export function getCoursesByCategoryId(id: string, query: GetCoursesByCategoryIdQuery): Promise<ApiResponse<any>> {
   return api.get(`/api/categories/${id}/courses`, { query });
@@ -37,5 +37,11 @@ export function getCategories({
       includeParent,
       q,
     },
+  });
+}
+
+export function createCategory(payload: CreateCategoryPayload) {
+  return api.post('/api/categories', payload, {
+    auth: true,
   });
 }

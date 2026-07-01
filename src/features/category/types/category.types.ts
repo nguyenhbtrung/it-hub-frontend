@@ -18,3 +18,10 @@ export interface GetCategoriesQuery {
   q?: string;
   includeParent?: boolean;
 }
+
+export interface CreateCategoryPayload {
+  name: string;
+  slug: string;
+  description: string;
+  parentId?: string | null | undefined;
+}
