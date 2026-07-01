@@ -46,6 +46,7 @@ export default function AddUserDialog({ open, onClose, onSuccess }: Props) {
     const res = await createUserAction({ ...values, scope: 'external' });
     if (!res.success) {
       notify('error', getErrorMessage(res, getUserErrorMessage), { vertical: 'top', horizontal: 'right' });
+      return;
     }
 
     notify('success', 'Thêm người dùng thành công', { vertical: 'top', horizontal: 'right' });
