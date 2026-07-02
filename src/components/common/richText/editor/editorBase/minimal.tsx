@@ -30,6 +30,7 @@ import { Figure } from '../../extensions/figure';
 import CodeBlockComponent from '../../components/codeBlockComponent';
 import Toolbar from '../toolbar/minimal';
 import { Placeholder } from '@tiptap/extensions';
+import Mathematics, { mathMigrationRegex, migrateMathStrings } from '@tiptap/extension-mathematics';
 
 // create a lowlight instance
 const lowlight = createLowlight(all);
@@ -67,6 +68,7 @@ export default function EditorBase({
       Blockquote,
       //   Image,
       Figure,
+      Mathematics,
       //   CustomComponent,
       Link.configure({
         openOnClick: true,
@@ -147,9 +149,10 @@ export default function EditorBase({
       console.log(editor.getHTML());
       onChange(editor.getJSON());
     },
-    onCreate: ({ editor }) => {
+    onCreate: ({ editor: currentEditor }) => {
       // Set attributes on the editor's root DOM element
-      editor.view.dom.setAttribute('spellcheck', 'false');
+      migrateMathStrings(currentEditor, mathMigrationRegex);
+      currentEditor.view.dom.setAttribute('spellcheck', 'false');
     },
     editorProps: {
       attributes: {

@@ -12,6 +12,8 @@ import { JSONContent } from '@tiptap/core';
 import CalloutComponent from '../../components/calloutComponent/static';
 import { ReactNodeViewContentProvider } from '@tiptap/react';
 import { TableKit } from '@tiptap/extension-table';
+import katex from 'katex';
+import Mathematics from '@tiptap/extension-mathematics';
 
 interface PostRendererProps {
   content: Node | JSONContent;
@@ -22,6 +24,36 @@ export default function CourseDescriptionRenderer({ content }: PostRendererProps
     content,
     options: {
       nodeMapping: {
+        inlineMath: ({ node }) => {
+          const latexFormula = node.attrs?.latex || '';
+
+          try {
+            const renderedHtml = katex.renderToString(latexFormula, {
+              displayMode: false,
+              throwOnError: false,
+            });
+
+            return <span className='tiptap-mathematics-render' dangerouslySetInnerHTML={{ __html: renderedHtml }} />;
+          } catch {
+            return <span>{latexFormula}</span>;
+          }
+        },
+
+        blockMath: ({ node }) => {
+          const latexFormula = node.attrs?.latex || '';
+
+          try {
+            const renderedHtml = katex.renderToString(latexFormula, {
+              displayMode: true,
+              throwOnError: false,
+            });
+
+            return <span className='tiptap-mathematics-render' dangerouslySetInnerHTML={{ __html: renderedHtml }} />;
+          } catch {
+            return <span>{latexFormula}</span>;
+          }
+        },
+
         callout: ({ node, children }) => {
           return (
             <ReactNodeViewContentProvider content={children}>
@@ -57,6 +89,7 @@ export default function CourseDescriptionRenderer({ content }: PostRendererProps
       ListItem,
       Link,
       TableKit,
+      Mathematics,
       Heading.configure({
         levels: [1, 2, 3],
       }),

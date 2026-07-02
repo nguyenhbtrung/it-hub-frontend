@@ -15,6 +15,7 @@ import { BulletList, ListItem, OrderedList } from '@tiptap/extension-list';
 
 import Toolbar from '../toolbar/textOnly';
 import { Placeholder } from '@tiptap/extensions';
+import Mathematics, { mathMigrationRegex, migrateMathStrings } from '@tiptap/extension-mathematics';
 
 interface RichTextEditorProps {
   value: JSONContent;
@@ -40,6 +41,7 @@ export default function EditorBase({
       BulletList,
       OrderedList,
       ListItem,
+      Mathematics,
       Heading.configure({
         levels: [1, 2, 3],
       }),
@@ -52,9 +54,10 @@ export default function EditorBase({
     onUpdate: ({ editor }) => {
       onChange(editor.getJSON());
     },
-    onCreate: ({ editor }) => {
+    onCreate: ({ editor: currentEditor }) => {
       // Set attributes on the editor's root DOM element
-      editor.view.dom.setAttribute('spellcheck', 'false');
+      migrateMathStrings(currentEditor, mathMigrationRegex);
+      currentEditor.view.dom.setAttribute('spellcheck', 'false');
     },
     editorProps: {
       attributes: {
