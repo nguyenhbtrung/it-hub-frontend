@@ -32,8 +32,6 @@ export default function ExcerciseItem({ excercise, section, onDeleteUnit, onUpda
   const [isEditing, setIsEditing] = useState(false);
   const { notify } = useNotification();
 
-  console.log('unit', excercise);
-
   const router = useRouter();
   const params = useParams();
 

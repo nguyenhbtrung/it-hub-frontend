@@ -21,19 +21,45 @@ import Divider from '@mui/material/Divider';
 import { useRichTextEditorActions } from '@/hooks/useRichTextEditorAction';
 
 export default function CustomBubbleMenu({ editor }: { editor: any }) {
-  if (!editor) return null;
-
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const editorState = useEditorState({
     editor,
     selector: (ctx) => {
+      if (!ctx.editor || ctx.editor.isDestroyed) {
+        return {
+          isBold: false,
+          canBold: false,
+          isItalic: false,
+          canItalic: false,
+          isUnderline: false,
+          canUnderline: false,
+          isStrike: false,
+          canStrike: false,
+          isCode: false,
+          canCode: false,
+          canClearMarks: false,
+          isParagraph: false,
+          isHeading1: false,
+          isHeading2: false,
+          isHeading3: false,
+          isHeading4: false,
+          isHeading5: false,
+          isHeading6: false,
+          isBulletList: false,
+          isOrderedList: false,
+          isCodeBlock: false,
+          isBlockquote: false,
+          canUndo: false,
+          canRedo: false,
+          isLink: false,
+        };
+      }
       return {
         isBold: ctx.editor.isActive('bold') ?? false,
         canBold: ctx.editor.can().chain().toggleBold().run() ?? false,
         isItalic: ctx.editor.isActive('italic') ?? false,
         canItalic: ctx.editor.can().chain().toggleItalic().run() ?? false,
         isUnderline: ctx.editor.isActive('underline') ?? false,
-        canUnderline: ctx.editor.can().chain().toggleUnderline().run ?? false,
+        canUnderline: ctx.editor.can().chain().toggleUnderline().run() ?? false,
         isStrike: ctx.editor.isActive('strike') ?? false,
         canStrike: ctx.editor.can().chain().toggleStrike().run() ?? false,
         isCode: ctx.editor.isActive('code') ?? false,
@@ -57,8 +83,11 @@ export default function CustomBubbleMenu({ editor }: { editor: any }) {
     },
   });
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const { setLink, LinkDialogComponent } = useRichTextEditorActions(editor);
+
+  if (!editor || editor.isDestroyed || !editor.view || !editor.state) {
+    return null;
+  }
 
   return (
     <BubbleMenu editor={editor}>

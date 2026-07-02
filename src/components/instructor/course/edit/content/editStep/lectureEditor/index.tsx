@@ -45,6 +45,7 @@ export default function LectureEditor({ step, courseId }: LectureEditorProps) {
         <Container maxWidth='lg'>
           <Suspense>
             <EditorBase
+              key={step.id}
               value={content}
               onChange={setContent}
               borderRadius={0}

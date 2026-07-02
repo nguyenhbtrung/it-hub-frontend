@@ -15,12 +15,39 @@ import LinkIcon from '@mui/icons-material/Link';
 import InfoIcon from '@mui/icons-material/InfoOutline';
 
 export default function Toolbar({ editor }: { editor: any }) {
-  if (!editor) return null;
-
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const editorState = useEditorState({
     editor,
     selector: (ctx) => {
+      if (!ctx.editor || ctx.editor.isDestroyed) {
+        return {
+          isBold: false,
+          canBold: false,
+          isItalic: false,
+          canItalic: false,
+          isUnderline: false,
+          canUnderline: false,
+          isStrike: false,
+          canStrike: false,
+          isCode: false,
+          canCode: false,
+          canClearMarks: false,
+          isParagraph: false,
+          isHeading1: false,
+          isHeading2: false,
+          isHeading3: false,
+          isHeading4: false,
+          isHeading5: false,
+          isHeading6: false,
+          isBulletList: false,
+          isOrderedList: false,
+          isCodeBlock: false,
+          isBlockquote: false,
+          canUndo: false,
+          canRedo: false,
+          isLink: false,
+        };
+      }
+
       return {
         isBold: ctx.editor.isActive('bold') ?? false,
         canBold: ctx.editor.can().chain().toggleBold().run() ?? false,
@@ -51,27 +78,9 @@ export default function Toolbar({ editor }: { editor: any }) {
     },
   });
 
-  // const addImage = () => {
-  //   const src = window.prompt('URL của hình ảnh:');
-  //   const alt = window.prompt('Alt text (mô tả ảnh):');
-  //   const title = window.prompt('Tiêu đề ảnh:');
-  //   const width = window.prompt('Chiều rộng (px):');
-  //   const height = window.prompt('Chiều cao (px):');
-
-  //   if (src) {
-  //     editor
-  //       .chain()
-  //       .focus()
-  //       .setImage({
-  //         src,
-  //         alt: alt || '',
-  //         title: title || '',
-  //         width: width ? parseInt(width, 10) : undefined,
-  //         height: height ? parseInt(height, 10) : undefined,
-  //       })
-  //       .run();
-  //   }
-  // };
+  if (!editor || editor.isDestroyed || !editor.view || !editor.state) {
+    return null;
+  }
 
   return (
     <Paper
