@@ -149,7 +149,7 @@ export default async function MainContent({ params }: MainContentProps) {
                   variant='outlined'
                   startIcon={<ArrowBack />}
                   sx={{
-                    flex: 1,
+                    flex: { xs: 1, sm: 'none' },
                     borderColor: 'grey.300',
                     color: 'text.secondary',
                     '&:hover': {
