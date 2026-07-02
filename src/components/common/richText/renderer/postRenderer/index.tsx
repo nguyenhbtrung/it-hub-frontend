@@ -18,6 +18,8 @@ import { Callout } from '../../extensions/callout';
 import CalloutComponent from '../../components/calloutComponent/static';
 import { ReactNodeViewContentProvider } from '@tiptap/react';
 import { TableKit } from '@tiptap/extension-table';
+import katex from 'katex';
+import Mathematics from '@tiptap/extension-mathematics';
 
 interface PostRendererProps {
   content: Node | JSONContent;
@@ -30,6 +32,36 @@ export default function PostRenderer({ content }: PostRendererProps) {
     content,
     options: {
       nodeMapping: {
+        inlineMath: ({ node }) => {
+          const latexFormula = node.attrs?.latex || '';
+
+          try {
+            const renderedHtml = katex.renderToString(latexFormula, {
+              displayMode: false,
+              throwOnError: false,
+            });
+
+            return <span className='tiptap-mathematics-render' dangerouslySetInnerHTML={{ __html: renderedHtml }} />;
+          } catch {
+            return <span>{latexFormula}</span>;
+          }
+        },
+
+        blockMath: ({ node }) => {
+          const latexFormula = node.attrs?.latex || '';
+
+          try {
+            const renderedHtml = katex.renderToString(latexFormula, {
+              displayMode: true,
+              throwOnError: false,
+            });
+
+            return <span className='tiptap-mathematics-render' dangerouslySetInnerHTML={{ __html: renderedHtml }} />;
+          } catch {
+            return <span>{latexFormula}</span>;
+          }
+        },
+
         // render the custom node with the intended node view React component
         callout: ({ node, children }) => {
           // To pass the content down into the NodeViewContent component, we need to wrap the custom component with the ReactNodeViewContentProvider
@@ -70,6 +102,7 @@ export default function PostRenderer({ content }: PostRendererProps) {
       //   CustomComponent,
       Callout,
       TableKit,
+      Mathematics,
       CodeBlockLowlight.configure({ lowlight }).extend({
         renderHTML({ node, HTMLAttributes }) {
           return [

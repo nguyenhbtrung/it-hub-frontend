@@ -35,7 +35,7 @@ import { Placeholder } from '@tiptap/extensions';
 import { Callout } from '../../extensions/callout';
 import { Video } from '../../extensions/video';
 import { TableKit } from '@tiptap/extension-table';
-
+import { Mathematics, mathMigrationRegex, migrateMathStrings } from '@tiptap/extension-mathematics';
 // create a lowlight instance
 const lowlight = createLowlight(all);
 
@@ -75,6 +75,7 @@ export default function EditorBase({
       Video,
       Callout,
       TableKit,
+      Mathematics,
       //   CustomComponent,
       Link.configure({
         openOnClick: true,
@@ -159,9 +160,10 @@ export default function EditorBase({
       console.log(editor.getHTML());
       onChange(editor.getJSON());
     },
-    onCreate: ({ editor }) => {
+    onCreate: ({ editor: currentEditor }) => {
       // Set attributes on the editor's root DOM element
-      editor.view.dom.setAttribute('spellcheck', 'false');
+      migrateMathStrings(currentEditor, mathMigrationRegex);
+      currentEditor.view.dom.setAttribute('spellcheck', 'false');
     },
     editorProps: {
       attributes: {
