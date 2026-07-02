@@ -17,6 +17,7 @@ import { JSONContent } from '@tiptap/core';
 import { Callout } from '../../extensions/callout';
 import CalloutComponent from '../../components/calloutComponent/static';
 import { ReactNodeViewContentProvider } from '@tiptap/react';
+import { TableKit } from '@tiptap/extension-table';
 
 interface PostRendererProps {
   content: Node | JSONContent;
@@ -38,6 +39,22 @@ export default function PostRenderer({ content }: PostRendererProps) {
             </ReactNodeViewContentProvider>
           );
         },
+
+        tableCell: ({ node, children }) => {
+          return (
+            <td colSpan={node.attrs?.colspan} rowSpan={node.attrs?.rowspan}>
+              {children}
+            </td>
+          );
+        },
+
+        tableHeader: ({ node, children }) => {
+          return (
+            <th colSpan={node.attrs?.colspan} rowSpan={node.attrs?.rowspan}>
+              {children}
+            </th>
+          );
+        },
       },
     },
     extensions: [
@@ -52,6 +69,7 @@ export default function PostRenderer({ content }: PostRendererProps) {
       Figure,
       //   CustomComponent,
       Callout,
+      TableKit,
       CodeBlockLowlight.configure({ lowlight }).extend({
         renderHTML({ node, HTMLAttributes }) {
           return [

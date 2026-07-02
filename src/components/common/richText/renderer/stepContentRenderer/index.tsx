@@ -20,6 +20,7 @@ import CalloutComponent from '../../components/calloutComponent/static';
 import { ReactNodeViewContentProvider } from '@tiptap/react';
 import ClientCodeBlockConfig from '@/components/common/clientCodeBlockConfig';
 import { Video } from '../../extensions/video';
+import { TableKit } from '@tiptap/extension-table';
 
 interface StepContentRendererProps {
   content: Node | JSONContent;
@@ -41,6 +42,22 @@ export default function StepContentRenderer({ content }: StepContentRendererProp
             </ReactNodeViewContentProvider>
           );
         },
+
+        tableCell: ({ node, children }) => {
+          return (
+            <td colSpan={node.attrs?.colspan} rowSpan={node.attrs?.rowspan}>
+              {children}
+            </td>
+          );
+        },
+
+        tableHeader: ({ node, children }) => {
+          return (
+            <th colSpan={node.attrs?.colspan} rowSpan={node.attrs?.rowspan}>
+              {children}
+            </th>
+          );
+        },
       },
     },
     extensions: [
@@ -55,6 +72,7 @@ export default function StepContentRenderer({ content }: StepContentRendererProp
       Figure,
       Video,
       //   CustomComponent,
+      TableKit,
       Callout,
       CodeBlockLowlight.configure({ lowlight }).extend({
         renderHTML({ node, HTMLAttributes }) {

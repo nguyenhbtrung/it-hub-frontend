@@ -11,6 +11,7 @@ import Link from '@tiptap/extension-link';
 import { JSONContent } from '@tiptap/core';
 import CalloutComponent from '../../components/calloutComponent/static';
 import { ReactNodeViewContentProvider } from '@tiptap/react';
+import { TableKit } from '@tiptap/extension-table';
 
 interface PostRendererProps {
   content: Node | JSONContent;
@@ -28,6 +29,22 @@ export default function CourseDescriptionRenderer({ content }: PostRendererProps
             </ReactNodeViewContentProvider>
           );
         },
+
+        tableCell: ({ node, children }) => {
+          return (
+            <td colSpan={node.attrs?.colspan} rowSpan={node.attrs?.rowspan}>
+              {children}
+            </td>
+          );
+        },
+
+        tableHeader: ({ node, children }) => {
+          return (
+            <th colSpan={node.attrs?.colspan} rowSpan={node.attrs?.rowspan}>
+              {children}
+            </th>
+          );
+        },
       },
     },
     extensions: [
@@ -39,6 +56,7 @@ export default function CourseDescriptionRenderer({ content }: PostRendererProps
       OrderedList,
       ListItem,
       Link,
+      TableKit,
       Heading.configure({
         levels: [1, 2, 3],
       }),

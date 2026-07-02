@@ -34,6 +34,7 @@ import Toolbar from '../toolbar';
 import { Placeholder } from '@tiptap/extensions';
 import { Callout } from '../../extensions/callout';
 import { Video } from '../../extensions/video';
+import { TableKit } from '@tiptap/extension-table';
 
 // create a lowlight instance
 const lowlight = createLowlight(all);
@@ -73,6 +74,7 @@ export default function EditorBase({
       Figure,
       Video,
       Callout,
+      TableKit,
       //   CustomComponent,
       Link.configure({
         openOnClick: true,
