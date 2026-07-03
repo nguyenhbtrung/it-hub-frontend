@@ -163,13 +163,13 @@ export default function EditorBase({
   });
 
   // Update nội dung khi value thay đổi từ bên ngoài
-  useEffect(() => {
-    if (editor && JSON.stringify(value) !== JSON.stringify(editor.getJSON())) {
-      editor.commands.setContent(value); // value là JSON
-    }
-  }, [editor, value]);
+  // useEffect(() => {
+  //   if (editor && JSON.stringify(value) !== JSON.stringify(editor.getJSON())) {
+  //     editor.commands.setContent(value); // value là JSON
+  //   }
+  // }, [editor, value]);
 
-  if (!editor) {
+  if (!editor || editor.isDestroyed || !editor.view || !editor.state) {
     return null;
   }
 

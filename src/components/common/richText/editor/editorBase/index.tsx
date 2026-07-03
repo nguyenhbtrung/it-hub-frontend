@@ -174,13 +174,13 @@ export default function EditorBase({
   });
 
   // Update nội dung khi value thay đổi từ bên ngoài
-  useEffect(() => {
-    if (editor && JSON.stringify(value) !== JSON.stringify(editor.getJSON())) {
-      editor.commands.setContent(value); // value là JSON
-    }
-  }, [editor, value]);
+  // useEffect(() => {
+  //   if (editor && JSON.stringify(value) !== JSON.stringify(editor.getJSON())) {
+  //     editor.commands.setContent(value); // value là JSON
+  //   }
+  // }, [editor, value]);
 
-  if (!editor) {
+  if (!editor || editor.isDestroyed || !editor.view || !editor.state) {
     return null;
   }
 
@@ -219,7 +219,7 @@ export default function EditorBase({
     >
       <Toolbar editor={editor} />
       <Box px={8} sx={{ height, overflow: 'auto', position: 'relative' }}>
-        {editor?.view && <CustomBubbleMenu editor={editor} />}
+        {editor && !editor.isDestroyed && editor.view?.dom && <CustomBubbleMenu editor={editor} />}
         {editor && !editor.isDestroyed && editor.view?.dom && <CustomFloatingMenu editor={editor} />}
 
         <EditorContent editor={editor} />

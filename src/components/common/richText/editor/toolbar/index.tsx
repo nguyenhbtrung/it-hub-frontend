@@ -18,12 +18,38 @@ import InfoIcon from '@mui/icons-material/InfoOutline';
 import { useRichTextEditorActions } from '@/hooks/useRichTextEditorAction';
 
 export default function Toolbar({ editor }: { editor: any }) {
-  if (!editor) return null;
-
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const editorState = useEditorState({
     editor,
     selector: (ctx) => {
+      if (!ctx.editor || ctx.editor.isDestroyed) {
+        return {
+          isBold: false,
+          canBold: false,
+          isItalic: false,
+          canItalic: false,
+          isUnderline: false,
+          canUnderline: false,
+          isStrike: false,
+          canStrike: false,
+          isCode: false,
+          canCode: false,
+          canClearMarks: false,
+          isParagraph: false,
+          isHeading1: false,
+          isHeading2: false,
+          isHeading3: false,
+          isHeading4: false,
+          isHeading5: false,
+          isHeading6: false,
+          isBulletList: false,
+          isOrderedList: false,
+          isCodeBlock: false,
+          isBlockquote: false,
+          canUndo: false,
+          canRedo: false,
+          isLink: false,
+        };
+      }
       return {
         isBold: ctx.editor.isActive('bold') ?? false,
         canBold: ctx.editor.can().chain().toggleBold().run() ?? false,
@@ -77,8 +103,11 @@ export default function Toolbar({ editor }: { editor: any }) {
   // };
 
   const { addFigure, addVideo, setLink, FigureDialogComponent, VideoDialogComponent, LinkDialogComponent } =
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     useRichTextEditorActions(editor);
+
+  if (!editor || editor.isDestroyed || !editor.view || !editor.state) {
+    return null;
+  }
 
   return (
     <Paper
