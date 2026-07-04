@@ -8,9 +8,9 @@ import { useEffect, useRef, useState } from 'react';
 import { ChatMenu } from './menu';
 import MarkdownViewer from '@/components/common/markdownViewer';
 import { API_BASE_URL } from '@/lib/fetcher/constants';
-import { ApiError } from '@/lib/errors/ApiError';
 import { ScopeMenu } from './scopeMenu';
 import { Scope } from './types';
+import { ThinkingIndicator } from './thinkingIndicator';
 
 type ChatMessage = {
   role: 'user' | 'assistant';
@@ -34,6 +34,7 @@ export function AIChatDialog({ open, onClose, selectedText, accessToken, stepId 
   const [flexibility, setFlexibility] = useState<Flexibility>('GUIDED');
   const [scope, setScope] = useState<Scope>('course');
   const [hightlightCount, setHighlightCount] = useState<number>(0);
+  const [isWaiting, setIsWaiting] = useState(false);
 
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -61,6 +62,8 @@ export function AIChatDialog({ open, onClose, selectedText, accessToken, stepId 
     setMessages((prev) => [...prev, { role: 'user', content: input }]);
     setInput('');
     setContextText('');
+
+    setIsWaiting(true);
 
     try {
       const res = await fetch(`${API_BASE_URL}/api/ai/ask/step`, {
@@ -95,6 +98,8 @@ export function AIChatDialog({ open, onClose, selectedText, accessToken, stepId 
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
 
+      setIsWaiting(false);
+
       setMessages((prev) => [...prev, { role: 'assistant', content: '' }]);
       let accumulated = '';
 
@@ -116,6 +121,8 @@ export function AIChatDialog({ open, onClose, selectedText, accessToken, stepId 
       }
       setHighlightCount((prev) => prev + 1);
     } catch (error: any) {
+      setIsWaiting(false);
+
       setMessages((prev) => [
         ...prev,
         {
@@ -123,6 +130,14 @@ export function AIChatDialog({ open, onClose, selectedText, accessToken, stepId 
           content: error.message || 'Đã có lỗi xảy ra, vui lòng thử lại sau',
         },
       ]);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+
+      sendMessage();
     }
   };
 
@@ -167,6 +182,9 @@ export function AIChatDialog({ open, onClose, selectedText, accessToken, stepId 
             {messages.map((msg, idx) => (
               <ChatMessageRow key={idx} message={msg} hightlightCount={hightlightCount} />
             ))}
+
+            {isWaiting && <ThinkingIndicator />}
+
             <div ref={bottomRef} />
           </Box>
         )}
@@ -185,7 +203,7 @@ export function AIChatDialog({ open, onClose, selectedText, accessToken, stepId 
             placeholder='Nhập câu hỏi cho AI...'
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && sendMessage()}
+            onKeyDown={handleKeyDown}
             InputProps={{
               disableUnderline: true,
             }}
