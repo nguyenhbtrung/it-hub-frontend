@@ -32,7 +32,7 @@ export function AIChatDialog({ open, onClose, selectedText, accessToken, stepId 
   const [input, setInput] = useState('');
   const [contextText, setContextText] = useState('');
   const [flexibility, setFlexibility] = useState<Flexibility>('GUIDED');
-  const [scope, setScope] = useState<Scope>('step');
+  const [scope, setScope] = useState<Scope>('course');
   const [hightlightCount, setHighlightCount] = useState<number>(0);
 
   const bottomRef = useRef<HTMLDivElement>(null);
