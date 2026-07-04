@@ -71,23 +71,42 @@ export function AIChatDialog({ open, onClose, selectedText, accessToken, stepId 
           Authorization: `Bearer ${accessToken}`,
         },
       });
+
       if (!res.ok) {
-        const result = await res.json();
-        throw new ApiError(res.status, result.message, result.code || 'UNKNOWN_ERROR');
+        let errorMessage = 'Đã có lỗi xảy ra, vui lòng thử lại sau.';
+        try {
+          const result = await res.json();
+          if (result.code === 'AI_MODEL_BUSY' || res.status === 503) {
+            errorMessage = 'Hệ thống AI hiện đang bận do lượng truy cập tăng cao. Vui lòng thử lại sau.';
+          } else if (result.message) {
+            errorMessage = result.message;
+          }
+        } catch (e) {
+          if (res.status === 503) {
+            errorMessage = 'Hệ thống AI hiện đang bận do lượng truy cập tăng cao. Vui lòng thử lại sau';
+          }
+        }
+
+        throw new Error(errorMessage);
       }
 
-      if (!res?.body) throw new Error();
+      if (!res?.body) throw new Error('Không thể kết nối với luồng dữ liệu.');
+
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
 
       setMessages((prev) => [...prev, { role: 'assistant', content: '' }]);
-
       let accumulated = '';
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
         const chunk = decoder.decode(value, { stream: true });
+
+        if (chunk.includes('[STREAM_ERROR:AI_BUSY]')) {
+          throw new Error('Kết nối bị ngắt quãng do hệ thống AI đang quá tải. Vui lòng thử lại sau ít phút.');
+        }
+
         accumulated += chunk;
         setMessages((prev) => {
           const last = prev[prev.length - 1];
@@ -96,12 +115,12 @@ export function AIChatDialog({ open, onClose, selectedText, accessToken, stepId 
         });
       }
       setHighlightCount((prev) => prev + 1);
-    } catch (error) {
+    } catch (error: any) {
       setMessages((prev) => [
         ...prev,
         {
           role: 'assistant',
-          content: 'Đã có lỗi xảy ra, vui lòng thử lại sau',
+          content: error.message || 'Đã có lỗi xảy ra, vui lòng thử lại sau',
         },
       ]);
     }
