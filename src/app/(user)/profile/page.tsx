@@ -5,6 +5,7 @@ import CourseStatusTabs from '@/components/user/profile/courses/courseStatusTabs
 import EmptyCourseState from '@/components/user/profile/courses/emptyCourseState';
 import { CourseCardHorizontal } from '@/components/user/common/courseCard/courseCardHorizontal';
 import { getMyLearningCourses } from '@/features/user';
+import ScrollToCourses from './scrollToCourse';
 
 interface PageProps {
   searchParams: Promise<{ tab?: string }>;
@@ -20,6 +21,7 @@ async function CourseList({ searchParams }: PageProps) {
   const courses = res.success ? (res.data ?? []) : [];
   return (
     <>
+      <ScrollToCourses triggerData={courses} />
       <Box>
         {courses.length > 0 ? (
           <Stack spacing={3}>
@@ -44,7 +46,7 @@ export default function ProfilePage({ searchParams }: PageProps) {
         <Bio />
       </Suspense>
 
-      <Stack spacing={4}>
+      <Stack id='course-list' spacing={4}>
         {/* Tabs con */}
         <Suspense>
           <CourseStatusTabs />
