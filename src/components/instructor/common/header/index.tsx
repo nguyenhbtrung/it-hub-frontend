@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { AppBar, Toolbar, Button, InputBase, Box, Paper } from '@mui/material';
 import { Search, School } from '@mui/icons-material';
 import Link from '@/components/common/Link';
@@ -97,7 +97,9 @@ export default function Header({ profilePromise }: Props) {
             Trang học viên
           </Button>
 
-          <InstructorProfileMenu profilePromise={profilePromise} />
+          <Suspense>
+            <InstructorProfileMenu profilePromise={profilePromise} />
+          </Suspense>
         </Box>
       </Toolbar>
     </AppBar>
