@@ -67,13 +67,14 @@ export async function getFeaturedCourses({ page = 1, limit = 4 }: GetFeaturedCou
   });
 }
 
-export async function getMyCreatedCourse({ page = 1, limit = 4, status }: GetMyCreatedCourseQuery = {}) {
+export async function getMyCreatedCourse({ page = 1, limit = 4, status, q }: GetMyCreatedCourseQuery = {}) {
   return api.get<any>('/api/courses/me/created', {
     auth: true,
     query: {
       page,
       limit,
       status,
+      q,
     },
   });
 }

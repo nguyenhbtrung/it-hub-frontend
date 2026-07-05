@@ -42,6 +42,7 @@ export interface GetMyCreatedCourseQuery {
   page?: number;
   limit?: number;
   status?: CourseStatus;
+  q?: string;
 }
 
 export interface GetCourseReviewsQuery {

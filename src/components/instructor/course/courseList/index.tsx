@@ -14,8 +14,9 @@ export default async function CourseList({ searchParams }: CourseListProps) {
   const page = Number(sp.page || 1);
   const limit = 3;
   const status = sp.status as CourseStatus;
+  const q = sp.q as string;
 
-  const res = await getMyCreatedCourse({ page, limit, status });
+  const res = await getMyCreatedCourse({ page, limit, status, q });
 
   let courses: CreatedCourse[] = [];
   let count = 0;

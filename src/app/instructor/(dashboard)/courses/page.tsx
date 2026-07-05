@@ -27,7 +27,9 @@ export default function ManageCoursesPage({ searchParams }: ManageCoursesPagePro
         </Box>
 
         {/* Tabs */}
-        <CourseTabs />
+        <Suspense>
+          <CourseTabs />
+        </Suspense>
 
         {/* Course List */}
         <Suspense>
