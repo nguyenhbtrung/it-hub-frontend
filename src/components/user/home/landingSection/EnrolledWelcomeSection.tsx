@@ -1,173 +1,72 @@
-import { Avatar, Box, Typography, Stack, Card, CardContent, Button, LinearProgress, Grid } from '@mui/material';
-import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import SchoolIcon from '@mui/icons-material/School';
-import EventIcon from '@mui/icons-material/Event';
-import DoneAllIcon from '@mui/icons-material/DoneAll';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import { courseProgress } from '@/types/course';
-import { jwtPayload } from '@/types/jwt';
-import CourseProgressCard from '../../common/courseProgressCard';
+'use client';
 
-function parseWeeks(duration: string | undefined) {
-  if (!duration) return 0;
-  const m = duration.match(/(\d+)\s*tuần|(\d+)\s*tuần/i);
-  if (m) return Number(m[1] || m[2] || 0);
-  // fallback: try to extract number
-  const n = duration.match(/(\d+)/);
-  return n ? Number(n[1]) : 0;
-}
+import {
+  Avatar,
+  Box,
+  Typography,
+  Stack,
+  Card,
+  CardContent,
+  Button,
+  LinearProgress,
+  Grid,
+  IconButton,
+} from '@mui/material';
+
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+
+import { CourseCardHorizontal } from '../../common/courseCard/courseCardHorizontal';
+import { useState } from 'react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Autoplay } from 'swiper/modules';
+import { Swiper as SwiperType } from 'swiper/types';
+
+import Link from '@/components/common/Link';
 
 interface EnrolledWelcomeSectionProps {
-  user: jwtPayload;
-  learning: courseProgress[];
+  user: any;
+  courses: any[];
 }
 
-export default function EnrolledWelcomeSection({ user, learning }: EnrolledWelcomeSectionProps) {
-  const name = user?.name || 'Sinh viên';
+export default function EnrolledWelcomeSection({ user, courses }: EnrolledWelcomeSectionProps) {
+  const [swiper, setSwiper] = useState<SwiperType | null>(null);
 
-  const completedCount = learning.filter((c: courseProgress) => c.progress >= 100).length;
-  const inProgressCount = learning.filter((c: courseProgress) => c.progress < 100).length;
-  const avgProgress =
-    learning.length > 0
-      ? Math.round(learning.reduce((s: number, c: courseProgress) => s + (c.progress || 0), 0) / learning.length)
-      : 0;
-  const lastAccessDate = learning
-    .map((c: courseProgress) => new Date(c.lastAccess))
-    .filter(Boolean)
-    .sort((a: Date, b: Date) => +b - +a)[0];
-  const lastAccessStr = lastAccessDate ? lastAccessDate.toLocaleDateString() : 'Chưa có';
-  const totalWeeks = learning.reduce((s: number, c: courseProgress) => s + parseWeeks(c.duration), 0);
+  const [isBeginning, setIsBeginning] = useState(true);
+  const [isEnd, setIsEnd] = useState(false);
 
-  // Course to watch out for: course with lowest progress
-  const nextCourse =
-    learning.length > 0
-      ? learning.slice().sort((a: courseProgress, b: courseProgress) => a.progress - b.progress)[0]
-      : null;
+  const name = user?.name || user?.fullname || user?.email || 'Sinh viên';
 
-  const overviewCards = [
-    {
-      icon: <TrendingUpIcon color='primary' />,
-      value: learning.length,
-      label: 'Khóa học đã tham gia',
-    },
-    {
-      icon: <SchoolIcon color='secondary' />,
-      value: inProgressCount,
-      label: 'Đang học',
-    },
-    {
-      icon: <DoneAllIcon color='success' />,
-      value: completedCount,
-      label: 'Khóa học hoàn thành',
-    },
-    {
-      icon: <AccessTimeIcon color='action' />,
-      value: `${avgProgress}%`,
-      label: 'Tiến độ trung bình',
-    },
-    {
-      icon: <EventIcon color='disabled' />,
-      value: lastAccessStr,
-      label: 'Lần truy cập gần nhất',
-    },
-    {
-      icon: <AccessTimeIcon color='inherit' />,
-      value: `${totalWeeks} tuần`,
-      label: 'Tổng thời lượng ước tính',
-    },
-  ];
+  const updateNavigationState = (swiper: SwiperType) => {
+    setIsBeginning(swiper.isBeginning);
+    setIsEnd(swiper.isEnd);
+  };
 
   return (
-    <Box sx={{ py: 6, px: { xs: 2, md: 4 } }}>
+    <Box sx={{ py: 6, px: { xs: 0, md: 4 } }}>
       {/* ======== ROW 1 ======== */}
       <Box
         sx={{
-          display: 'flex',
-          flexDirection: { xs: 'column', lg: 'row' },
-          gap: 3,
-          alignItems: 'stretch',
+          py: { xs: 0, sm: 3 },
         }}
       >
-        {/* LEFT */}
-        <Box
-          sx={{
-            flex: 1,
-            p: { xs: 0, sm: 3 },
-            borderRadius: 3,
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
-          <Stack direction='row' spacing={2} alignItems='flex-start'>
-            <Avatar sx={{ bgcolor: 'primary.main', width: 64, height: 64, display: { xs: 'none', sm: 'flex' } }}>
-              {name.charAt(0).toUpperCase()}
-            </Avatar>
+        <Stack direction='row' spacing={{ xs: 0, sm: 2 }} alignItems='flex-start'>
+          <Avatar
+            src={user?.avatar?.url || null}
+            sx={{ bgcolor: 'primary.main', width: 64, height: 64, display: { xs: 'none', sm: 'flex' } }}
+          >
+            {name.charAt(0).toUpperCase()}
+          </Avatar>
 
-            <Box>
-              <Typography variant='h4' fontWeight={700}>
-                Chào mừng trở lại, {name}!
-              </Typography>
-              <Typography mt={1} color='text.secondary'>
-                Tiếp tục hành trình học tập tuyệt vời của bạn nào!
-              </Typography>
-            </Box>
-          </Stack>
-
-          <Stack direction='row' gap={2} mt={3} sx={{ flexWrap: 'wrap', display: { xs: 'none', sm: 'flex' } }}>
-            <Button variant='contained' size='large' startIcon={<RocketLaunchIcon />}>
-              Tiếp tục học
-            </Button>
-
-            <Button variant='outlined' size='large' startIcon={<SchoolIcon />}>
-              Xem khóa học
-            </Button>
-          </Stack>
-        </Box>
-
-        {/* RIGHT - Overview */}
-        <Card
-          sx={{
-            flexShrink: 0,
-            flex: 1.5,
-            borderRadius: 3,
-          }}
-        >
-          <CardContent>
-            <Typography variant='h6' fontWeight={700} mb={2}>
-              Tổng quan học tập
+          <Box>
+            <Typography variant='h4' fontWeight={700}>
+              Chào mừng trở lại, {name}!
             </Typography>
-
-            <Grid container spacing={2}>
-              {overviewCards.map((card, index) => (
-                <Grid size={{ xs: 12, sm: 6, md: 4 }} key={index}>
-                  <Stack direction='row' spacing={2} alignItems='center' sx={{ height: '100%' }}>
-                    {card.icon}
-                    <Box>
-                      <Typography variant='h6' fontWeight={700}>
-                        {card.value}
-                      </Typography>
-                      <Typography variant='body2' color='text.secondary'>
-                        {card.label}
-                      </Typography>
-                    </Box>
-                  </Stack>
-                </Grid>
-              ))}
-            </Grid>
-
-            {nextCourse && (
-              <Box mt={2} p={2} sx={{ borderRadius: 2, bgcolor: 'background.default' }}>
-                <Typography variant='subtitle2' fontWeight={600}>
-                  Khóa cần chú ý: {nextCourse.title}
-                </Typography>
-                <Typography variant='body2' color='text.secondary'>
-                  Hoàn thành {nextCourse.progress}% • {nextCourse.category}
-                </Typography>
-              </Box>
-            )}
-          </CardContent>
-        </Card>
+            <Typography mt={1} color='text.secondary'>
+              Tiếp tục hành trình học tập tuyệt vời của bạn nào!
+            </Typography>
+          </Box>
+        </Stack>
       </Box>
 
       {/* ======== ROW 2: Course progress ======== */}
@@ -181,14 +80,17 @@ export default function EnrolledWelcomeSection({ user, learning }: EnrolledWelco
           }}
         >
           <Typography variant='h5' fontWeight={700}>
-            Tiến độ học tập
+            Các khoá học bạn đang học
           </Typography>
-          <Button variant='text'>Xem tất cả</Button>
+          <Button LinkComponent={Link} href='/profile#course-list' variant='text'>
+            Xem tất cả
+          </Button>
         </Box>
 
+        {/* DESKTOP*/}
         <Box
           sx={{
-            display: 'grid',
+            display: { xs: 'none', md: 'grid' },
             gap: 2,
             gridTemplateColumns: {
               xs: '1fr',
@@ -198,9 +100,107 @@ export default function EnrolledWelcomeSection({ user, learning }: EnrolledWelco
             },
           }}
         >
-          {learning.map((course: courseProgress) => (
+          {/* {learning.map((course: courseProgress) => (
             <CourseProgressCard course={course} key={course.courseId} />
+          ))} */}
+
+          {courses.map((course: any) => (
+            <CourseCardHorizontal key={course.id} course={course} />
           ))}
+        </Box>
+
+        {/* MOBILE */}
+        <Box sx={{ display: { xs: 'block', md: 'none' }, position: 'relative' }}>
+          <IconButton
+            onClick={() => swiper?.slidePrev()}
+            disabled={isBeginning}
+            sx={{
+              position: 'absolute',
+              left: 8,
+              top: '50%',
+              transform: 'translateY(-50%)',
+              zIndex: 10,
+              width: 40,
+              height: 40,
+              bgcolor: 'background.paper',
+              border: '1px solid',
+              borderColor: 'divider',
+              boxShadow: 2,
+
+              '&:hover': {
+                bgcolor: 'grey.100',
+              },
+            }}
+          >
+            <ArrowBackIosNewIcon fontSize='small' />
+          </IconButton>
+
+          <IconButton
+            onClick={() => swiper?.slideNext()}
+            disabled={isEnd}
+            sx={{
+              position: 'absolute',
+              right: 8,
+              top: '50%',
+              transform: 'translateY(-50%)',
+              zIndex: 10,
+              width: 40,
+              height: 40,
+              bgcolor: 'background.paper',
+              border: '1px solid',
+              borderColor: 'divider',
+              boxShadow: 2,
+
+              '&:hover': {
+                bgcolor: 'grey.100',
+              },
+            }}
+          >
+            <ArrowForwardIosIcon fontSize='small' />
+          </IconButton>
+
+          <Swiper
+            modules={[Navigation, Autoplay]}
+            onSwiper={(swiper) => {
+              setSwiper(swiper);
+              updateNavigationState(swiper);
+            }}
+            onSlideChange={(swiper) => {
+              updateNavigationState(swiper);
+            }}
+            autoplay={{
+              delay: 3000,
+              disableOnInteraction: false,
+            }}
+            loop={false}
+            spaceBetween={16}
+            breakpoints={{
+              0: {
+                slidesPerView: 1,
+              },
+              480: {
+                slidesPerView: 1.2,
+              },
+              550: {
+                slidesPerView: 1.5,
+              },
+              768: {
+                slidesPerView: 2.2,
+              },
+            }}
+          >
+            {/* {items.map((item) => (
+              <SwiperSlide key={item.productId}>
+                {item.skeleton ? <ProductCardSkeleton /> : <ProductCard product={item} />}
+              </SwiperSlide>
+            ))} */}
+
+            {courses.map((course: any) => (
+              <SwiperSlide key={course.id}>
+                <CourseCardHorizontal key={course.id} course={course} mobileVariant='compact' />
+              </SwiperSlide>
+            ))}
+          </Swiper>
         </Box>
       </Box>
     </Box>

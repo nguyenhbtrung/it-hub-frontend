@@ -4,11 +4,11 @@ import { Paper, Box, Typography, Chip, Avatar, Divider, IconButton } from '@mui/
 import StarIcon from '@mui/icons-material/Star';
 import ArrowForward from '@mui/icons-material/ArrowForward';
 import Link from '@/components/common/Link';
-import { CourseCardProps } from './types';
+import { CourseCardHorizontalProps } from './types';
 import { levelLabelsMap } from '@/lib/const/course';
 import { formatDuration } from '@/lib/utils/formatDatetime';
 
-export function CourseCardHorizontal({ course }: CourseCardProps) {
+export function CourseCardHorizontal({ course, mobileVariant = 'default' }: CourseCardHorizontalProps) {
   return (
     <Link href={`/courses/${course.slug}`} target='_blank' style={{ textDecoration: 'none' }}>
       <Paper
@@ -55,7 +55,7 @@ export function CourseCardHorizontal({ course }: CourseCardProps) {
         />
 
         <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-          <Typography variant='h6' fontWeight={600} gutterBottom>
+          <Typography variant='h6' fontWeight={600} gutterBottom noWrap>
             {course?.title}
           </Typography>
 
@@ -77,7 +77,14 @@ export function CourseCardHorizontal({ course }: CourseCardProps) {
             {course?.shortDescription}
           </Typography>
 
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+          <Box
+            sx={{
+              display: { xs: mobileVariant === 'compact' ? 'none' : 'flex', md: 'flex' },
+              alignItems: 'center',
+              gap: 1,
+              mb: 2,
+            }}
+          >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
               <StarIcon sx={{ fontSize: 16, color: 'warning.main' }} />
               <Typography variant='body2' fontWeight={500} color='warning.main'>
