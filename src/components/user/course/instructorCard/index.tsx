@@ -40,11 +40,11 @@ export default async function InstructorCard({ courseId }: InstructorCardProps) 
         </Avatar>
 
         <Box sx={{ flex: 1, textAlign: { xs: 'center', md: 'left' } }}>
-          <Link href={`/users/${instructor?.id}`} passHref>
-            <Typography variant='h6' fontWeight={700} gutterBottom>
-              {instructor?.fullname}
-            </Typography>
-          </Link>
+          {/* <Link href={`/users/${instructor?.id}`} passHref> */}
+          <Typography variant='h6' fontWeight={700} gutterBottom>
+            {instructor?.fullname}
+          </Typography>
+          {/* </Link> */}
 
           {/* Specialized */}
           <Stack direction='row' spacing={1} alignItems='center' sx={{ mt: 2, mb: 1 }}>
