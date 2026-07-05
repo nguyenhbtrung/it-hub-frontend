@@ -57,7 +57,7 @@ async function CoursePageWrapper({ params }: Props) {
               {/* Course Content Section */}
               <Section id='content'>
                 <Suspense>
-                  <CourseContent courseContentOulinePromise={courseContentOutlinePromise} />
+                  <CourseContent courseContentOulinePromise={courseContentOutlinePromise} slug={slug} />
                 </Suspense>
               </Section>
 

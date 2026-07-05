@@ -16,12 +16,14 @@ import {
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { formatDuration } from '@/lib/utils/formatDatetime';
 import { notFound } from 'next/navigation';
+import Link from '@/components/common/Link';
 
 interface CourseContentProps {
   courseContentOulinePromise: Promise<any>;
+  slug: string;
 }
 
-export default function CourseContent({ courseContentOulinePromise }: CourseContentProps) {
+export default function CourseContent({ courseContentOulinePromise, slug }: CourseContentProps) {
   const [expanded, setExpanded] = useState<string | false>(false);
 
   const res = use(courseContentOulinePromise);
@@ -85,9 +87,18 @@ export default function CourseContent({ courseContentOulinePromise }: CourseCont
           >
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', pr: 2 }}>
               <Box>
-                <Typography variant='subtitle1' fontWeight={600}>
-                  {section?.title}
-                </Typography>
+                <Link href={`/courses/${slug}/learn/sections/${section?.id}`} passHref>
+                  <Typography
+                    variant='subtitle1'
+                    fontWeight={600}
+                    sx={{ '&:hover': { textDecoration: 'underline' } }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                  >
+                    {section?.title}
+                  </Typography>
+                </Link>
                 <Typography variant='body2' color='text.secondary'>
                   {section?.units?.filter((u: { type: string }) => u.type === 'lesson')?.length} bài học •{' '}
                   {section?.units?.filter((u: { type: string }) => u.type === 'excercise')?.length} bài tập
@@ -127,9 +138,17 @@ export default function CourseContent({ courseContentOulinePromise }: CourseCont
                 >
                   <ListItemText
                     primary={
-                      <Typography component='span' variant='body1' sx={{ fontWeight: 400 }}>
-                        {unitIndex + 1}. {unit?.title}
-                        {/* {unit.isPreview && (
+                      <Link
+                        href={`/courses/${slug}/learn/${unit?.type === 'lesson' ? 'lessons' : 'exercises'}/${unit?.id}`}
+                        passHref
+                      >
+                        <Typography
+                          component='span'
+                          variant='body1'
+                          sx={{ fontWeight: 400, '&:hover': { textDecoration: 'underline' } }}
+                        >
+                          {unitIndex + 1}. {unit?.title}
+                          {/* {unit.isPreview && (
                           <Chip
                             label='Xem trước'
                             size='small'
@@ -138,7 +157,8 @@ export default function CourseContent({ courseContentOulinePromise }: CourseCont
                             sx={{ ml: 1, height: 20, fontSize: '0.7rem' }}
                           />
                         )} */}
-                      </Typography>
+                        </Typography>
+                      </Link>
                     }
                   />
                 </ListItem>
