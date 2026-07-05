@@ -1,11 +1,17 @@
 'use client';
 
 import { useState } from 'react';
-import { AppBar, Toolbar, IconButton, Avatar, Button, InputBase, Box, Paper } from '@mui/material';
-import { Search, Notifications, ChatBubble, School } from '@mui/icons-material';
+import { AppBar, Toolbar, Avatar, Button, InputBase, Box, Paper } from '@mui/material';
+import { Search, School } from '@mui/icons-material';
 import Link from '@/components/common/Link';
+import { ApiResponse } from '@/lib/api';
+import InstructorProfileMenu from './instructorProfileMenu';
 
-export default function Header() {
+interface Props {
+  profilePromise: Promise<ApiResponse<any>>;
+}
+
+export default function Header({ profilePromise }: Props) {
   const [search, setSearch] = useState('');
 
   return (
@@ -74,29 +80,7 @@ export default function Header() {
             Trang học viên
           </Button>
 
-          <IconButton
-            sx={{
-              width: 40,
-              height: 40,
-              backgroundColor: 'action.hover',
-              '&:hover': { backgroundColor: 'action.selected' },
-            }}
-          >
-            <Notifications sx={{ color: 'text.secondary', fontSize: 20 }} />
-          </IconButton>
-
-          <IconButton
-            sx={{
-              width: 40,
-              height: 40,
-              backgroundColor: 'action.hover',
-              '&:hover': { backgroundColor: 'action.selected' },
-            }}
-          >
-            <ChatBubble sx={{ color: 'text.secondary', fontSize: 20 }} />
-          </IconButton>
-
-          <Avatar alt='John Doe' src='https://picsum.photos/seed/picsum/200' sx={{ width: 40, height: 40 }} />
+          <InstructorProfileMenu profilePromise={profilePromise} />
         </Box>
       </Toolbar>
     </AppBar>
