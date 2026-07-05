@@ -20,8 +20,8 @@ export default async function CourseTagsSection({ courseId }: CourseTagsSectionP
       <Stack direction='row' flexWrap='wrap' gap={1}>
         {tags.map((tag: any) => (
           <Chip
-            component={Link}
-            href={`/tags/${tag.slug}/courses`}
+            // component={Link}
+            // href={`/tags/${tag.slug}/courses`}
             key={tag.id}
             label={`${tag.name}`}
             variant='outlined'

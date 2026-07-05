@@ -131,10 +131,10 @@ export default function MenuContent({ course, onClose }: MenuContentProps) {
                       fontWeight: 500,
                       flex: 1,
                       cursor: 'pointer',
-                      '&:hover': { textDecoration: 'underline' }, // underline khi hover
+                      '&:hover': { textDecoration: 'underline' },
                     }}
                     onClick={(e) => {
-                      e.stopPropagation(); // ngăn không cho chạy onClick của ListItemButton
+                      e.stopPropagation();
                     }}
                   >
                     Chương {section.order}: {section.title}

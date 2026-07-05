@@ -40,7 +40,7 @@ export default async function CourseHeader({ courseId }: { courseId: string }) {
               <Link
                 color='inherit'
                 underline='hover'
-                href={`/category/${course?.category?.slug}`}
+                href={`/categories/${course?.category?.slug}`}
                 sx={{ opacity: 0.9, '&:hover': { opacity: 1 } }}
               >
                 {course?.category?.name}
@@ -48,7 +48,7 @@ export default async function CourseHeader({ courseId }: { courseId: string }) {
               <Link
                 color='inherit'
                 underline='hover'
-                href={`/category/${course?.subCategory?.slug}`}
+                href={`/categories/${course?.subCategory?.slug}`}
                 sx={{ opacity: 0.9, '&:hover': { opacity: 1 } }}
               >
                 {course?.subCategory?.name}

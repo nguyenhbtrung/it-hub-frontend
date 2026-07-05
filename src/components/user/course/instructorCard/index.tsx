@@ -40,11 +40,11 @@ export default async function InstructorCard({ courseId }: InstructorCardProps) 
         </Avatar>
 
         <Box sx={{ flex: 1, textAlign: { xs: 'center', md: 'left' } }}>
-          <Link href={`/users/${instructor?.id}`} passHref>
-            <Typography variant='h6' fontWeight={700} gutterBottom>
-              {instructor?.fullname}
-            </Typography>
-          </Link>
+          {/* <Link href={`/users/${instructor?.id}`} passHref> */}
+          <Typography variant='h6' fontWeight={700} gutterBottom>
+            {instructor?.fullname}
+          </Typography>
+          {/* </Link> */}
 
           {/* Specialized */}
           <Stack direction='row' spacing={1} alignItems='center' sx={{ mt: 2, mb: 1 }}>
@@ -99,7 +99,7 @@ export default async function InstructorCard({ courseId }: InstructorCardProps) 
         </Box>
       </Stack>
 
-      <Box sx={{ textAlign: 'center', mt: 3 }}>
+      {/* <Box sx={{ textAlign: 'center', mt: 3 }}>
         <Button
           LinkComponent={Link}
           href={`/users/${instructor?.id}`}
@@ -109,7 +109,7 @@ export default async function InstructorCard({ courseId }: InstructorCardProps) 
         >
           Xem toàn bộ hồ sơ giảng viên
         </Button>
-      </Box>
+      </Box> */}
     </Section>
   );
 }
