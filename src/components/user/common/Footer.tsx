@@ -31,7 +31,7 @@ export default async function Footer() {
             Khám phá
           </Typography>
           <Stack spacing={1}>
-            <Link href='/courses' underline='hover' color='text.secondary'>
+            <Link href='#' underline='hover' color='text.secondary'>
               Khóa học
             </Link>
             <Link href='/competitions' underline='hover' color='text.secondary'>
@@ -40,7 +40,7 @@ export default async function Footer() {
             <Link href='/forum' underline='hover' color='text.secondary'>
               Diễn đàn
             </Link>
-            <Link href='/assistant' underline='hover' color='text.secondary'>
+            <Link href='#ai-assitant' underline='hover' color='text.secondary'>
               Trợ lý học tập
             </Link>
           </Stack>
@@ -76,7 +76,7 @@ export default async function Footer() {
             <Link href='/instructor/apply' underline='hover' color='text.secondary'>
               Trở thành giảng viên
             </Link>
-            <Link href='/instructor/dashboard' underline='hover' color='text.secondary'>
+            <Link href='/instructor' underline='hover' color='text.secondary'>
               Bảng điều khiển giảng viên
             </Link>
             <Link href='/instructor/resources' underline='hover' color='text.secondary'>

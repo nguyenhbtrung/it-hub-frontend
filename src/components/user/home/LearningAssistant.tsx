@@ -30,7 +30,7 @@ export default async function LearningAssistant() {
   if (session) return;
 
   return (
-    <Box sx={{ py: 8, background: 'var(--mui-palette-gradient-learningAssistant)' }}>
+    <Box id='ai-assitant' sx={{ py: 8, background: 'var(--mui-palette-gradient-learningAssistant)' }}>
       <Box maxWidth='lg' mx='auto' px={2}>
         <Grid container spacing={6} alignItems='center' flexDirection={{ xs: 'column-reverse', md: 'row' }}>
           {/* Left - Visual */}
