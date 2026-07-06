@@ -1,6 +1,6 @@
 'use client';
 
-import { Paper, Box, Typography, Chip, Avatar, Divider, IconButton } from '@mui/material';
+import { Paper, Box, Typography, Chip, Avatar, Divider, IconButton, Skeleton } from '@mui/material';
 import StarIcon from '@mui/icons-material/Star';
 import ArrowForward from '@mui/icons-material/ArrowForward';
 import Link from '@/components/common/Link';
@@ -143,5 +143,91 @@ export function CourseCardHorizontal({ course, mobileVariant = 'default' }: Cour
         </Box>
       </Paper>
     </Link>
+  );
+}
+
+interface CourseCardHorizontalSkeletonProps {
+  mobileVariant?: 'default' | 'compact';
+}
+
+export function CourseCardHorizontalSkeleton({ mobileVariant = 'default' }: CourseCardHorizontalSkeletonProps) {
+  return (
+    <Paper
+      elevation={0}
+      sx={{
+        display: 'flex',
+        flexDirection: { xs: 'column', md: 'row' },
+        gap: 3,
+        p: 3,
+        borderRadius: 2,
+        border: '1px solid',
+        borderColor: 'divider',
+      }}
+    >
+      <Skeleton
+        variant='rounded'
+        sx={{
+          width: { xs: '100%', md: '33.33%' },
+          height: { xs: 192, md: 180 },
+          borderRadius: 1,
+          flexShrink: 0,
+        }}
+      />
+
+      <Box
+        sx={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        <Skeleton width='75%' height={34} />
+
+        <Skeleton width='45%' height={24} />
+
+        <Box mt={1}>
+          <Skeleton width='100%' height={22} />
+          <Skeleton width='95%' height={22} />
+        </Box>
+
+        <Box
+          sx={{
+            display: {
+              xs: mobileVariant === 'compact' ? 'none' : 'flex',
+              md: 'flex',
+            },
+            alignItems: 'center',
+            gap: 1,
+            my: 2,
+          }}
+        >
+          <Skeleton width={40} height={20} />
+          <Divider orientation='vertical' flexItem />
+          <Skeleton width={70} height={20} />
+          <Divider orientation='vertical' flexItem />
+          <Skeleton width={70} height={20} />
+          <Divider orientation='vertical' flexItem />
+          <Skeleton width={60} height={20} />
+        </Box>
+
+        <Box
+          sx={{
+            mt: 'auto',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <Box display='flex' gap={1}>
+            <Skeleton variant='rounded' width={90} height={28} />
+            <Skeleton variant='rounded' width={70} height={28} />
+          </Box>
+
+          <IconButton disabled>
+            <ArrowForward />
+          </IconButton>
+        </Box>
+      </Box>
+    </Paper>
   );
 }
