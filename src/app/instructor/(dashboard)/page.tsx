@@ -1,9 +1,9 @@
 import { Box, Typography, Button, Container } from '@mui/material';
 import { AddCircle } from '@mui/icons-material';
-import StatsCards from '@/components/instructor/dashboard/statsCard';
 import GrowthChart from '@/components/instructor/dashboard/growthChart';
-import RecentActivity from '@/components/instructor/dashboard/recentActivity';
 import { Suspense } from 'react';
+import { StatsCards, StatsCardsSkeleton } from '@/components/instructor/dashboard/statsCards';
+import { RecentActivity, RecentActivitySkeleton } from '@/components/instructor/dashboard/recentActivity';
 
 export default function InstructorDashboard() {
   return (
@@ -32,7 +32,7 @@ export default function InstructorDashboard() {
 
         {/* Stats Cards */}
         <Box sx={{ mb: 4 }}>
-          <Suspense>
+          <Suspense fallback={<StatsCardsSkeleton />}>
             <StatsCards />
           </Suspense>
         </Box>
@@ -46,7 +46,7 @@ export default function InstructorDashboard() {
           }}
         >
           <GrowthChart />
-          <Suspense>
+          <Suspense fallback={<RecentActivitySkeleton />}>
             <RecentActivity />
           </Suspense>
         </Box>

@@ -18,7 +18,9 @@ import Logo from '@/components/common/Logo';
 import Link from '@/components/common/Link';
 import { usePathname } from 'next/navigation';
 import { ApiResponse } from '@/lib/api';
-import { use } from 'react';
+import { Suspense, use } from 'react';
+import UserInfo from './userInfo';
+import UserInfoSkeleton from './userInfoSkeleton';
 
 interface Props {
   profilePromise: Promise<ApiResponse<any>>;
@@ -31,9 +33,6 @@ export default function Sidebar({ profilePromise }: Props) {
     { icon: <Dashboard />, text: 'Bảng điều khiển', href: '', active: true },
     { icon: <MenuBook />, text: 'Quản lý Khóa học', href: '/courses' },
   ];
-
-  const res = use(profilePromise);
-  const user = res.success ? res.data : null;
 
   return (
     <Paper
@@ -92,28 +91,9 @@ export default function Sidebar({ profilePromise }: Props) {
       </Box>
 
       {/* Bottom Section */}
-      {user && (
-        <Box>
-          <Divider sx={{ mb: 2 }} />
-
-          {/* User Profile */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, p: 2, borderRadius: 2 }}>
-            <Avatar
-              alt={user?.fullname || 'User'}
-              src={user?.avatar?.url || undefined}
-              sx={{ width: 40, height: 40 }}
-            />
-            <Box sx={{ flex: 1 }}>
-              <Typography variant='body2' sx={{ fontWeight: 500 }}>
-                {user.fullname}
-              </Typography>
-              <Typography variant='caption' color='text.secondary'>
-                {user.email}
-              </Typography>
-            </Box>
-          </Box>
-        </Box>
-      )}
+      <Suspense fallback={<UserInfoSkeleton />}>
+        <UserInfo profilePromise={profilePromise} />
+      </Suspense>
     </Paper>
   );
 }

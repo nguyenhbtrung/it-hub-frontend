@@ -1,9 +1,9 @@
 import { Box, Typography, Button, Container } from '@mui/material';
 import { AddCircle } from '@mui/icons-material';
 import CourseTabs from '@/components/instructor/course/courseTabs';
-import CourseList from '@/components/instructor/course/courseList';
 import { Suspense } from 'react';
 import AddCourse from '@/components/instructor/course/addCourse';
+import { CourseList, CourseListSkeleton } from '@/components/instructor/course/courseList';
 
 interface ManageCoursesPageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -32,7 +32,7 @@ export default function ManageCoursesPage({ searchParams }: ManageCoursesPagePro
         </Suspense>
 
         {/* Course List */}
-        <Suspense>
+        <Suspense fallback={<CourseListSkeleton />}>
           <CourseList searchParams={searchParams} />
         </Suspense>
       </Container>
