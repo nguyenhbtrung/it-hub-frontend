@@ -1,3 +1,4 @@
+import { ApiResponse } from '@/lib/api';
 import { SvgIconTypeMap } from '@mui/material';
 import { OverridableComponent } from '@mui/material/OverridableComponent';
 
@@ -21,5 +22,6 @@ export interface SidebarProps {
 }
 
 export interface TopBarProps {
+  profilePromise: Promise<ApiResponse<any>>;
   onMenuClick: () => void;
 }

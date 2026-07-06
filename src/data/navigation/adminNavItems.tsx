@@ -51,9 +51,9 @@ export const navItems: NavItem[] = [
       { label: 'Tag', href: '/admin/tags' },
     ],
   },
-  {
-    label: 'Cài đặt',
-    icon: Settings,
-    href: '/admin/settings',
-  },
+  // {
+  //   label: 'Cài đặt',
+  //   icon: Settings,
+  //   href: '/admin/settings',
+  // },
 ];

@@ -4,8 +4,14 @@ import { useState } from 'react';
 import { Box, Toolbar, useTheme, useMediaQuery } from '@mui/material';
 import TopBar from '../topbar';
 import Sidebar from '../sidebar';
+import { ApiResponse } from '@/lib/api';
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+interface Props {
+  children: React.ReactNode;
+  profilePromise: Promise<ApiResponse<any>>;
+}
+
+export default function AdminLayout({ children, profilePromise }: Props) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [open, setOpen] = useState(!isMobile);
@@ -22,7 +28,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <TopBar onMenuClick={handleDrawerToggle} />
+      <TopBar onMenuClick={handleDrawerToggle} profilePromise={profilePromise} />
       <Sidebar open={open} onClose={handleDrawerClose} isMobile={isMobile} />
       <Box
         component='main'
