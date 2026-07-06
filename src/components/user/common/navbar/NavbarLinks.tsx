@@ -12,6 +12,7 @@ import {
   MenuItem,
   IconButton,
   Avatar,
+  Skeleton,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
@@ -160,7 +161,7 @@ export default function NavbarLinks({ navItems, session, profilePromise }: Navba
           </Box>
         ))}
         {session ? (
-          <Suspense>
+          <Suspense fallback={<Skeleton variant='circular' width={40} height={40} />}>
             <UserProfileMenu profilePromise={profilePromise} />
           </Suspense>
         ) : (

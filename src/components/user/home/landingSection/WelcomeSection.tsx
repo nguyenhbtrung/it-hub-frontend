@@ -1,14 +1,10 @@
 import { Box, Container } from '@mui/material';
 import EnrolledWelcomeSection from './EnrolledWelcomeSection';
 import NewStudentWelcomeSection from './NewStudentWelcomeSection';
-import { auth } from '@/auth';
 import { jwtPayload } from '@/types/jwt';
 import { getMyLearningCourses, getMyProfile } from '@/features/user';
 
 export default async function WelcomeSection() {
-  const session = await auth();
-  if (!session) return;
-
   const user: jwtPayload = { userId: '1', name: 'Trung', role: 'instructor' };
 
   const profileRes = await getMyProfile();
