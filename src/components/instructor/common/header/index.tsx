@@ -1,7 +1,7 @@
 'use client';
 
 import { Suspense, useState } from 'react';
-import { AppBar, Toolbar, Button, InputBase, Box, Paper } from '@mui/material';
+import { AppBar, Toolbar, Button, InputBase, Box, Paper, Skeleton } from '@mui/material';
 import { Search, School } from '@mui/icons-material';
 import Link from '@/components/common/Link';
 import { ApiResponse } from '@/lib/api';
@@ -97,7 +97,7 @@ export default function Header({ profilePromise }: Props) {
             Trang học viên
           </Button>
 
-          <Suspense>
+          <Suspense fallback={<Skeleton variant='circular' width={40} height={40} />}>
             <InstructorProfileMenu profilePromise={profilePromise} />
           </Suspense>
         </Box>

@@ -8,9 +8,8 @@ export default function InstructorDashboardLayout({ children }: { children: Reac
   const profilePromise = getMyProfile();
   return (
     <Box sx={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
-      <Suspense>
-        <Sidebar profilePromise={profilePromise} />
-      </Suspense>
+      <Sidebar profilePromise={profilePromise} />
+
       <Box
         sx={{ bgcolor: 'customBackground.4', flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}
       >
