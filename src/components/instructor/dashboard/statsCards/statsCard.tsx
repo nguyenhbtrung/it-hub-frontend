@@ -2,7 +2,7 @@ import { Box, Typography, Paper } from '@mui/material';
 import { Star } from '@mui/icons-material';
 import { getInstructorDashboardSummary } from '@/features/dashboard';
 
-export default async function StatsCards() {
+export async function StatsCards() {
   const res = await getInstructorDashboardSummary();
   const summary = res.success ? res.data : null;
 
@@ -50,12 +50,6 @@ export default async function StatsCards() {
             </Typography>
             {stat.icon}
           </Box>
-
-          {/* {stat.change && (
-            <Typography variant='body2' sx={{ color: stat.changeColor, fontWeight: 500 }}>
-              {stat.change}
-            </Typography>
-          )} */}
 
           {stat.description && (
             <Typography variant='body2' color='text.secondary'>
