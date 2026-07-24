@@ -15,6 +15,7 @@ import { ThinkingIndicator } from './thinkingIndicator';
 type ChatMessage = {
   role: 'user' | 'assistant';
   content: string;
+  selectedText?: string;
 };
 
 type Props = {
@@ -59,7 +60,14 @@ export function AIChatDialog({ open, onClose, selectedText, accessToken, stepId 
       flexibility,
     };
 
-    setMessages((prev) => [...prev, { role: 'user', content: input }]);
+    setMessages((prev) => [
+      ...prev,
+      {
+        role: 'user',
+        content: input,
+        selectedText: contextText || undefined,
+      },
+    ]);
     setInput('');
     setContextText('');
 
@@ -259,20 +267,54 @@ function ChatMessageRow({ message, hightlightCount }: { message: ChatMessage; hi
       sx={{
         display: 'flex',
         justifyContent: 'flex-end',
-        mb: 1,
+        mb: 2,
       }}
     >
-      <Paper
+      <Box
         sx={{
-          p: 1.5,
           maxWidth: '75%',
-          bgcolor: 'primary.main',
-          color: 'white',
-          whiteSpace: 'pre-wrap',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 1,
         }}
       >
-        {message.content}
-      </Paper>
+        {message.selectedText && (
+          <Paper
+            variant='outlined'
+            sx={{
+              p: 1,
+              bgcolor: '#f8fafc',
+              borderColor: 'divider',
+            }}
+          >
+            <Typography variant='caption' color='text.secondary' sx={{ display: 'block', mb: 0.5 }}>
+              Ngữ cảnh đã chọn
+            </Typography>
+
+            <Typography
+              variant='body2'
+              sx={{
+                whiteSpace: 'pre-wrap',
+                maxHeight: 120,
+                overflow: 'auto',
+              }}
+            >
+              {message.selectedText}
+            </Typography>
+          </Paper>
+        )}
+
+        <Paper
+          sx={{
+            p: 1.5,
+            bgcolor: 'primary.main',
+            color: 'white',
+            whiteSpace: 'pre-wrap',
+          }}
+        >
+          {message.content}
+        </Paper>
+      </Box>
     </Box>
   );
 }
