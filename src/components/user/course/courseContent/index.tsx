@@ -1,4 +1,3 @@
-// CourseContent component - Phiên bản cải tiến
 'use client';
 import React, { use, useState } from 'react';
 import {

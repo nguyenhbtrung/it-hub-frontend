@@ -1,4 +1,3 @@
-// src/components/course/SidebarEnrollCard.tsx
 'use client';
 
 import { Card, CardContent, Box, Button, Stack } from '@mui/material';

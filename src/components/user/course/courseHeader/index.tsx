@@ -13,7 +13,9 @@ import { notFound } from 'next/navigation';
 import CourseHeaderAction from './action';
 import { getUserEnrollmentStatus, getCourseDetail } from '@/features/course';
 
-export default async function CourseHeader({ courseId }: { courseId: string }) {
+export { CourseHeaderSkeleton } from './skeleton';
+
+export async function CourseHeader({ courseId }: { courseId: string }) {
   const res = await getCourseDetail(courseId, 'student');
   if (!res.success) {
     notFound();

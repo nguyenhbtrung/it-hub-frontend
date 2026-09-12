@@ -1,5 +1,5 @@
 import { Box, Container, Grid, Stack } from '@mui/material';
-import CourseHeader from '@/components/user/course/courseHeader';
+import { CourseHeader, CourseHeaderSkeleton } from '@/components/user/course/courseHeader';
 import CourseContent from '@/components/user/course/courseContent';
 import InstructorCard from '@/components/user/course/instructorCard';
 import CourseReviews from '@/components/user/course/courseReviews';
@@ -35,7 +35,7 @@ async function CoursePageWrapper({ params }: Props) {
     <>
       {/* Header Section */}
       <Box sx={{ mb: 6 }}>
-        <Suspense>
+        <Suspense fallback={<CourseHeaderSkeleton />}>
           <CourseHeader courseId={courseId} />
         </Suspense>
       </Box>
