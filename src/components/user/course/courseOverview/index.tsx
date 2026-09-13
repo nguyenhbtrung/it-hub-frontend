@@ -8,7 +8,9 @@ import { notFound } from 'next/navigation';
 import { JSONContent } from '@tiptap/core';
 import { getCourseDetail } from '@/features/course';
 
-export default async function CourseOverview({ courseId }: { courseId: string }) {
+export { CourseOverviewSkeleton } from './skeleton';
+
+export async function CourseOverview({ courseId }: { courseId: string }) {
   const res = await getCourseDetail(courseId, 'student');
   if (!res.success) {
     notFound();
@@ -28,10 +30,6 @@ export default async function CourseOverview({ courseId }: { courseId: string })
   };
   return (
     <Section id='overview'>
-      {/* <Typography variant='body1' color='text.secondary' sx={{ my: 3 }}>
-        {course.description}
-      </Typography> */}
-
       <ReadMoreDescription content={course?.description || EMPTY_DOC} maxHeight={100} />
 
       <Box display={{ xs: 'flex', lg: 'none' }} flexDirection='row' alignItems='center' justifyContent='center'>

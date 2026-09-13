@@ -5,7 +5,7 @@ import InstructorCard from '@/components/user/course/instructorCard';
 import CourseReviews from '@/components/user/course/courseReviews';
 import NavTabs from '@/components/user/course/navTabs';
 import Section from '@/components/common/section';
-import CourseOverview from '@/components/user/course/courseOverview';
+import { CourseOverview, CourseOverviewSkeleton } from '@/components/user/course/courseOverview';
 import { Suspense } from 'react';
 import CourseTagsSection from '@/components/user/course/courseTagsSection';
 import { getCourseContentOutline, getCourseIdBySlug } from '@/features/course';
@@ -50,7 +50,7 @@ async function CoursePageWrapper({ params }: Props) {
               <NavTabs />
 
               {/* Course Overview */}
-              <Suspense>
+              <Suspense fallback={<CourseOverviewSkeleton />}>
                 <CourseOverview courseId={courseId} />
               </Suspense>
 
