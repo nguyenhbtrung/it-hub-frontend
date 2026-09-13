@@ -3,6 +3,8 @@ import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 
 export function CourseTagsSectionSkeleton() {
+  const tags = [{ width: 75 }, { width: 110 }, { width: 90 }, { width: 130 }, { width: 85 }, { width: 120 }];
+
   return (
     <Box>
       {/* Title */}
@@ -18,12 +20,9 @@ export function CourseTagsSectionSkeleton() {
 
       {/* Tags */}
       <Stack direction='row' flexWrap='wrap' gap={1}>
-        <TagSkeleton width={75} />
-        <TagSkeleton width={110} />
-        <TagSkeleton width={90} />
-        <TagSkeleton width={130} />
-        <TagSkeleton width={85} />
-        <TagSkeleton width={120} />
+        {tags.map((tag, index) => (
+          <TagSkeleton key={index} width={tag.width} />
+        ))}
       </Stack>
     </Box>
   );
