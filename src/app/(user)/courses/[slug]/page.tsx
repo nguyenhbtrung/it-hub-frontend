@@ -1,13 +1,13 @@
 import { Box, Container, Grid, Stack } from '@mui/material';
 import { CourseHeader, CourseHeaderSkeleton } from '@/components/user/course/courseHeader';
+import { CourseOverview, CourseOverviewSkeleton } from '@/components/user/course/courseOverview';
 import CourseContent from '@/components/user/course/courseContent';
+import { CourseTagsSection, CourseTagsSectionSkeleton } from '@/components/user/course/courseTagsSection';
 import InstructorCard from '@/components/user/course/instructorCard';
 import CourseReviews from '@/components/user/course/courseReviews';
 import NavTabs from '@/components/user/course/navTabs';
 import Section from '@/components/common/section';
-import { CourseOverview, CourseOverviewSkeleton } from '@/components/user/course/courseOverview';
 import { Suspense } from 'react';
-import CourseTagsSection from '@/components/user/course/courseTagsSection';
 import { getCourseContentOutline, getCourseIdBySlug } from '@/features/course';
 import { notFound } from 'next/navigation';
 
@@ -62,7 +62,7 @@ async function CoursePageWrapper({ params }: Props) {
               </Section>
 
               {/* Tags Section */}
-              <Suspense>
+              <Suspense fallback={<CourseTagsSectionSkeleton />}>
                 <CourseTagsSection courseId={courseId} />
               </Suspense>
 

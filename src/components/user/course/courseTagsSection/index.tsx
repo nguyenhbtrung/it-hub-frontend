@@ -9,7 +9,9 @@ interface CourseTagsSectionProps {
   courseId: string;
 }
 
-export default async function CourseTagsSection({ courseId }: CourseTagsSectionProps) {
+export { CourseTagsSectionSkeleton } from './skeleton';
+
+export async function CourseTagsSection({ courseId }: CourseTagsSectionProps) {
   const res = await getCourseDetail(courseId, 'student');
   const tags = res.success ? (res.data.tags ?? []) : [];
   return (
