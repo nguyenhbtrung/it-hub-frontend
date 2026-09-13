@@ -1,7 +1,7 @@
 import { Box, Container, Grid, Stack } from '@mui/material';
 import { CourseHeader, CourseHeaderSkeleton } from '@/components/user/course/courseHeader';
 import { CourseOverview, CourseOverviewSkeleton } from '@/components/user/course/courseOverview';
-import CourseContent from '@/components/user/course/courseContent';
+import { CourseContent, CourseContentSkeleton } from '@/components/user/course/courseContent';
 import { CourseTagsSection, CourseTagsSectionSkeleton } from '@/components/user/course/courseTagsSection';
 import InstructorCard from '@/components/user/course/instructorCard';
 import CourseReviews from '@/components/user/course/courseReviews';
@@ -56,7 +56,7 @@ async function CoursePageWrapper({ params }: Props) {
 
               {/* Course Content Section */}
               <Section id='content'>
-                <Suspense>
+                <Suspense fallback={<CourseContentSkeleton />}>
                   <CourseContent courseContentOulinePromise={courseContentOutlinePromise} slug={slug} />
                 </Suspense>
               </Section>

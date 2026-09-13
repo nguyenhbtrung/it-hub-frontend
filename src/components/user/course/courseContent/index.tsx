@@ -22,7 +22,9 @@ interface CourseContentProps {
   slug: string;
 }
 
-export default function CourseContent({ courseContentOulinePromise, slug }: CourseContentProps) {
+export { CourseContentSkeleton } from './skeleton';
+
+export function CourseContent({ courseContentOulinePromise, slug }: CourseContentProps) {
   const [expanded, setExpanded] = useState<string | false>(false);
 
   const res = use(courseContentOulinePromise);
@@ -124,14 +126,6 @@ export default function CourseContent({ courseContentOulinePromise, slug }: Cour
                       <Typography variant='body2' color='text.secondary' sx={{ minWidth: 60 }}>
                         {formatDuration(unit?.totalDuration || 0)}
                       </Typography>
-                      {/* <IconButton
-                        edge='end'
-                        size='small'
-                        aria-label='preview'
-                        color={unit.isPreview ? 'primary' : 'default'}
-                      >
-                        {unit.isPreview ? <PlayCircleOutlineIcon /> : <LockOpenIcon />}
-                      </IconButton> */}
                     </Stack>
                   }
                 >
@@ -147,15 +141,6 @@ export default function CourseContent({ courseContentOulinePromise, slug }: Cour
                           sx={{ fontWeight: 400, '&:hover': { textDecoration: 'underline' } }}
                         >
                           {unitIndex + 1}. {unit?.title}
-                          {/* {unit.isPreview && (
-                          <Chip
-                            label='Xem trước'
-                            size='small'
-                            color='primary'
-                            variant='filled'
-                            sx={{ ml: 1, height: 20, fontSize: '0.7rem' }}
-                          />
-                        )} */}
                         </Typography>
                       </Link>
                     }
