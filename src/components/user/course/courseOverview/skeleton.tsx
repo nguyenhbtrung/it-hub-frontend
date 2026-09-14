@@ -7,6 +7,10 @@ import MenuBookOutlinedIcon from '@mui/icons-material/MenuBookOutlined';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 
 export function CourseOverviewSkeleton() {
+  const learningOutcomes = [{ width: '90%' }, { width: '82%' }, { width: '95%' }, { width: '76%' }];
+
+  const requirements = [{ width: '80%' }, { width: '92%' }, { width: '70%' }];
+
   return (
     <Section id='overview'>
       {/* =========================
@@ -64,7 +68,7 @@ export function CourseOverviewSkeleton() {
       ========================= */}
       <Grid container spacing={3}>
         {/* =====================
-            Bạn sẽ học được
+            Learning outcomes
         ===================== */}
         <Grid size={12}>
           <Skeleton
@@ -77,16 +81,11 @@ export function CourseOverviewSkeleton() {
             }}
           />
 
-          <List sx={{ color: 'text.secondary' }}>
-            <OverviewListItem width='90%' />
-            <OverviewListItem width='82%' />
-            <OverviewListItem width='95%' />
-            <OverviewListItem width='76%' />
-          </List>
+          <OverviewListSkeleton items={learningOutcomes} />
         </Grid>
 
         {/* =====================
-            Yêu cầu
+            Requirements
         ===================== */}
         <Grid size={12}>
           <Skeleton
@@ -99,14 +98,24 @@ export function CourseOverviewSkeleton() {
             }}
           />
 
-          <List sx={{ color: 'text.secondary' }}>
-            <OverviewListItem width='80%' />
-            <OverviewListItem width='92%' />
-            <OverviewListItem width='70%' />
-          </List>
+          <OverviewListSkeleton items={requirements} />
         </Grid>
       </Grid>
     </Section>
+  );
+}
+
+interface OverviewListSkeletonProps {
+  items: OverviewListItemProps[];
+}
+
+function OverviewListSkeleton({ items }: OverviewListSkeletonProps) {
+  return (
+    <List sx={{ color: 'text.secondary' }}>
+      {items.map((item, index) => (
+        <OverviewListItem key={index} width={item.width} />
+      ))}
+    </List>
   );
 }
 
