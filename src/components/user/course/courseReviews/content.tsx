@@ -49,9 +49,7 @@ export default function CourseReviewsContent({
         <YourReview myReview={myReview} courseId={courseId} />
       )}
 
-      <Suspense>
-        <ReviewStatistics reviewStats={reviewStats} ratingDistribution={ratingDistribution} />
-      </Suspense>
+      <ReviewStatistics reviewStats={reviewStats} ratingDistribution={ratingDistribution} />
 
       {/* Sort options */}
       <Stack direction='row' spacing={2} alignItems='center' sx={{ mb: 3 }}>

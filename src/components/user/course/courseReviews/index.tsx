@@ -2,6 +2,8 @@ import { getCourseReviews, getCourseReviewStatistics, getUserEnrollmentStatus } 
 import CourseReviewsContent from './content';
 import { getMyReviewOfTheCourse } from '@/features/course';
 
+export { CourseReviewsSkeleton } from './skeleton';
+
 export interface ReviewStats {
   rating: number;
   ratingCount: number;
@@ -11,7 +13,7 @@ interface CourseReviewsProps {
   courseId: string;
 }
 
-export default async function CourseReviews({ courseId }: CourseReviewsProps) {
+export async function CourseReviews({ courseId }: CourseReviewsProps) {
   const reviewStatsRes = await getCourseReviewStatistics(courseId);
 
   const reviewStats = reviewStatsRes.success ? reviewStatsRes.data : {};

@@ -4,7 +4,7 @@ import { CourseOverview, CourseOverviewSkeleton } from '@/components/user/course
 import { CourseContent, CourseContentSkeleton } from '@/components/user/course/courseContent';
 import { CourseTagsSection, CourseTagsSectionSkeleton } from '@/components/user/course/courseTagsSection';
 import { InstructorCard, InstructorCardSkeleton } from '@/components/user/course/instructorCard';
-import CourseReviews from '@/components/user/course/courseReviews';
+import { CourseReviews, CourseReviewsSkeleton } from '@/components/user/course/courseReviews';
 import NavTabs from '@/components/user/course/navTabs';
 import Section from '@/components/common/section';
 import { Suspense } from 'react';
@@ -71,7 +71,7 @@ async function CoursePageWrapper({ params }: Props) {
                 <InstructorCard courseId={courseId} />
               </Suspense>
 
-              <Suspense>
+              <Suspense fallback={<CourseReviewsSkeleton />}>
                 <CourseReviews courseId={courseId} />
               </Suspense>
             </Stack>
