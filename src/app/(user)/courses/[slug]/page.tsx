@@ -3,7 +3,7 @@ import { CourseHeader, CourseHeaderSkeleton } from '@/components/user/course/cou
 import { CourseOverview, CourseOverviewSkeleton } from '@/components/user/course/courseOverview';
 import { CourseContent, CourseContentSkeleton } from '@/components/user/course/courseContent';
 import { CourseTagsSection, CourseTagsSectionSkeleton } from '@/components/user/course/courseTagsSection';
-import InstructorCard from '@/components/user/course/instructorCard';
+import { InstructorCard, InstructorCardSkeleton } from '@/components/user/course/instructorCard';
 import CourseReviews from '@/components/user/course/courseReviews';
 import NavTabs from '@/components/user/course/navTabs';
 import Section from '@/components/common/section';
@@ -67,7 +67,7 @@ async function CoursePageWrapper({ params }: Props) {
               </Suspense>
 
               {/* Instructor Section */}
-              <Suspense>
+              <Suspense fallback={<InstructorCardSkeleton />}>
                 <InstructorCard courseId={courseId} />
               </Suspense>
 

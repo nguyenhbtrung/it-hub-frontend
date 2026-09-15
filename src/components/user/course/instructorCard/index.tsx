@@ -9,11 +9,13 @@ import Section from '@/components/common/section';
 import { getCourseInstructor } from '@/features/course';
 import { notFound } from 'next/navigation';
 
+export { InstructorCardSkeleton } from './skeleton';
+
 interface InstructorCardProps {
   courseId: string;
 }
 
-export default async function InstructorCard({ courseId }: InstructorCardProps) {
+export async function InstructorCard({ courseId }: InstructorCardProps) {
   const res = await getCourseInstructor(courseId);
   if (!res.success) {
     notFound();
